@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="{{ site.site.lang }}" data-gtm-id="{{ site.analytics.gtm_id }}" data-ga-id="{{ site.analytics.ga_id }}">
+<head>
+    {% include "components/head.html" %}
+</head>
+<body>
+    {% include "components/noscript.html" %}
+
+    {% include "components/header.html" %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "components/footer.html" %}
+
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>

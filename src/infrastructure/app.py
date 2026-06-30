@@ -36,6 +36,6 @@ async def read_root(request: Request):
     # Pasamos el 'request' obligatoriamente y el contenido del YAML al contexto de Jinja2
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="pages/index.html",
         context={"site": SITE_DATA},
     )
