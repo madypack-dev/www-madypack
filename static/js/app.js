@@ -1,20 +1,35 @@
-/**
- * Madypack - Bolsas Sustentables
- * Lógica del lado del cliente
- */
+(function () {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('☘️ Madypack Frontend: Entorno inicializado correctamente con FastAPI y Jinja2.');
+    const html = document.documentElement;
+    const gtmId = html.dataset.gtmId;
+    const gaId = html.dataset.gaId;
 
-    // Aquí puedes inicializar tus sliders, carruseles o lógica de carrito de compras
-    initApp();
-});
+    // Google Tag Manager
+    if (gtmId) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
 
-function initApp() {
-    // Ejemplo de inicialización funcional segura
-    const mainTitle = document.querySelector('header h1');
-    if (mainTitle) {
-        // Tu código interactivo aquí
-        console.log('Estructura principal detectada de forma exitosa.');
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(gtmId);
+
+        const firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
     }
-}
+
+    // Google Analytics (gtag)
+    if (gaId) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+
+        gtag('js', new Date());
+        gtag('config', gaId);
+    }
+})();

@@ -1,0 +1,19 @@
+analytics:
+  gtm_id: "GTM-WGDHKRW8"
+  ga_id: "G-MMGJ94QTB5"
+
+site:
+  lang: "es-AR"
+  title_default: "Madypack – Bolsas Sustentables"
+  charset: "UTF-8"
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
+  robots: "max-image-preview:large"
+  profile_url: "https://gmpg.org/xfn/11"
+
+header:
+  brand: "Madypack"
+  tagline: "Bolsas Sustentables"
+
+main:
+  heading: "Bienvenidos a nuestra tienda sustentable"
+  body: "Contenido principal en desarrollo..."

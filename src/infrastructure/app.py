@@ -1,7 +1,11 @@
+from pathlib import Path
+from typing import Any, cast
+
+import yaml
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="FastAPI con Jinja2")
 
@@ -12,11 +16,26 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Configurar el motor de plantillas Jinja2
 templates = Jinja2Templates(directory="templates")
 
+# Cargar la configuración del sitio desde data/*.yml
+_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+_SITE_YAML = _DATA_DIR / "site.yml"
+
+
+def _load_site_data() -> dict[str, Any]:
+    if not _SITE_YAML.exists():
+        return {}
+    with _SITE_YAML.open("r", encoding="utf-8") as f:
+        return cast(dict[str, Any], yaml.safe_load(f) or {})
+
+
+SITE_DATA: dict[str, Any] = _load_site_data()
+
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    # Pasamos el 'request' obligatoriamente y variables opcionales al contexto de Jinja2
+    # Pasamos el 'request' obligatoriamente y el contenido del YAML al contexto de Jinja2
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"title": "Inicio", "message": "¡Servidor FastAPI funcionando con Jinja2!"}
+        context={"site": SITE_DATA},
     )

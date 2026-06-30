@@ -1,44 +1,29 @@
 <!DOCTYPE html>
-<html lang="es-AR">
+<html lang="{{ site.site.lang }}" data-gtm-id="{{ site.analytics.gtm_id }}" data-ga-id="{{ site.analytics.ga_id }}">
 <head>
-    <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-WGDHKRW8');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-    <meta name="robots" content="max-image-preview:large">
-    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <meta charset="{{ site.site.charset }}">
+    <meta name="viewport" content="{{ site.site.viewport }}">
+    <meta name="robots" content="{{ site.site.robots }}">
+    <link rel="profile" href="{{ site.site.profile_url }}">
 
-    <title>{{ title or "Madypack – Bolsas Sustentables" }}</title>
+    <title>{{ site.site.title_default }}</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMGJ94QTB5"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-MMGJ94QTB5');
-    </script>
-
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 <body>
     <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WGDHKRW8" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        <iframe src="https://www.googletagmanager.com/ns.html?id={{ site.analytics.gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <header>
         <div class="container">
-            <h1>Madypack</h1>
-            <p>Bolsas Sustentables</p>
+            <h1>{{ site.header.brand }}</h1>
+            <p>{{ site.header.tagline }}</p>
         </div>
     </header>
 
     <main class="container">
-        <h2>{{ message or "Bienvenidos a nuestra tienda sustentable" }}</h2>
-        <p>Contenido principal en desarrollo...</p>
+        <h2>{{ site.main.heading }}</h2>
+        <p>{{ site.main.body }}</p>
     </main>
 
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
