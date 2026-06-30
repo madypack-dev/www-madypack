@@ -1,0 +1,71 @@
+/* --- Variables Globales de Diseño --- */
+:root {
+    --stk-block-width-default-detected: 1290px;
+    --wp-admin-theme-color: #007cba;
+    --wp--preset--font-size--normal: 16px;
+    --wp--preset--font-size--huge: 42px;
+    
+    /* Paleta base Madypack */
+    --primary-color: #0f0e17;
+    --accent-color: #f00069;
+    --text-light: #fffffe;
+    --background-soft: #f4f4f9;
+}
+
+/* --- Estilos Base --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-soft);
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: var(--stk-block-width-default-detected);
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 40px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: var(--wp--preset--font-size--huge);
+}
+
+/* --- Parches de Optimización del HTML original --- */
+img:is([sizes=auto i],[sizes^="auto," i]) {
+    contain-intrinsic-size: 3000px 1500px;
+}
+
+img {
+    height: auto;
+    max-width: 100%;
+    vertical-align: bottom;
+}
+
+.screen-reader-text {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+/* --- Medias Queries Básicas --- */
+@media only screen and (max-width: 689px) {
+    header {
+        padding: 20px 0;
+    }
+}
