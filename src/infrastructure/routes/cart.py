@@ -76,12 +76,14 @@ async def update_cart(
     for item in cart_items:
         field_name = f"qty_{item['id']}"
         if field_name in form_data:
-            try:
-                new_qty = int(form_data[field_name])
-                if new_qty > 0:
-                    item["quantity"] = new_qty
-            except ValueError:
-                pass
+            val = form_data[field_name]
+            if isinstance(val, str):
+                try:
+                    new_qty = int(val)
+                    if new_qty > 0:
+                        item["quantity"] = new_qty
+                except ValueError:
+                    pass
                 
     response = RedirectResponse(url="/cart/", status_code=303)
     response.set_cookie(
