@@ -1,8 +1,11 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<section class="container">
-    <h2>{{ site.main.heading }}</h2>
-    <p>{{ site.main.body }}</p>
-</section>
+{% include "components/sections/hero.html" %}
+{% include "components/sections/cta.html" %}
+{% include "components/sections/product_types.html" %}
+{% include "components/sections/quote_form.html" %}
+{% include "components/sections/about.html" %}
+{% include "components/sections/newsletter.html" %}
+{% include "components/sections/contact.html" %}
 {% endblock %}

@@ -2,6 +2,10 @@ analytics:
   gtm_id: "GTM-WGDHKRW8"
   ga_id: "G-MMGJ94QTB5"
 
+whatsapp:
+  phone: "5491125794649"
+  message: "Hola, vengo del sitio web, quiero más información"
+
 site:
   lang: "es-AR"
   title_default: "Madypack – Bolsas Sustentables"
@@ -23,7 +27,6 @@ header:
       url: "https://www.instagram.com/madypack_bolsas/"
       label: Instagram
     - network: whatsapp
-      url: "https://api.whatsapp.com/send/?phone=5491125794649&text=Hola%2C%20vengo%20del%20sitio%20web%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
       label: WhatsApp
       cta_class: "madypack-whatsapp-cta"
   logo:
@@ -73,6 +76,79 @@ footer:
       label: WhatsApp
       cta_class: "madypack-whatsapp-cta"
 
-main:
-  heading: "Bienvenidos a nuestra tienda sustentable"
-  body: "Contenido principal en desarrollo..."
+home:
+  hero:
+    title: "Madypack bolsas sustentables"
+    subtitle: "Consultá descuentos por cantidades"
+
+  cta:
+    title: "Conseguí tus bolsas"
+    before_link: "Pedí tu"
+    link_text: "cotización"
+    after_link: "aquí"
+
+  product_types:
+    title: "¿Qué tipo de bolsas estás buscando?"
+    products:
+      - label: Personalizadas
+        image: "bolsas-personalizadas.svg"
+      - label: Con manijas
+        image: "bolsas-con-m.svg"
+      - label: Sin manijas
+        image: "bolsas-sin-m.svg"
+
+  quote_form:
+    title: "Pedido de cotización"
+    description: "Completá el formulario para que podamos enviarte un presupuesto personalizado."
+    submit: "Solicitar cotización"
+    required_marker: "*"
+    required_abbreviation: "requerido"
+    fields:
+      - name: name
+        label: "Nombre y Apellido"
+        type: text
+        required: false
+      - name: email
+        label: "Email"
+        type: email
+        required: true
+      - name: phone
+        label: "Celular"
+        type: text
+        required: true
+      - name: company
+        label: "Empresa"
+        type: text
+        required: false
+      - name: message
+        label: "¿Qué tipo de bolsa necesitas?"
+        type: textarea
+        required: false
+        rows: 4
+        full_width: true
+
+  about:
+    title: "Quiénes somos"
+    text: "Nos dedicamos a la fabricación y confección de bolsas de papel, lisas y personalizadas. Todo para su negocio, respetando valores sociales sobre el cuidado del medio ambiente."
+    button_text: "Conocenos"
+    button_url: "/quienes-somos/"
+    image: "quienes-somos-home.jpg"
+
+  newsletter:
+    title: "Suscribite a nuestro newsletter"
+    placeholder: "Ingrese su email"
+    submit: "Enviar"
+
+  contact:
+    title: "Contacto"
+    email: "atencionalcliente@madypack.com.ar"
+    whatsapp: "5491125794649"
+    whatsapp_label: "5491125794649"
+    address: "Ruta Panamericana km 36.7 Garín, Buenos Aires, Argentina."
+    map_url: "https://maps.google.com/maps?q=Madygraf&t=&z=12&ie=UTF8&output=embed"
+    map_link: "https://maps.app.goo.gl/UMnnhnJHeikihewG6"
+    map_title: "Ubicación de Madypack"
+    labels:
+      customer_service: "Atención al Cliente"
+      whatsapp: "WhatsApp:"
+      location: "Ubicación"

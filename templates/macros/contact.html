@@ -1,0 +1,3 @@
+{% macro whatsapp_url(phone, message) %}
+https://api.whatsapp.com/send/?phone={{ phone }}&text={{ message | urlencode }}
+{% endmacro %}

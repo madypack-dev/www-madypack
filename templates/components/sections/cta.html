@@ -1,0 +1,12 @@
+{% from "macros/contact.html" import whatsapp_url %}
+
+<section class="section cta-section">
+    <div class="container">
+        <h2>{{ site.home.cta.title }}</h2>
+        <p>
+            {{ site.home.cta.before_link }}
+            <a href="{{ whatsapp_url(site.whatsapp.phone, site.whatsapp.message) }}" class="madypack-whatsapp-cta" target="_blank" rel="noreferrer noopener">{{ site.home.cta.link_text }}</a>
+            {{ site.home.cta.after_link }}
+        </p>
+    </div>
+</section>

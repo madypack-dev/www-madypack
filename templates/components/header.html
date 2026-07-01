@@ -1,4 +1,4 @@
-{% from "macros/social.html" import social_icon %}
+{% from "macros/social.html" import social_icon, social_url %}
 
 <header class="site-header">
     <div class="header-top">
@@ -7,7 +7,7 @@
             <ul class="social-links">
                 {% for social in site.header.socials %}
                 <li>
-                    <a href="{{ social.url }}"
+                    <a href="{{ social_url(social, site.whatsapp.phone, site.whatsapp.message) }}"
                        aria-label="{{ social.label }}"
                        target="_blank"
                        rel="noopener noreferrer"

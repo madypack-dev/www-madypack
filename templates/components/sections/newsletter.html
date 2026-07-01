@@ -1,0 +1,12 @@
+<section class="section newsletter-section">
+    <div class="container">
+        <form class="newsletter-form" action="#" method="post">
+            <h2>{{ site.home.newsletter.title }}</h2>
+            <label class="sr-only" for="newsletter-email">{{ site.home.newsletter.placeholder }}</label>
+            <div class="newsletter-fields">
+                <input id="newsletter-email" type="email" name="email" placeholder="{{ site.home.newsletter.placeholder }}" required>
+                <button type="submit" class="button button-primary">{{ site.home.newsletter.submit }}</button>
+            </div>
+        </form>
+    </div>
+</section>

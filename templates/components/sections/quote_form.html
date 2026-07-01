@@ -1,0 +1,26 @@
+<section class="section quote-section">
+    <div class="container">
+        <div class="quote-card">
+            <h2>{{ site.home.quote_form.title }}</h2>
+            <p>{{ site.home.quote_form.description }}</p>
+            <form class="quote-form" action="#" method="post">
+                {% for field in site.home.quote_form.fields %}
+                <label class="form-field{% if field.full_width %} form-field-full{% endif %}">
+                    <span>
+                        {{ field.label }}
+                        {% if field.required %}
+                        <abbr title="{{ site.home.quote_form.required_abbreviation }}" aria-label="{{ site.home.quote_form.required_abbreviation }}">{{ site.home.quote_form.required_marker }}</abbr>
+                        {% endif %}
+                    </span>
+                    {% if field.type == "textarea" %}
+                    <textarea name="{{ field.name }}" rows="{{ field.rows | default(4) }}"{% if field.required %} required{% endif %}></textarea>
+                    {% else %}
+                    <input type="{{ field.type }}" name="{{ field.name }}"{% if field.required %} required{% endif %}>
+                    {% endif %}
+                </label>
+                {% endfor %}
+                <button type="submit" class="button button-primary">{{ site.home.quote_form.submit }}</button>
+            </form>
+        </div>
+    </div>
+</section>

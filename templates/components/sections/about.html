@@ -1,0 +1,14 @@
+<section class="section about-section">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>{{ site.home.about.title }}</h2>
+                <p>{{ site.home.about.text }}</p>
+                <a href="{{ site.home.about.button_url }}" class="button button-primary">{{ site.home.about.button_text }}</a>
+            </div>
+            <figure class="about-image">
+                <img src="{{ url_for('static', path='/images/' ~ site.home.about.image) }}" alt="{{ site.home.about.title }}" loading="lazy">
+            </figure>
+        </div>
+    </div>
+</section>
