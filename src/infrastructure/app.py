@@ -29,3 +29,49 @@ async def read_root(request: Request):
         name="pages/index.html",
         context={"site": load_site()},
     )
+
+
+@app.get("/quienes-somos/", response_class=HTMLResponse)
+async def read_quienes_somos(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/quienes-somos.html",
+        context={"site": load_site()},
+    )
+
+
+@app.get("/cotizacion/", response_class=HTMLResponse)
+async def read_cotizacion(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/cotizacion.html",
+        context={"site": load_site()},
+    )
+
+
+@app.get("/contacto/", response_class=HTMLResponse)
+async def read_contacto(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/contacto.html",
+        context={"site": load_site()},
+    )
+
+
+@app.get("/terminos-y-condiciones/", response_class=HTMLResponse)
+async def read_terminos_y_condiciones(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/terminos-y-condiciones.html",
+        context={"site": load_site()},
+    )
+
+
+@app.get("/politica-de-privacidad/", response_class=HTMLResponse)
+async def read_politica_de_privacidad(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/politica-de-privacidad.html",
+        context={"site": load_site()},
+    )
+

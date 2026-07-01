@@ -38,7 +38,7 @@ header:
   menu:
     - label: Inicio
       url: "/"
-    - label: Quienes somos
+    - label: Quiénes somos
       url: "/quienes-somos/"
     - label: Cotización
       url: "/cotizacion/"
@@ -72,7 +72,6 @@ footer:
       url: "https://www.instagram.com/madypack_bolsas/"
       label: Instagram
     - network: whatsapp
-      url: "https://api.whatsapp.com/send/?phone=5491125794649&text=Hola%2C%20vengo%20del%20sitio%20web%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
       label: WhatsApp
       cta_class: "madypack-whatsapp-cta"
 
@@ -142,7 +141,6 @@ home:
   contact:
     title: "Contacto"
     email: "atencionalcliente@madypack.com.ar"
-    whatsapp: "5491125794649"
     whatsapp_label: "5491125794649"
     address: "Ruta Panamericana km 36.7 Garín, Buenos Aires, Argentina."
     map_url: "https://maps.google.com/maps?q=Madygraf&t=&z=12&ie=UTF8&output=embed"

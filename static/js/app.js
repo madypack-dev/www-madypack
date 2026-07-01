@@ -4,9 +4,10 @@
     const html = document.documentElement;
     const gtmId = html.dataset.gtmId;
     const gaId = html.dataset.gaId;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     // Google Tag Manager
-    if (gtmId) {
+    if (gtmId && !isLocalhost) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
 
@@ -19,7 +20,7 @@
     }
 
     // Google Analytics (gtag)
-    if (gaId) {
+    if (gaId && !isLocalhost) {
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
