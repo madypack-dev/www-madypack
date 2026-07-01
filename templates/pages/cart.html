@@ -9,46 +9,53 @@
         <h1>{{ site.cart.heading }}</h1>
         
         <div class="cart-grid">
-            <div class="cart-layout">
-                
-                <!-- Lista de productos -->
-                <div class="cart-items">
-                    <h2>{{ site.cart.items_heading }}</h2>
+            <form action="/cart/update" method="post" class="cart-form">
+                <div class="cart-layout">
                     
-                    {% for item in site.cart['items'] %}
-                    <div class="cart-item">
-                        <img src="{{ url_for('static', path='/images/' ~ item.image) }}" alt="{{ item.name }}" width="80" height="80">
-                        <div class="cart-item-details">
-                            <h3>{{ item.name }}</h3>
-                            <p>{{ item.description }}</p>
+                    <!-- Lista de productos -->
+                    <div class="cart-items">
+                        <h2>{{ site.cart.items_heading }}</h2>
+                        
+                        {% for item in cart_items %}
+                        <div class="cart-item">
+                            <img src="{{ url_for('static', path='/images/' ~ item.image) }}" alt="{{ item.name }}" width="80" height="80">
+                            <div class="cart-item-details">
+                                <h3>{{ item.name }}</h3>
+                                <p>{{ item.description }}</p>
+                            </div>
+                            <div class="cart-item-quantity">
+                                <label for="qty-{{ item.id }}">Cant:</label>
+                                <input type="number" id="qty-{{ item.id }}" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="100" step="100">
+                                <span class="pending-badge">{{ site.cart.pending_quote_label }}</span>
+                            </div>
                         </div>
-                        <div class="cart-item-quantity">
-                            <span>{{ item.quantity_label }}</span>
-                            <span>{{ site.cart.pending_quote_label }}</span>
+                        {% endfor %}
+                        
+                        <div class="cart-actions">
+                            <button type="submit" class="btn-update">Actualizar Cantidades</button>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
-                
-                <!-- Resumen de Cotización -->
-                <div class="cart-summary">
-                    <h2>{{ site.cart.summary.heading }}</h2>
-                    <div class="cart-summary-row">
-                        <span>{{ site.cart.summary.total_label }}</span>
-                        <span>{{ site.cart.summary.total_value }}</span>
-                    </div>
-                    <div class="cart-summary-row dashed-top">
-                        <span>{{ site.cart.summary.estimated_cost_label }}</span>
-                        <span>{{ site.cart.summary.estimated_cost_value }}</span>
-                    </div>
-                    <p class="cart-summary-note">
-                        {{ site.cart.summary.note }}
-                    </p>
                     
-                    <a href="/cotizacion/" class="button button-primary">{{ site.cart.summary.submit_button }}</a>
+                    <!-- Resumen de Cotización -->
+                    <div class="cart-summary">
+                        <h2>{{ site.cart.summary.heading }}</h2>
+                        <div class="cart-summary-row">
+                            <span>{{ site.cart.summary.total_label }}</span>
+                            <span>{{ total_bags_formatted }}</span>
+                        </div>
+                        <div class="cart-summary-row dashed-top">
+                            <span>{{ site.cart.summary.estimated_cost_label }}</span>
+                            <span>{{ site.cart.summary.estimated_cost_value }}</span>
+                        </div>
+                        <p class="cart-summary-note">
+                            {{ site.cart.summary.note }}
+                        </p>
+                        
+                        <a href="/cotizacion/" class="button button-primary">{{ site.cart.summary.submit_button }}</a>
+                    </div>
+                    
                 </div>
-                
-            </div>
+            </form>
         </div>
     </div>
 </section>
