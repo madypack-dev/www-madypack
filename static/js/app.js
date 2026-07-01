@@ -32,4 +32,16 @@
         gtag('js', new Date());
         gtag('config', gaId);
     }
+
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function () {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+            mobileMenu.hidden = isExpanded;
+        });
+    }
 })();

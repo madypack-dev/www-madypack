@@ -13,6 +13,34 @@ site:
 header:
   brand: "Madypack"
   tagline: "Bolsas Sustentables"
+  top_bar:
+    text: "DESDE GARÍN A TODO EL PAÍS"
+  socials:
+    - network: facebook
+      url: "https://www.facebook.com/madypack.bolsas"
+      label: Facebook
+    - network: instagram
+      url: "https://www.instagram.com/madypack_bolsas/"
+      label: Instagram
+    - network: whatsapp
+      url: "https://api.whatsapp.com/send/?phone=5491125794649&text=Hola%2C%20vengo%20del%20sitio%20web%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+      label: WhatsApp
+      cta_class: "madypack-whatsapp-cta"
+  logo:
+    src: "https://madypack.com.ar/wp-content/uploads/2025/07/logo-madypack.svg"
+    width: 399
+    height: 100
+    alt: "Madypack"
+    url: "/"
+  menu:
+    - label: Inicio
+      url: "/"
+    - label: Quienes somos
+      url: "/quienes-somos/"
+    - label: Cotización
+      url: "/cotizacion/"
+    - label: Contacto
+      url: "/contacto/"
 
 main:
   heading: "Bienvenidos a nuestra tienda sustentable"
