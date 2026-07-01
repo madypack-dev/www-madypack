@@ -1,0 +1,10 @@
+:root {
+    --primary: #2853A1;
+    --primary-dark: #1d3f7a;
+    --dark: #342D3F;
+    --text: #4a4a4a;
+    --text-light: #ffffff;
+    --background: #f4f4f9;
+    --border: #e0e0e0;
+    --max-width: 1290px;
+}

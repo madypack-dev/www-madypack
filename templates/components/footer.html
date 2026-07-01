@@ -1,5 +1,39 @@
-<footer>
-    <div class="container">
-        <p>&copy; {{ site.header.brand }}</p>
+{% from "macros/social.html" import social_icon %}
+
+<footer class="site-footer">
+    <div class="footer-top">
+        <div class="container">
+            <a href="{{ site.footer.logo.url }}" class="footer-logo" rel="home">
+                <img src="{{ url_for('static', path='/images/' ~ site.footer.logo.src) }}"
+                     width="{{ site.footer.logo.width }}"
+                     height="{{ site.footer.logo.height }}"
+                     alt="{{ site.footer.logo.alt }}"
+                     decoding="async">
+            </a>
+
+            <nav class="footer-nav" aria-label="Footer">
+                <ul>
+                    {% for item in site.footer.menu %}
+                    <li>
+                        <a href="{{ item.url }}"{% if item.rel %} rel="{{ item.rel }}"{% endif %}>{{ item.label }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            <ul class="footer-socials social-links">
+                {% for social in site.footer.socials %}
+                <li>
+                    <a href="{{ social.url }}"
+                       aria-label="{{ social.label }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       {% if social.cta_class %}class="{{ social.cta_class }}" data-click-id="{{ social.network }}-cta"{% endif %}>
+                        {{ social_icon(social.network, 20, 20) }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </footer>

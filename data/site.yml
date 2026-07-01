@@ -42,6 +42,37 @@ header:
     - label: Contacto
       url: "/contacto/"
 
+footer:
+  logo:
+    src: "logo-madypack-white.svg"
+    width: 399
+    height: 100
+    alt: "Madypack"
+    url: "/"
+  menu:
+    - label: Quiénes somos
+      url: "/quienes-somos/"
+    - label: Cotización
+      url: "/cotizacion/"
+    - label: Contacto
+      url: "/contacto/"
+    - label: Términos y Condiciones
+      url: "/terminos-y-condiciones/"
+      rel: "privacy-policy"
+    - label: Política de Privacidad
+      url: "/politica-de-privacidad/"
+  socials:
+    - network: facebook
+      url: "https://www.facebook.com/madypack.bolsas"
+      label: Facebook
+    - network: instagram
+      url: "https://www.instagram.com/madypack_bolsas/"
+      label: Instagram
+    - network: whatsapp
+      url: "https://api.whatsapp.com/send/?phone=5491125794649&text=Hola%2C%20vengo%20del%20sitio%20web%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+      label: WhatsApp
+      cta_class: "madypack-whatsapp-cta"
+
 main:
   heading: "Bienvenidos a nuestra tienda sustentable"
   body: "Contenido principal en desarrollo..."

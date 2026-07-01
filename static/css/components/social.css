@@ -1,0 +1,21 @@
+.social-links {
+    display: flex;
+    gap: 14px;
+}
+
+.social-links a {
+    align-items: center;
+    display: flex;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.social-links a:hover {
+    opacity: 0.6;
+}
+
+.social-links svg {
+    fill: currentColor;
+    height: 18px;
+    width: 18px;
+}

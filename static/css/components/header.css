@@ -1,0 +1,147 @@
+.site-header {
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 1000;
+}
+
+/* Top bar */
+.header-top {
+    background-color: var(--dark);
+    color: var(--text-light);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 10px 0;
+}
+
+.header-top > .container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-tagline {
+    margin: 0;
+}
+
+/* Main header */
+.header-main {
+    padding: 18px 0;
+}
+
+.header-main > .container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.site-logo {
+    display: block;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.site-logo img {
+    display: block;
+    max-height: 52px;
+    min-width: 120px;
+    width: auto;
+}
+
+.main-nav {
+    flex: 1;
+    min-width: 0;
+}
+
+.main-nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.main-nav a {
+    color: var(--dark);
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 8px 0;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.main-nav a::after {
+    background-color: var(--primary);
+    bottom: 0;
+    content: "";
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+    width: 100%;
+}
+
+.main-nav a:hover::after,
+.main-nav .current a::after {
+    transform: scaleX(1);
+}
+
+.header-actions {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 6px;
+}
+
+/* Mobile menu */
+.mobile-menu {
+    background-color: #fff;
+    border-top: 1px solid var(--border);
+    padding: 8px 0 16px;
+}
+
+.mobile-menu a {
+    color: var(--dark);
+    display: block;
+    font-weight: 700;
+    padding: 14px 20px;
+    text-transform: uppercase;
+}
+
+.mobile-menu a:hover,
+.mobile-menu .current a {
+    background-color: var(--background);
+    color: var(--primary);
+}
+
+@media only screen and (max-width: 999px) {
+    .main-nav {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .header-main > .container {
+        gap: 16px;
+    }
+
+    .site-logo img {
+        max-height: 44px;
+    }
+}
+
+@media only screen and (max-width: 689px) {
+    .header-top > .container {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .header-actions {
+        gap: 2px;
+    }
+}
