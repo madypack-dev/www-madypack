@@ -3,13 +3,22 @@ from typing import Any, cast
 
 import yaml
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="Madypack")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/robots.txt", response_class=FileResponse)
+async def robots_txt():
+    return FileResponse(Path(__file__).resolve().parents[2] / "static" / "robots.txt")
+
+
+@app.get("/sitemap.xml", response_class=FileResponse)
+async def sitemap_xml():
+    return FileResponse(Path(__file__).resolve().parents[2] / "static" / "sitemap.xml")
 
 templates = Jinja2Templates(directory="templates")
 

@@ -1,5 +1,9 @@
 {% extends "layouts/base.html" %}
 
+{% block title %}Contacto | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}Contactate con Madypack. Atención al cliente, teléfono, email, WhatsApp y ubicación en Garín, Buenos Aires.{% endblock %}
+
 {% block content %}
+{% set is_page = True %}
 {% include "components/sections/contact.html" %}
 {% endblock %}

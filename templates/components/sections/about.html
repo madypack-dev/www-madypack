@@ -2,7 +2,11 @@
     <div class="container">
         <div class="about-content">
             <div class="about-text">
+                {% if is_page %}
+                <h1>{{ site.home.about.title }}</h1>
+                {% else %}
                 <h2>{{ site.home.about.title }}</h2>
+                {% endif %}
                 <p>{{ site.home.about.text }}</p>
                 <a href="{{ site.home.about.button_url }}" class="button button-primary">{{ site.home.about.button_text }}</a>
             </div>

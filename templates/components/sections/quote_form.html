@@ -1,7 +1,11 @@
 <section class="section quote-section">
     <div class="container">
         <div class="quote-card">
+            {% if is_page %}
+            <h1>{{ site.home.quote_form.title }}</h1>
+            {% else %}
             <h2>{{ site.home.quote_form.title }}</h2>
+            {% endif %}
             <p>{{ site.home.quote_form.description }}</p>
             <form class="quote-form" action="#" method="post">
                 {% for field in site.home.quote_form.fields %}

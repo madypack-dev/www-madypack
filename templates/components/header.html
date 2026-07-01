@@ -5,7 +5,7 @@
         <div class="container">
             <p class="header-tagline">{{ site.header.top_bar.text }}</p>
             <ul class="social-links">
-                {% for social in site.header.socials %}
+                {% for social in site.socials %}
                 <li>
                     <a href="{{ social_url(social, site.whatsapp.phone, site.whatsapp.message) }}"
                        aria-label="{{ social.label }}"
@@ -22,11 +22,11 @@
 
     <div class="header-main">
         <div class="container">
-            <a href="{{ site.header.logo.url }}" class="site-logo" rel="home">
+            <a href="{{ site.site.logo.url }}" class="site-logo" rel="home">
                 <img src="{{ url_for('static', path='/images/' ~ site.header.logo.src) }}"
-                     width="{{ site.header.logo.width }}"
-                     height="{{ site.header.logo.height }}"
-                     alt="{{ site.header.logo.alt }}"
+                     width="{{ site.site.logo.width }}"
+                     height="{{ site.site.logo.height }}"
+                     alt="{{ site.site.logo.alt }}"
                      decoding="async">
             </a>
 

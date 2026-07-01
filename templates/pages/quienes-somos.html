@@ -1,5 +1,9 @@
 {% extends "layouts/base.html" %}
 
+{% block title %}Quiénes somos | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}Conocé la historia y valores de Madypack, fábrica cooperativa de bolsas de papel sustentables en Garín.{% endblock %}
+
 {% block content %}
+{% set is_page = True %}
 {% include "components/sections/about.html" %}
 {% endblock %}

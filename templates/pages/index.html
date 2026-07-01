@@ -8,4 +8,25 @@
 {% include "components/sections/about.html" %}
 {% include "components/sections/newsletter.html" %}
 {% include "components/sections/contact.html" %}
+
+<!-- Structured Data (JSON-LD) for LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Madypack",
+  "image": "https://www.madypack.com.ar/static/images/logo-madypack.svg",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Ruta Panamericana km 36.7",
+    "addressLocality": "Garín",
+    "addressRegion": "Buenos Aires",
+    "addressCountry": "AR"
+  },
+  "email": "atencionalcliente@madypack.com.ar",
+  "telephone": "+5491125794649",
+  "url": "https://www.madypack.com.ar",
+  "description": "Fabricación y confección de bolsas de papel sustentables, lisas y personalizadas en Garín, Buenos Aires, Argentina."
+}
+</script>
 {% endblock %}

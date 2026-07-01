@@ -7,7 +7,11 @@
                 <iframe src="{{ site.home.contact.map_url }}" title="{{ site.home.contact.map_title }}" loading="lazy" allowfullscreen></iframe>
             </div>
             <div class="contact-info">
+                {% if is_page %}
+                <h1>{{ site.home.contact.title }}</h1>
+                {% else %}
                 <h2>{{ site.home.contact.title }}</h2>
+                {% endif %}
                 <p><strong>{{ site.home.contact.labels.customer_service }}</strong></p>
                 <p>
                     <a href="mailto:{{ site.home.contact.email }}" target="_blank" rel="noreferrer noopener">{{ site.home.contact.email }}</a><br>

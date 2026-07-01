@@ -1,5 +1,9 @@
 {% extends "layouts/base.html" %}
 
+{% block title %}Cotización | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}Pedí presupuesto para tus bolsas de papel kraft personalizadas. Cotizaciones a medida en Madypack Garín.{% endblock %}
+
 {% block content %}
+{% set is_page = True %}
 {% include "components/sections/quote_form.html" %}
 {% endblock %}
