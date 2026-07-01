@@ -9,24 +9,48 @@
 {% include "components/sections/newsletter.html" %}
 {% include "components/sections/contact.html" %}
 
-<!-- Structured Data (JSON-LD) for LocalBusiness -->
+<!-- Structured Data (JSON-LD) for ManufacturingBusiness -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "Madypack",
-  "image": "https://www.madypack.com.ar/static/images/logo-madypack.svg",
+  "@type": "{{ site.schema.type }}",
+  "name": "{{ site.schema.name }}",
+  "image": "{{ site.schema.image }}",
+  "logo": "{{ site.schema.logo }}",
+  "url": "{{ site.schema.url }}",
+  "telephone": "{{ site.schema.telephone }}",
+  "email": "{{ site.schema.email }}",
+  "description": "{{ site.schema.description }}",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Ruta Panamericana km 36.7",
-    "addressLocality": "Garín",
-    "addressRegion": "Buenos Aires",
-    "addressCountry": "AR"
+    "streetAddress": "{{ site.schema.address.streetAddress }}",
+    "addressLocality": "{{ site.schema.address.addressLocality }}",
+    "addressRegion": "{{ site.schema.address.addressRegion }}",
+    "postalCode": "{{ site.schema.address.postalCode }}",
+    "addressCountry": "{{ site.schema.address.addressCountry }}"
   },
-  "email": "atencionalcliente@madypack.com.ar",
-  "telephone": "+5491125794649",
-  "url": "https://www.madypack.com.ar",
-  "description": "Fabricación y confección de bolsas de papel sustentables, lisas y personalizadas en Garín, Buenos Aires, Argentina."
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "{{ site.schema.geo.latitude }}",
+    "longitude": "{{ site.schema.geo.longitude }}"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      {% for day in site.schema.opening_hours.days %}
+      "{{ day }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+    "opens": "{{ site.schema.opening_hours.opens }}",
+    "closes": "{{ site.schema.opening_hours.closes }}"
+  },
+  "sameAs": [
+    {% for social in site.socials %}
+    {% if social.url %}
+    "{{ social.url }}"{% if not loop.last %},{% endif %}
+    {% endif %}
+    {% endfor %}
+  ]
 }
 </script>
 {% endblock %}

@@ -15,19 +15,27 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.madypack.com.ar{{ request.url.path }}">
-<meta property="og:title" content="{% block og_title %}{{ site.site.title_default }}{% endblock %}">
-<meta property="og:description" content="{% block og_description %}Fabricación y confección de bolsas de papel sustentables, lisas y personalizadas en Garín, Buenos Aires.{% endblock %}">
-<meta property="og:image" content="https://www.madypack.com.ar{{ url_for('static', path='/images/logo-madypack.svg') }}">
+<meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+<meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+<meta property="og:image" content="https://www.madypack.com.ar{{ url_for('static', path='/images/og-image.jpg') }}">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://www.madypack.com.ar{{ request.url.path }}">
-<meta property="twitter:title" content="{% block twitter_title %}{{ site.site.title_default }}{% endblock %}">
-<meta property="twitter:description" content="{% block twitter_description %}Fabricación y confección de bolsas de papel sustentables, lisas y personalizadas en Garín, Buenos Aires.{% endblock %}">
-<meta property="twitter:image" content="https://www.madypack.com.ar{{ url_for('static', path='/images/logo-madypack.svg') }}">
+<meta property="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
+<meta property="twitter:description" content="{% block twitter_description %}{{ self.meta_description() }}{% endblock %}">
+<meta property="twitter:image" content="https://www.madypack.com.ar{{ url_for('static', path='/images/og-image.jpg') }}">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600;700&display=swap">
 
-<link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/base/variables.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/base/reset.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/buttons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/social.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/header.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/footer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/components/cart.css') }}">

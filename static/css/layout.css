@@ -2,3 +2,63 @@ main {
     min-height: 50vh;
     padding: 40px 0;
 }
+
+/* Page extra details sections (e.g. Quienes somos, Cotización, Contacto) */
+.page-details {
+    padding: 60px 0;
+    background-color: #fbfbfb;
+    border-top: 1px solid #eee;
+}
+
+.page-details .container {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.page-details h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #1e3f20;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.page-details h3 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: #1e3f20;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.page-details p {
+    margin-bottom: 20px;
+}
+
+/* Legal sections (e.g. Política de Privacidad, Términos y Condiciones) */
+.legal-section {
+    padding: 60px 0;
+}
+
+.legal-section .container {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.legal-section h1 {
+    margin-bottom: 20px;
+}
+
+.legal-section .update-date {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.legal-section h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}

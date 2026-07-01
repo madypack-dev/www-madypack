@@ -7,6 +7,11 @@
             <h2>{{ site.home.quote_form.title }}</h2>
             {% endif %}
             <p>{{ site.home.quote_form.description }}</p>
+            {% if success == "quote" %}
+            <div class="success-message">
+                <strong>{{ site.home.quote_form.success_title }}</strong> {{ site.home.quote_form.success_message }}
+            </div>
+            {% endif %}
             <form class="quote-form" action="#" method="post">
                 {% for field in site.home.quote_form.fields %}
                 <label class="form-field{% if field.full_width %} form-field-full{% endif %}">

@@ -2,6 +2,11 @@
     <div class="container">
         <form class="newsletter-form" action="#" method="post">
             <h2>{{ site.home.newsletter.title }}</h2>
+            {% if success == "newsletter" %}
+            <div class="success-message">
+                <strong>{{ site.home.newsletter.success_title }}</strong> {{ site.home.newsletter.success_message }}
+            </div>
+            {% endif %}
             <label class="sr-only" for="newsletter-email">{{ site.home.newsletter.placeholder }}</label>
             <div class="newsletter-fields">
                 <input id="newsletter-email" type="email" name="email" placeholder="{{ site.home.newsletter.placeholder }}" required>

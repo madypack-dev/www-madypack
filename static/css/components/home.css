@@ -104,6 +104,18 @@
     padding: 40px;
 }
 
+.quote-card .success-message {
+    background-color: #e6f4ea;
+    color: #137333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #ceead6;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
 .quote-card h2 {
     text-align: left;
 }
@@ -220,6 +232,18 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+}
+
+.newsletter-form .success-message {
+    background-color: #e6f4ea;
+    color: #137333;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    border: 1px solid #ceead6;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 .newsletter-fields {

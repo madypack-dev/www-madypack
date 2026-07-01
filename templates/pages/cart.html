@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ site.cart.title }} | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}{{ site.cart.meta_description }}{% endblock %}
+
+{% block content %}
+<section class="section cart-section">
+    <div class="container">
+        <h1>{{ site.cart.heading }}</h1>
+        
+        <div class="cart-grid">
+            <div class="cart-layout">
+                
+                <!-- Lista de productos -->
+                <div class="cart-items">
+                    <h2>{{ site.cart.items_heading }}</h2>
+                    
+                    {% for item in site.cart['items'] %}
+                    <div class="cart-item">
+                        <img src="{{ url_for('static', path='/images/' ~ item.image) }}" alt="{{ item.name }}" width="80" height="80">
+                        <div class="cart-item-details">
+                            <h3>{{ item.name }}</h3>
+                            <p>{{ item.description }}</p>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <span>{{ item.quantity_label }}</span>
+                            <span>{{ site.cart.pending_quote_label }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Resumen de Cotización -->
+                <div class="cart-summary">
+                    <h2>{{ site.cart.summary.heading }}</h2>
+                    <div class="cart-summary-row">
+                        <span>{{ site.cart.summary.total_label }}</span>
+                        <span>{{ site.cart.summary.total_value }}</span>
+                    </div>
+                    <div class="cart-summary-row dashed-top">
+                        <span>{{ site.cart.summary.estimated_cost_label }}</span>
+                        <span>{{ site.cart.summary.estimated_cost_value }}</span>
+                    </div>
+                    <p class="cart-summary-note">
+                        {{ site.cart.summary.note }}
+                    </p>
+                    
+                    <a href="/cotizacion/" class="button button-primary">{{ site.cart.summary.submit_button }}</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
