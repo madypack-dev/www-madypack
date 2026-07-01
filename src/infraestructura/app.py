@@ -4,8 +4,8 @@ from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from src.infrastructure.routes.pages import router as pages_router
-from src.infrastructure.routes.cart import router as cart_router
+from src.infraestructura.routes.pages import router as pages_router
+from src.infraestructura.routes.cart import router as cart_router
 
 app = FastAPI(title="Madypack")
 

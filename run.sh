@@ -1,2 +1,2 @@
 #!/bin/bash
-./venv/bin/uvicorn src.infrastructure.app:app --reload
+./venv/bin/uvicorn src.infraestructura.app:app --reload

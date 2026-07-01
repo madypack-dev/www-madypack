@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from src.infrastructure.routes.base import templates, load_site, LoggingRoute
+from src.infraestructura.routes.base import templates, load_site, LoggingRoute
 
 router = APIRouter(route_class=LoggingRoute)
 
