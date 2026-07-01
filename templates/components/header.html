@@ -34,7 +34,7 @@
     <div class="header-main">
         <div class="container">
             <a href="{{ site.header.logo.url }}" class="site-logo" rel="home">
-                <img src="{{ site.header.logo.src }}"
+                <img src="{{ url_for('static', path='/images/' ~ site.header.logo.src) }}"
                      width="{{ site.header.logo.width }}"
                      height="{{ site.header.logo.height }}"
                      alt="{{ site.header.logo.alt }}"

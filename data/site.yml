@@ -27,7 +27,7 @@ header:
       label: WhatsApp
       cta_class: "madypack-whatsapp-cta"
   logo:
-    src: "https://madypack.com.ar/wp-content/uploads/2025/07/logo-madypack.svg"
+    src: "logo-madypack.svg"
     width: 399
     height: 100
     alt: "Madypack"
