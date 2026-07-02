@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tienda | {{ site.site.brand }}{% endblock %}
+
+{% block content %}
+<section class="section shop-section">
+    <div class="container">
+        <h1>Catálogo de Bolsas Sustentables</h1>
+        <p class="subtitle">Seleccioná los modelos y la cantidad necesaria para solicitar tu cotización formal.</p>
+        
+        <div class="products-grid">
+            {% for producto in productos %}
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="{{ url_for('static', path='/images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" class="product-image" width="120" height="120">
+                </div>
+                <div class="product-info">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p class="description">{{ producto.descripcion }}</p>
+                    
+                    <form action="/carrito/agregar" method="post" class="add-to-cart-form">
+                        <input type="hidden" name="id_articulo" value="{{ producto.id }}">
+                        <div class="quantity-selector">
+                            <label for="cant-{{ producto.id }}">Cantidad:</label>
+                            <input type="number" id="cant-{{ producto.id }}" name="cantidad" value="{{ producto.cantidad_por_defecto }}" min="100" step="100">
+                        </div>
+                        <button type="submit" class="button button-primary btn-add">Agregar a mi cotización</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

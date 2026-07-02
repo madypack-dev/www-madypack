@@ -40,6 +40,8 @@ header:
   menu:
     - label: Inicio
       url: "/"
+    - label: Tienda
+      url: "/tienda/"
     - label: Quiénes somos
       url: "/quienes-somos/"
     - label: Cotización
@@ -67,6 +69,8 @@ footer:
   logo:
     src: "logo-madypack-white.svg"
   menu:
+    - label: Tienda
+      url: "/tienda/"
     - label: Quiénes somos
       url: "/quienes-somos/"
     - label: Cotización

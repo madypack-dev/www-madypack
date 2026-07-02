@@ -9,31 +9,37 @@
         <h1>{{ site.cart.heading }}</h1>
         
         <div class="cart-grid">
-            <form action="/cart/update" method="post" class="cart-form">
+            <form action="/carrito/actualizar" method="post" class="cart-form">
                 <div class="cart-layout">
                     
                     <!-- Lista de productos -->
                     <div class="cart-items">
                         <h2>{{ site.cart.items_heading }}</h2>
                         
-                        {% for item in cart_items %}
-                        <div class="cart-item">
-                            <img src="{{ url_for('static', path='/images/' ~ item.image) }}" alt="{{ item.name }}" width="80" height="80">
-                            <div class="cart-item-details">
-                                <h3>{{ item.name }}</h3>
-                                <p>{{ item.description }}</p>
+                        {% if cart_items %}
+                            {% for item in cart_items %}
+                            <div class="cart-item">
+                                <img src="{{ url_for('static', path='/images/' ~ item.imagen) }}" alt="{{ item.nombre }}" width="80" height="80">
+                                <div class="cart-item-details">
+                                    <h3>{{ item.nombre }}</h3>
+                                    <p>{{ item.descripcion }}</p>
+                                </div>
+                                <div class="cart-item-quantity">
+                                    <label for="qty-{{ item.id }}">Cant:</label>
+                                    <input type="number" id="qty-{{ item.id }}" name="qty_{{ item.id }}" value="{{ item.cantidad }}" min="100" step="100">
+                                    <span class="pending-badge">{{ site.cart.pending_quote_label }}</span>
+                                </div>
                             </div>
-                            <div class="cart-item-quantity">
-                                <label for="qty-{{ item.id }}">Cant:</label>
-                                <input type="number" id="qty-{{ item.id }}" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="100" step="100">
-                                <span class="pending-badge">{{ site.cart.pending_quote_label }}</span>
+                            {% endfor %}
+                            
+                            <div class="cart-actions">
+                                <button type="submit" class="btn-update">Actualizar Cantidades</button>
                             </div>
-                        </div>
-                        {% endfor %}
-                        
-                        <div class="cart-actions">
-                            <button type="submit" class="btn-update">Actualizar Cantidades</button>
-                        </div>
+                        {% else %}
+                            <p class="empty-cart-message" style="color: #666; padding: 20px 0; text-align: center;">
+                                Tu carrito está vacío. ¡Visitá nuestra <a href="/tienda/" style="color: var(--primary); font-weight: 700;">tienda</a> para agregar productos!
+                            </p>
+                        {% endif %}
                     </div>
                     
                     <!-- Resumen de Cotización -->

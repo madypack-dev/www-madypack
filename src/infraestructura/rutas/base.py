@@ -3,7 +3,7 @@ import time
 import logging
 from pathlib import Path
 from typing import Callable, Any, cast
-import yaml
+import yaml  # type: ignore
 from fastapi import Request, Response
 from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates

@@ -1,0 +1,142 @@
+.shop-section {
+    padding: 60px 0;
+}
+
+.shop-section > .container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.shop-section h1 {
+    margin-bottom: 10px;
+    font-size: 2.2rem;
+    color: #1e3f20;
+    font-weight: 700;
+}
+
+.shop-section .subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-image-container {
+    background: #fafafa;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #f5f5f5;
+    height: 200px;
+}
+
+.product-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-info h3 {
+    font-size: 1.25rem;
+    color: #1e3f20;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.product-info .description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.add-to-cart-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid #f5f5f5;
+    padding-top: 15px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.quantity-selector label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+}
+
+.quantity-selector input {
+    width: 100px;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--dark);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.quantity-selector input:focus {
+    border-color: var(--primary);
+}
+
+.btn-add {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-add:active {
+    transform: scale(0.98);
+}

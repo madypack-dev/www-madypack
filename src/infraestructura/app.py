@@ -4,8 +4,8 @@ from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from src.infraestructura.routes.pages import router as pages_router
-from src.infraestructura.routes.cart import router as cart_router
+from src.infraestructura.rutas.paginas import router as paginas_router
+from src.infraestructura.rutas.carrito import router as carrito_router
 
 app = FastAPI(title="Madypack")
 
@@ -63,5 +63,5 @@ async def sitemap_xml():
     return Response(content=xml_content, media_type="application/xml")
 
 
-app.include_router(pages_router)
-app.include_router(cart_router)
+app.include_router(paginas_router)
+app.include_router(carrito_router)
