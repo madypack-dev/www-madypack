@@ -1,0 +1,7 @@
+# data/tarifas.yml
+tarifas:
+  costo_papel_base: 0.15          # Costo base por bolsa (materia prima)
+  costo_manija_plana: 0.35        # Adicional por manija plana
+  costo_manija_cordon: 0.65       # Adicional por manija de cordón
+  costo_personalizacion_base: 0.20 # Adicional por impresión
+  costo_fijo_matriz: 1500.00      # Costo de matriz flexográfica única por pedido

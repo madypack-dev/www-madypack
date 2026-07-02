@@ -1,7 +1,7 @@
 import json
 from typing import Callable, Any
-from src.dominio.modelos.carrito import Carrito, ArticuloCarrito
-from src.dominio.puertos.repositorio import IRepositorioCarrito
+from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
+from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
 
 class RepositorioCarritoCookie(IRepositorioCarrito):
     def __init__(

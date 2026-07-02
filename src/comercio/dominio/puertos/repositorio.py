@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.dominio.modelos.carrito import Carrito
+from src.comercio.dominio.modelos.carrito import Carrito
 
 class IRepositorioCarrito(ABC):
     @abstractmethod

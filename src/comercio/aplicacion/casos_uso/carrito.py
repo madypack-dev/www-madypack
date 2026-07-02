@@ -1,6 +1,6 @@
 from typing import Callable, Any
-from src.dominio.puertos.repositorio import IRepositorioCarrito
-from src.dominio.modelos.carrito import ArticuloCarrito
+from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+from src.comercio.dominio.modelos.carrito import ArticuloCarrito
 
 class CasoUsoActualizarCarrito:
     def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):

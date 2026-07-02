@@ -1,15 +1,18 @@
 from pathlib import Path
 import yaml  # type: ignore
+import json
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infraestructura.rutas.base import templates, load_site, LoggingRoute, logger
-from src.adaptadores.repositorios.cookie import RepositorioCarritoCookie
-from src.aplicacion.casos_uso.carrito import CasoUsoActualizarCarrito, CasoUsoAgregarAlCarrito
+from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
+from src.comercio.aplicacion.casos_uso.carrito import CasoUsoActualizarCarrito, CasoUsoAgregarAlCarrito
+from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 
 router = APIRouter(route_class=LoggingRoute)
 
-PATH_CARRITO_YAML = Path(__file__).resolve().parents[3] / "data" / "carrito_defecto.yml"
+PATH_CARRITO_YAML = Path(__file__).resolve().parents[4] / "data" / "carrito_defecto.yml"
+PATH_TARIFAS_YAML = Path(__file__).resolve().parents[4] / "data" / "tarifas.yml"
 
 
 def obtener_catalogo_productos() -> list[dict]:
@@ -22,6 +25,17 @@ def obtener_catalogo_productos() -> list[dict]:
     except Exception as err:
         logger.error(f"Error parseando catálogo de productos: {err}", exc_info=True)
         return []
+
+
+def obtener_tarifas() -> dict:
+    if not PATH_TARIFAS_YAML.exists():
+        logger.error(f"No se encontró el archivo de tarifas en: {PATH_TARIFAS_YAML}")
+        return {}
+    try:
+        return yaml.safe_load(PATH_TARIFAS_YAML.read_text(encoding="utf-8")) or {}
+    except Exception as err:
+        logger.error(f"Error parseando archivo de tarifas: {err}", exc_info=True)
+        return {}
 
 
 @router.get("/tienda/", response_class=HTMLResponse)
@@ -79,8 +93,31 @@ async def ver_carrito(request: Request, sitio: dict = Depends(load_site)):
     )
     carrito = repositorio.obtener_carrito()
     
+    # Calcular precio estimado usando el motor de precios
+    cotizador = CotizadorServicio(
+        cargar_tarifas_yaml=obtener_tarifas,
+        registrar_error=logger.error
+    )
+    
+    precio_total = 0.0
+    for articulo in carrito.articulos:
+        try:
+            precio_total += cotizador.calcular_precio_estimado(articulo.id, articulo.cantidad)
+        except Exception as err:
+            logger.warning(f"No se pudo cotizar artículo {articulo.id}: {err}")
+            
+    # Formatear el precio total y la cantidad total de bolsas
+    if precio_total > 0:
+        precio_estimado_formateado = f"$ {precio_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    else:
+        precio_estimado_formateado = "A cotizar"
+        
     total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
     
+    # Actualizar dinámicamente el valor en el contexto para el resumen
+    if "cart" in sitio and "summary" in sitio["cart"]:
+        sitio["cart"]["summary"]["estimated_cost_value"] = precio_estimado_formateado
+        
     return templates.TemplateResponse(
         request=request,
         name="pages/carrito.html",
