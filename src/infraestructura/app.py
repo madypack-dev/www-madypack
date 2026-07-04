@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.infraestructura.rutas.paginas import router as paginas_router
-from src.comercio.adaptadores.controladores.carrito import router as carrito_router
+from src.infraestructura.rutas.carrito import router as carrito_router
 
 app = FastAPI(title="Madypack")
 

@@ -2,23 +2,24 @@ from datetime import date
 import time
 import logging
 from pathlib import Path
-from typing import Callable, Any, cast
-import yaml  # type: ignore
-from fastapi import Request, Response
+from typing import Callable, Any
+
+from fastapi import Request, Response, Depends
 from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
+
+from src.infraestructura.tenant import resolutor_tenant
+from src.infraestructura.datos import cargar_site
 
 logger = logging.getLogger("madypack")
 logging.basicConfig(level=logging.INFO)
 
 templates = Jinja2Templates(directory="templates")
-SITE_YAML = Path(__file__).resolve().parents[3] / "data" / "site.yml"
 
 
-def load_site() -> dict[str, Any]:
-    if not SITE_YAML.exists():
-        return {}
-    return cast(dict[str, Any], yaml.safe_load(SITE_YAML.read_text(encoding="utf-8")) or {})
+def load_site(tenant: str = Depends(resolutor_tenant)) -> dict[str, Any]:
+    """Dependency que carga ``site.yml`` para el tenant resuelto del request."""
+    return cargar_site(tenant)
 
 
 class LoggingRoute(APIRoute):

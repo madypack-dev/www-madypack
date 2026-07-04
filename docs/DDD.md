@@ -1,198 +1,167 @@
-# Auditoría de Arquitectura: `src/infrastructure/routes/cart.py`
+# Arquitectura por Capas
 
-Esta auditoría analiza el archivo [cart.py](file:///home/agustin/proyectos_software/www-madypack/src/infrastructure/routes/cart.py) a través de las lentes de **Domain-Driven Design (DDD)**, **Principios SOLID** y **Arquitectura Limpia (Clean Architecture)**.
+Este documento describe la arquitectura actual del proyecto desde la perspectiva de **Domain-Driven Design (DDD)**, **Arquitectura Limpia** y los **principios SOLID**.
 
----
-
-## 1. Análisis desde Arquitectura Limpia
-
-En **Arquitectura Limpia**, el software se divide en capas concéntricas donde las dependencias van hacia adentro. Las rutas de un framework web (FastAPI) pertenecen a la capa externa de **Infraestructura (Frameworks & Drivers / Interface Adapters)**. 
-
-### Hallazgos:
-* **Mezcla de capas (Acoplamiento Horizontal/Vertical):** El controlador de FastAPI (`cart.py`) asume responsabilidades de múltiples capas:
-  * **Capa de Infraestructura (HTTP/Web):** Rutas, lectura de cookies, renderizado de plantillas HTML, redirecciones, parseo de formularios.
-  * **Capa de Casos de Uso / Aplicación:** Cooridinación del flujo (ej. si no hay cookie, inicializar con el carrito por defecto).
-  * **Capa de Dominio:** Lógica de negocio dura, como calcular el total de bolsas (`sum(item.get("quantity", 0) for item in cart_items)`) y validar restricciones del negocio (`new_qty > 0`).
-* **Testabilidad reducida:** Probar las reglas de negocio (ej. que la cantidad no pueda ser negativa o cero) requiere instanciar FastAPI, requests ficticios, cookies estructuradas y renderizado de templates. Esto impide pruebas unitarias puras y rápidas.
+El objetivo es mantener el **dominio y la lógica de negocio desacoplados** de los detalles de infraestructura (FastAPI, cookies, archivos YAML, etc.).
 
 ---
 
-## 2. Análisis desde DDD (Domain-Driven Design)
+## 1. Visión General de Capas
 
-### Hallazgos:
-* **Modelo de Dominio Anémico / Inexistente:** 
-  * Los elementos del carrito son diccionarios de Python (`dict[str, Any]`) en lugar de entidades de dominio (`Cart`, `CartItem`) o Value Objects (`Quantity`, `Money`).
-  * Los tipos primitivos no aseguran la integridad del dominio. Por ejemplo, `item["quantity"]` es mutable y puede ser manipulado directamente sin reglas de validación del negocio centralizadas.
-* **Fuga de Reglas de Negocio:**
-  * La regla de que una cantidad debe ser un entero estrictamente mayor que cero (`new_qty > 0`) se valida dentro de un loop que recorre un formulario en la ruta HTTP.
-  * Si la lógica para modificar un item cambia en el futuro (ej: aplicar descuentos, validar stock), habrá que modificar la infraestructura web.
-* **Persistencia implícita en cookies:**
-  * El almacenamiento se gestiona directamente serializando/deserializando JSON a una cookie. En DDD, el dominio no debería saber cómo se persisten los datos (sea una cookie, una base de datos PostgreSQL o Redis). Esto debería ser manejado por un *Repository*.
-
----
-
-## 3. Análisis desde Principios SOLID
-
-### **S - Single Responsibility Principle (SRP)**
-* **Violación:** La ruta `update_cart` tiene múltiples motivos para cambiar:
-  1. Si cambia la estructura del formulario HTTP.
-  2. Si cambian las reglas de validación de cantidades.
-  3. Si decidimos guardar el carrito en una base de datos o en la sesión de la base de datos en lugar de cookies.
-  4. Si cambia el formato del JSON de persistencia.
-
-### **O - Open/Closed Principle (OCP)**
-* **Violación:** Si queremos soportar otros tipos de carritos (ej: carritos de usuarios autenticados guardados en base de datos vs carritos de invitados en cookies), debemos alterar el core del controlador. El sistema no está abierto a extensión mediante polimorfismo o abstracciones.
-
-### **D - Dependency Inversion Principle (DIP)**
-* **Violación:** La infraestructura (las rutas de FastAPI) depende directamente de los detalles de implementación (las cookies y la estructura del JSON). No existe una interfaz/abstracción que aísle la lógica del carrito de su almacenamiento físico.
-
----
-
-## 4. Propuesta de Refactorización (Conceptual)
-
-Para resolver estas deficiencias sin acoplar la lógica al framework de presentación, se sugiere estructurar el flujo de la siguiente manera:
-
-```mermaid
-graph TD
-    subgraph Capa_Infraestructura [Capa de Infraestructura - FastAPI]
-        Router[cart.py] --> CookieRepo[CookieCartRepository]
-    end
-
-    subgraph Capa_Aplicacion [Capa de Aplicación - Casos de Uso]
-        Router --> UpdateUseCase[UpdateCartUseCase]
-    end
-
-    subgraph Capa_Dominio [Capa de Dominio]
-        UpdateUseCase --> Cart[Cart Entity]
-        UpdateUseCase --> CartItem[CartItem Entity]
-        UpdateUseCase --> Quantity[Quantity Value Object]
-        CookieRepo -.-> ICartRepository[ICartRepository Interface]
-        UpdateUseCase --> ICartRepository
-    end
+```text
+┌─────────────────────────────────────┐
+│        Infraestructura              │  FastAPI, rutas, plantillas,
+│   src/infraestructura/              │  resolución de tenant, carga de YAML
+├─────────────────────────────────────┤
+│          Adaptadores                │  Implementaciones concretas de
+│  src/comercio/adaptadores/          │  puertos (repositorios, servicios)
+│  src/precios/adaptadores/           │
+├─────────────────────────────────────┤
+│         Casos de Uso                │  Orquestación del flujo de negocio
+│   src/comercio/aplicacion/          │
+├─────────────────────────────────────┤
+│            Dominio                  │  Entidades, value objects y puertos
+│   src/comercio/dominio/             │  Libres de dependencias externas
+│   src/precios/dominio/              │
+└─────────────────────────────────────┘
 ```
 
-### A. Dominio (Entities & Value Objects)
-Definir tipos ricos que encapsulan las reglas de negocio:
+Las dependencias apuntan siempre hacia el centro: la infraestructura depende de los adaptadores, los adaptadores implementan los puertos del dominio, y los casos de uso orquestan el dominio.
+
+---
+
+## 2. Capa de Dominio
+
+Contiene las entidades, value objects y puertos (interfaces). No tiene dependencias de frameworks ni de detalles de persistencia.
+
+### `src/comercio/dominio/modelos/carrito.py`
 
 ```python
-# src/domain/models/cart.py
-from dataclasses import dataclass
-from typing import List
-
-class Quantity:
-    def __init__(self, value: int):
-        if value <= 0:
-            raise ValueError("La cantidad debe ser mayor a cero.")
-        self.value = value
-
-@dataclass
-class CartItem:
+class ArticuloCarrito(BaseModel):
     id: int
-    name: str
-    description: str
-    quantity: Quantity
-    image: str
-
-    @property
-    def total_units(self) -> int:
-        return self.quantity.value
-
-class Cart:
-    def __init__(self, items: List[CartItem]):
-        self._items = {item.id: item for item in items}
-
-    @property
-    def items(self) -> List[CartItem]:
-        return list(self._items.values())
-
-    @property
-    def total_bags(self) -> int:
-        return sum(item.total_units for item in self._items.values())
-
-    def update_quantity(self, item_id: int, quantity: Quantity) -> None:
-        if item_id in self._items:
-            self._items[item_id].quantity = quantity
+    nombre: str
+    descripcion: str
+    cantidad: int = Field(..., ge=100)
+    imagen: str
 ```
 
-### B. Abstracción del Repositorio (Dominio/Aplicación)
-```python
-# src/domain/repositories/cart_repository.py
-from abc import ABC, abstractmethod
-from src.domain.models.cart import Cart
+* `ArticuloCarrito` encapsula la regla de que la cantidad mínima es 100 y debe ser múltiplo de 100.
+* `Carrito` gestiona la colección de artículos y calcula el total de bolsas.
 
-class ICartRepository(ABC):
+### `src/comercio/dominio/puertos/repositorio.py`
+
+```python
+class IRepositorioCarrito(ABC):
     @abstractmethod
-    def get_cart(self) -> Cart:
-        pass
-
+    def obtener_carrito(self) -> Carrito: ...
     @abstractmethod
-    def save_cart(self, cart: Cart) -> None:
-        pass
+    def guardar_carrito(self, carrito: Carrito) -> None: ...
 ```
 
-### C. Caso de Uso (Aplicación)
-```python
-# src/application/use_cases/update_cart.py
-from src.domain.repositories.cart_repository import ICartRepository
-from src.domain.models.cart import Quantity
+El dominio no sabe si el carrito se guarda en una cookie, una base de datos o una sesión. Esa decisión pertenece a la capa de adaptadores.
 
-class UpdateCartUseCase:
-    def __init__(self, cart_repo: ICartRepository):
-        self.cart_repo = cart_repo
+### `src/precios/dominio/modelos/tarifas.py`
 
-    def execute(self, updates: dict[int, int]) -> None:
-        cart = self.cart_repo.get_cart()
-        for item_id, raw_qty in updates.items():
-            try:
-                qty = Quantity(raw_qty)
-                cart.update_quantity(item_id, qty)
-            except ValueError:
-                # Opcional: registrar error o ignorar según reglas
-                continue
-        self.cart_repo.save_cart(cart)
-```
-
-### D. Infraestructura (FastAPI / Presentación)
-El controlador se limita a traducir protocolos (HTTP -> Dominio y viceversa) y delegar:
-
-```python
-# src/infrastructure/routes/cart.py
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
-from src.infraestructura.repositories.cookie_cart_repository import CookieCartRepository
-from src.application.use_cases.update_cart import UpdateCartUseCase
-
-router = APIRouter()
-
-@router.post("/cart/update")
-async def update_cart(request: Request):
-    form_data = await request.form()
-    
-    # 1. Adaptar entrada HTTP a tipos simples
-    updates = {}
-    for key, value in form_data.items():
-        if key.startswith("qty_"):
-            try:
-                item_id = int(key.replace("qty_", ""))
-                updates[item_id] = int(value)
-            except ValueError:
-                continue
-
-    # 2. Inyectar dependencias y ejecutar caso de uso
-    repo = CookieCartRepository(request)
-    use_case = UpdateCartUseCase(repo)
-    use_case.execute(updates)
-    
-    # 3. Preparar respuesta HTTP
-    response = RedirectResponse(url="/cart/", status_code=303)
-    repo.persist_to_response(response) # Persiste la cookie en la respuesta HTTP
-    return response
-```
+Modela las tarifas de cotización como value objects tipados con Pydantic.
 
 ---
 
-## 5. Conclusiones y Beneficios del Refactor
+## 3. Capa de Aplicación
 
-1. **Aislamiento del Core de Negocio:** FastAPI y las cookies se convierten en meros detalles de implementación. Si mañana decidimos migrar a Django o almacenar el carrito en Redis/PostgreSQL, las clases `Cart`, `CartItem` y `UpdateCartUseCase` permanecerán completamente intactas.
-2. **Testabilidad Robusta:** Las clases de dominio y el caso de uso se pueden probar en milisegundos con tests unitarios estándar (utilizando mocks simples para `ICartRepository`), sin dependencias de frameworks ni de requests HTTP.
-3. **Mantenimiento Simplificado:** Cualquier cambio en las reglas de validación (por ejemplo, permitir un máximo de 5000 bolsas por item) se define en un único lugar en el dominio (`Quantity` o `CartItem`), evitando la dispersión de reglas de negocio por la capa de infraestructura.
+Orquesta los casos de uso sin contener lógica de negocio propia.
+
+### `src/comercio/aplicacion/casos_uso/carrito.py`
+
+* `CasoUsoAgregarAlCarrito`: busca el producto en el catálogo, instancia un `ArticuloCarrito` y lo agrega al carrito.
+* `CasoUsoActualizarCarrito`: actualiza las cantidades de los artículos existentes.
+
+Ambos reciben un `registrar_error: Callable[[str], None]` para no depender del logger de infraestructura.
+
+---
+
+## 4. Capa de Adaptadores
+
+Implementa los puertos del dominio con tecnologías concretas.
+
+### `src/comercio/adaptadores/repositorios/cookie.py`
+
+`RepositorioCarritoCookie` implementa `IRepositorioCarrito` usando cookies HTTP. Recibe:
+
+* `cookies: dict[str, str]` – datos crudos de la petición.
+* `cargar_defecto_yaml: Callable[[], list[dict[str, Any]]]` – fuente del catálogo.
+* `registrar_error: Callable[[str], None]` – callback de logging.
+
+No importa FastAPI; solo conoce diccionarios de Python.
+
+### `src/precios/adaptadores/servicios/cotizador.py`
+
+`CotizadorServicio` implementa `IServicioPrecios` y calcula precios estimados a partir de las tarifas de un tenant.
+
+---
+
+## 5. Capa de Infraestructura
+
+Contiene todo lo relacionado con frameworks y detalles técnicos.
+
+### `src/infraestructura/rutas/`
+
+* `base.py`: configuración de templates, logging y `load_site`.
+* `paginas.py`: rutas estáticas de páginas institucionales.
+* `carrito.py`: rutas de tienda y carrito. Recibe el tenant resuelto, carga los YAML correspondientes y traduce HTTP a llamadas de casos de uso.
+
+### `src/infraestructura/tenant/resolutor.py`
+
+Resuelve el tenant según el entorno:
+
+* **Desarrollo:** por puerto (`8000` → `default`, `8001` → `empresa-1`).
+* **Staging:** por subdominio (`empresa-1.datamaq.com.ar`).
+* **Producción:** por dominio propio (`empresa-1.com.ar`).
+
+### `src/infraestructura/datos/cargadores.py`
+
+Carga los archivos YAML de cada tenant desde `data/<tenant>/`, con fallback a `data/default/` si un archivo no existe.
+
+---
+
+## 6. Análisis SOLID
+
+### S – Single Responsibility Principle
+
+Cada capa tiene una responsabilidad clara:
+
+* El dominio define reglas.
+* Los casos de uso orquestan.
+* Los adaptadores implementan puertos.
+* La infraestructura maneja HTTP.
+
+### O – Open/Closed Principle
+
+Nuevos medios de persistencia (base de datos, Redis) pueden agregarse implementando `IRepositorioCarrito` sin modificar el dominio ni los casos de uso.
+
+### L – Liskov Substitution Principle
+
+`RepositorioCarritoCookie` y `CotizadorServicio` pueden sustituir a sus respectivas abstracciones (`IRepositorioCarrito`, `IServicioPrecios`) sin alterar el comportamiento esperado.
+
+### I – Interface Segregation Principle
+
+Los puertos son pequeños y específicos: `IRepositorioCarrito` solo tiene dos métodos.
+
+### D – Dependency Inversion Principle
+
+Los casos de uso dependen de abstracciones (`IRepositorioCarrito`), no de implementaciones concretas. La infraestructura inyecta las implementaciones.
+
+---
+
+## 7. Multi-Tenant
+
+La arquitectura multi-tenant se implementa en infraestructura. El dominio y los casos de uso no conocen el concepto de tenant; solo reciben los datos que la infraestructura les proporciona.
+
+Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
+
+---
+
+## 8. Próximas Mejoras
+
+* Agregar tests unitarios para dominio y casos de uso.
+* Evaluar el uso de un contenedor de dependencias o inyección más explícita.
+* Considerar cachear los YAML en memoria para reducir lecturas de disco.

@@ -1,54 +1,53 @@
-# Madypack – Sitio Web Oficial
+# Madypack – Plantilla de Ecommerce Multi-Tenant
 
-Sitio web oficial de **Madypack**, marca ecológica de fabricación y confección de bolsas de papel sustentables (lisas y personalizadas), producidas por la cooperativa gráfica **Madygraf** en Garín, Buenos Aires, Argentina.
+Plantilla de ecommerce ligera y de alto rendimiento para la comercialización de bolsas de papel sustentables. Está pensada para servir a **múltiples empresas** desde el mismo código, permitiendo personalizar catálogo, tarifas y contenido por tenant.
 
-El proyecto está construido como una aplicación web ligera y de alto rendimiento utilizando **FastAPI** y el motor de plantillas **Jinja2**.
+El proyecto está construido con **FastAPI**, **Jinja2** y configuración de contenidos en **YAML**.
 
 ---
 
 ## 🛠️ Tecnologías y Herramientas
 
-*   **Backend:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3)
-*   **Servidor ASGI:** [Uvicorn](https://www.uvicorn.org/)
-*   **Plantillas:** [Jinja2](https://jinja.palletsprojects.com/) (HTML5 y macros reutilizables)
-*   **Estilos:** CSS Vanilla (organizado en módulos en la carpeta `static/css`)
-*   **Configuración de Contenidos:** YAML (usando PyYAML para cargar datos estructurados)
+* **Backend:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3)
+* **Servidor ASGI:** [Uvicorn](https://www.uvicorn.org/)
+* **Plantillas:** [Jinja2](https://jinja2.palletsprojects.com/) (HTML5 y macros reutilizables)
+* **Estilos:** CSS Vanilla (organizado en módulos en `static/css`)
+* **Configuración de Contenidos:** YAML (PyYAML para cargar datos estructurados por tenant)
 
 ---
 
 ## 📁 Estructura del Proyecto
 
 ```text
-├── data/
-│   └── site.yml                # Configuración global, textos, menús y datos de contacto del sitio
-├── docs/
-│   └── SEO.md                  # Reporte y recomendaciones técnicas de la auditoría SEO
+├── data/                           # Datos de contenido por tenant
+│   ├── default/                    # Tenant por defecto (Madypack)
+│   │   ├── site.yml
+│   │   ├── carrito_defecto.yml
+│   │   └── tarifas.yml
+│   └── empresa-1/                  # Ejemplo de tenant adicional
+│       ├── site.yml
+│       ├── carrito_defecto.yml
+│       └── tarifas.yml
+├── docs/                           # Documentación del proyecto
+│   ├── DDD.md                      # Arquitectura por capas
+│   ├── multi-tenant.md             # Modelo de tenants y resolución
+│   ├── refactoring_plan.md         # Plan de refactorización
+│   ├── TODO.md
+│   └── UIUX.md
 ├── src/
-│   └── infrastructure/
-│       └── app.py              # Aplicación FastAPI, configuración de estáticos y enrutamiento
-├── static/
-│   ├── css/                    # Estilos CSS del sitio (variables, componentes y layouts)
-│   ├── images/                 # Logotipos y recursos visuales (formatos SVG y JPG)
-│   └── js/
-│       └── app.js              # Script principal (menú responsive y control de analíticas)
-├── templates/
-│   ├── components/             # Fragmentos reutilizables (header, footer,noscript)
-│   │   └── sections/           # Secciones visuales de la home (hero, about, contact, quote_form)
-│   ├── layouts/
-│   │   └── base.html           # Estructura HTML base del sitio
-│   ├── macros/
-│   │   ├── contact.html        # Macros auxiliares (ej. generación de URL de WhatsApp)
-│   │   └── social.html         # Macros para renderizar iconos y URLs de redes sociales
-│   └── pages/
-│       ├── index.html          # Página de inicio (Landing Page)
-│       ├── quienes-somos.html  # Página institucional de Quiénes Somos
-│       ├── cotizacion.html     # Página con el formulario de solicitud de presupuesto
-│       ├── contacto.html       # Página con información de contacto y ubicación física
-│       ├── terminos-y-condiciones.html  # Página de términos legales
-│       └── politica-de-privacidad.html # Página de política de privacidad de datos
-├── requirements.txt            # Dependencias del proyecto Python
-├── run.sh                      # Script ejecutable de inicio rápido en desarrollo
-└── pyrightconfig.json          # Configuración del tipado estático (Pyright)
+│   ├── comercio/                   # Dominio y aplicación del carrito
+│   ├── precios/                    # Dominio y lógica de cotización
+│   └── infraestructura/            # Frameworks, rutas, templates y datos
+│       ├── app.py
+│       ├── datos/
+│       ├── rutas/
+│       └── tenant/
+├── static/                         # CSS, imágenes y JS
+├── templates/                      # Componentes, layouts, macros y páginas
+├── venv/                           # Entorno virtual
+├── requirements.txt
+├── run.sh                          # Inicio rápido en desarrollo
+└── pyrightconfig.json
 ```
 
 ---
@@ -56,47 +55,71 @@ El proyecto está construido como una aplicación web ligera y de alto rendimien
 ## 🚀 Instalación y Uso en Local
 
 ### 1. Requisitos Previos
-*   Python 3.10 o superior instalado.
-*   Entorno virtual de Python configurado.
+* Python 3.10 o superior.
+* Entorno virtual de Python configurado.
 
 ### 2. Configurar el Entorno
-Cloná el repositorio y accedé al directorio del proyecto:
+
 ```bash
 git clone <url-del-repositorio>
 cd www-madypack
-```
-
-Si no tenés creado el entorno virtual, podés inicializarlo y activarlo con:
-```bash
 python -m venv venv
-source venv/bin/activate   # En Linux/macOS
-# o bien:
-# venv\Scripts\activate    # En Windows
-```
-
-Instalá las dependencias del proyecto:
-```bash
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ### 3. Ejecutar el Servidor de Desarrollo
-Podés iniciar el servidor local usando el script de conveniencia `run.sh`:
+
 ```bash
-chmod +x run.sh  # Asegurar permisos de ejecución
+chmod +x run.sh
 ./run.sh
 ```
 
-O bien directamente a través de Uvicorn en tu consola:
+O directamente:
+
 ```bash
-uvicorn src.infrastructure.app:app --reload
+./venv/bin/uvicorn src.infraestructura.app:app --reload
 ```
 
 El sitio estará disponible en [http://localhost:8000](http://localhost:8000).
 
+Para levantar una empresa específica en desarrollo, usá el puerto correspondiente:
+
+```bash
+./venv/bin/uvicorn src.infraestructura.app:app --port 8001  # empresa-1
+```
+
+Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
+
 ---
 
-## 💡 Características Clave de Desarrollo
+## 🏢 Modelo Multi-Tenant
 
-*   **Configuración desde un solo lugar:** El contenido del sitio (números de contacto, enlaces de redes sociales, imágenes, campos de formularios y textos) se administra directamente desde [site.yml](file:///home/agustin/proyectos_software/www-madypack/data/site.yml) sin tocar el HTML.
-*   **Bypass de Analíticas en Local:** Los códigos de seguimiento de Google Tag Manager (GTM) y Google Analytics (GA) están configurados en [app.js](file:///home/agustin/proyectos_software/www-madypack/static/js/app.js) para que **no se carguen** si estás navegando en entornos locales (`localhost` o `127.0.0.1`), protegiendo tus métricas reales de producción y eliminando advertencias y bloqueos en la consola de desarrollo.
-*   **Enrutamiento Modular:** Rutas dinámicas para la landing y páginas complementarias mapeadas de forma limpia en FastAPI, renderizando plantillas modulares Jinja2.
+La aplicación resuelve el tenant según el entorno:
+
+| Entorno | Criterio de resolución | Ejemplo |
+|---------|------------------------|---------|
+| Desarrollo | Puerto | `localhost:8000` → `default`, `localhost:8001` → `empresa-1` |
+| Staging | Subdominio | `empresa-1.datamaq.com.ar` → `empresa-1` |
+| Producción | Dominio propio | `empresa-1.com.ar` → `empresa-1` |
+
+Cada tenant tiene su propia carpeta en `data/<tenant>/` con `site.yml`, `carrito_defecto.yml` y `tarifas.yml`.
+
+Más información en [docs/multi-tenant.md](docs/multi-tenant.md).
+
+---
+
+## 💡 Características Clave
+
+* **Configuración por tenant:** cada empresa puede tener su propio catálogo, tarifas y contenido sin modificar código.
+* **Arquitectura por capas:** separación entre dominio, aplicación, adaptadores e infraestructura.
+* **Bypass de Analíticas en Local:** los códigos de seguimiento no se cargan en `localhost` ni `127.0.0.1`.
+* **Rutas modulares:** enrutamiento limpio en FastAPI con plantillas Jinja2.
+
+---
+
+## 📚 Documentación
+
+* [docs/DDD.md](docs/DDD.md) – Arquitectura por capas y análisis DDD/SOLID.
+* [docs/multi-tenant.md](docs/multi-tenant.md) – Modelo multi-tenant y guía de configuración.
+* [docs/refactoring_plan.md](docs/refactoring_plan.md) – Plan de refactorización por capas.
