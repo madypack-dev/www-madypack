@@ -1,48 +1,33 @@
-(function () {
-    'use strict';
+import { LocalStorageConsentRepository } from './src/adapters/LocalStorageConsentRepository.js';
+import { GoogleTagManagerTracker, GoogleAnalyticsTracker } from './src/adapters/GoogleTrackers.js';
+import { ConsentService } from './src/application/ConsentService.js';
+import { CookieBanner } from './src/ui/CookieBanner.js';
+import { MobileMenu } from './src/ui/MobileMenu.js';
 
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Obtener configuración de infraestructura desde el DOM
     const html = document.documentElement;
     const gtmId = html.dataset.gtmId;
     const gaId = html.dataset.gaId;
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-    // Google Tag Manager
-    if (gtmId && !isLocalhost) {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(gtmId);
-
-        const firstScript = document.getElementsByTagName('script')[0];
-        firstScript.parentNode.insertBefore(script, firstScript);
+    // 2. Instanciar dependencias de trackers (Adapter Layer)
+    const trackers = [];
+    if (gtmId) {
+        trackers.push(new GoogleTagManagerTracker(gtmId, isLocalhost));
+    }
+    if (gaId) {
+        trackers.push(new GoogleAnalyticsTracker(gaId, isLocalhost));
     }
 
-    // Google Analytics (gtag)
-    if (gaId && !isLocalhost) {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
-        document.head.appendChild(script);
+    // 3. Inicializar Caso de Uso / Servicio de Consentimiento (Application Layer)
+    const consentRepository = new LocalStorageConsentRepository();
+    const consentService = new ConsentService(consentRepository, trackers);
 
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { window.dataLayer.push(arguments); }
-        window.gtag = gtag;
+    // 4. Inicializar Componentes (UI Layer)
+    const cookieBanner = new CookieBanner(consentService);
+    cookieBanner.initialize();
 
-        gtag('js', new Date());
-        gtag('config', gaId);
-    }
-
-    // Mobile menu toggle
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', function () {
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
-            mobileMenu.hidden = isExpanded;
-        });
-    }
-})();
+    const mobileMenu = new MobileMenu();
+    mobileMenu.initialize();
+});
