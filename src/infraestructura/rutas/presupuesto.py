@@ -18,7 +18,8 @@ from src.infraestructura.datos.cargadores import (
     cargar_site,
     cargar_tarifas,
 )
-from src.infraestructura.datos.modelos import ArticuloCatalogo, SiteConfig
+from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
+from src.infraestructura.datos.modelos import SiteConfig
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.logging.logger import get_logger
 from src.infraestructura.rutas.base import LoggingRoute, load_site, templates

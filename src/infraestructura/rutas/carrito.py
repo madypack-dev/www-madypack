@@ -12,7 +12,7 @@ from src.infraestructura.datos.cargadores import (
     cargar_productos_tienda,
     cargar_tarifas,
 )
-from src.infraestructura.datos.modelos import ArticuloCatalogo
+from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
 from src.comercio.aplicacion.casos_uso.carrito import (
     CasoUsoActualizarCarrito,

@@ -2,7 +2,7 @@ import json
 from typing import Callable
 from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
 from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
-from src.infraestructura.datos.modelos import ArticuloCatalogo
+from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 
 class RepositorioCarritoCookie(IRepositorioCarrito):
     def __init__(

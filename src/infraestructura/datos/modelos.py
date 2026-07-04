@@ -1,6 +1,8 @@
 """Modelos Pydantic para la carga y validación de archivos YAML por tenant."""
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
+
+from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 
 
 # ---------- analytics ----------
@@ -298,20 +300,5 @@ class SiteConfig(BaseModel):
 
 
 # ---------- productos_tienda.yml ----------
-class ArticuloCatalogo(BaseModel):
-    id: int
-    nombre: str
-    descripcion: str
-    cantidad_por_defecto: int = Field(..., ge=100)
-    imagen: str
-
-    @field_validator("cantidad_por_defecto")
-    @classmethod
-    def validar_multiplo_de_100(cls, valor: int) -> int:
-        if valor % 100 != 0:
-            raise ValueError("La cantidad por defecto debe ser múltiplo de 100.")
-        return valor
-
-
 class CatalogoConfig(BaseModel):
     articulos: list[ArticuloCatalogo]
