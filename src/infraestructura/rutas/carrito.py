@@ -12,6 +12,7 @@ from src.infraestructura.datos.cargadores import (
     cargar_carrito_defecto,
     cargar_tarifas,
 )
+from src.infraestructura.datos.modelos import ArticuloCatalogo
 from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
 from src.comercio.aplicacion.casos_uso.carrito import (
     CasoUsoActualizarCarrito,
@@ -22,19 +23,19 @@ from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 router = APIRouter(route_class=LoggingRoute)
 
 
-def obtener_catalogo_productos(tenant: str) -> list[dict]:
-    """Devuelve el catálogo del tenant o una lista vacía si hay error."""
+def obtener_catalogo_productos(tenant: str) -> list[ArticuloCatalogo]:
+    """Devuelve el catálogo validado del tenant o una lista vacía si hay error."""
     try:
-        return cargar_carrito_defecto(tenant)
+        return cargar_carrito_defecto(tenant).articulos
     except Exception as err:
         logger.error(f"Error obteniendo catálogo para tenant '{tenant}': {err}", exc_info=True)
         return []
 
 
 def obtener_tarifas(tenant: str) -> dict:
-    """Devuelve las tarifas del tenant o un diccionario vacío si hay error."""
+    """Devuelve las tarifas validadas del tenant o un diccionario vacío si hay error."""
     try:
-        return cargar_tarifas(tenant)
+        return cargar_tarifas(tenant).model_dump()
     except Exception as err:
         logger.error(f"Error obteniendo tarifas para tenant '{tenant}': {err}", exc_info=True)
         return {}
@@ -125,8 +126,8 @@ async def ver_carrito(
 
     total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
 
-    if "cart" in sitio and "summary" in sitio["cart"]:
-        sitio["cart"]["summary"]["estimated_cost_value"] = precio_estimado_formateado
+    if sitio.cart and sitio.cart.summary:
+        sitio.cart.summary.estimated_cost_value = precio_estimado_formateado
 
     return templates.TemplateResponse(
         request=request,

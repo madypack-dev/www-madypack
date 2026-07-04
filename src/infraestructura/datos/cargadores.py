@@ -6,12 +6,14 @@ con el tenant por defecto como fallback.
 """
 
 from pathlib import Path
-from typing import Any
 
 import yaml  # type: ignore
+from pydantic import ValidationError
 
 from src.infraestructura.config.settings import FALLBACK_TENANT
+from src.infraestructura.datos.modelos import CatalogoConfig, SiteConfig
 from src.infraestructura.logging.logger import get_logger
+from src.precios.dominio.modelos.tarifas import ConfiguracionTarifas
 
 logger = get_logger()
 
@@ -22,41 +24,71 @@ def _path_yaml(tenant: str, nombre: str) -> Path:
     return DATA_DIR / tenant / nombre
 
 
-def _cargar_yaml(path: Path) -> Any:
+def _cargar_yaml(path: Path) -> dict | list | None:
     if not path.exists():
         return None
     try:
-        return yaml.safe_load(path.read_text(encoding="utf-8"))
+        contenido = yaml.safe_load(path.read_text(encoding="utf-8"))
     except Exception as exc:  # pragma: no cover
         logger.error(f"Error leyendo {path}: {exc}", exc_info=True)
-        return None
+        raise ValueError(f"Error leyendo {path}: {exc}") from exc
+
+    if contenido is None:
+        raise ValueError(f"El archivo {path} está vacío o no es YAML válido.")
+
+    if not isinstance(contenido, (dict, list)):
+        raise ValueError(f"El archivo {path} no contiene un diccionario o lista raíz válido.")
+
+    return contenido
 
 
-def _cargar_con_fallback(tenant: str, nombre: str) -> Any:
+def _cargar_con_fallback(tenant: str, nombre: str) -> dict | list:
     contenido = _cargar_yaml(_path_yaml(tenant, nombre))
     if contenido is None and tenant != FALLBACK_TENANT:
         logger.warning(
             f"No se encontró {nombre} para tenant '{tenant}', usando fallback '{FALLBACK_TENANT}'"
         )
         contenido = _cargar_yaml(_path_yaml(FALLBACK_TENANT, nombre))
+
+    if contenido is None:
+        raise FileNotFoundError(
+            f"No se encontró {nombre} ni para tenant '{tenant}' ni para fallback '{FALLBACK_TENANT}'."
+        )
+
     return contenido
 
 
-def cargar_site(tenant: str) -> dict[str, Any]:
-    """Carga ``site.yml`` para el tenant indicado."""
+def cargar_site(tenant: str) -> SiteConfig:
+    """Carga y valida ``site.yml`` para el tenant indicado."""
     contenido = _cargar_con_fallback(tenant, "site.yml")
-    return contenido if isinstance(contenido, dict) else {}
+    if not isinstance(contenido, dict):
+        raise ValueError(f"site.yml para tenant '{tenant}' debe ser un diccionario.")
+    try:
+        return SiteConfig(**contenido)
+    except ValidationError as exc:
+        logger.error(f"Error validando site.yml para tenant '{tenant}': {exc}")
+        raise
 
 
-def cargar_carrito_defecto(tenant: str) -> list[dict[str, Any]]:
-    """Carga el catálogo por defecto (``carrito_defecto.yml``) del tenant."""
+def cargar_carrito_defecto(tenant: str) -> CatalogoConfig:
+    """Carga y valida el catálogo por defecto (``carrito_defecto.yml``) del tenant."""
     contenido = _cargar_con_fallback(tenant, "carrito_defecto.yml")
     if not isinstance(contenido, dict):
-        return []
-    return contenido.get("articulos", [])
+        raise ValueError(f"carrito_defecto.yml para tenant '{tenant}' debe ser un diccionario.")
+    try:
+        return CatalogoConfig(**contenido)
+    except ValidationError as exc:
+        logger.error(f"Error validando carrito_defecto.yml para tenant '{tenant}': {exc}")
+        raise
 
 
-def cargar_tarifas(tenant: str) -> dict[str, Any]:
-    """Carga ``tarifas.yml`` para el tenant indicado."""
+def cargar_tarifas(tenant: str) -> ConfiguracionTarifas:
+    """Carga y valida ``tarifas.yml`` para el tenant indicado."""
     contenido = _cargar_con_fallback(tenant, "tarifas.yml")
-    return contenido if isinstance(contenido, dict) else {}
+    if not isinstance(contenido, dict):
+        raise ValueError(f"tarifas.yml para tenant '{tenant}' debe ser un diccionario.")
+    try:
+        return ConfiguracionTarifas(**contenido)
+    except ValidationError as exc:
+        logger.error(f"Error validando tarifas.yml para tenant '{tenant}': {exc}")
+        raise

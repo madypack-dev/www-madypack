@@ -13,36 +13,36 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "{{ site.schema.type }}",
-  "name": "{{ site.schema.name }}",
-  "image": "{{ site.schema.image }}",
-  "logo": "{{ site.schema.logo }}",
-  "url": "{{ site.schema.url }}",
-  "telephone": "{{ site.schema.telephone }}",
-  "email": "{{ site.schema.email }}",
-  "description": "{{ site.schema.description }}",
+  "@type": "{{ site.schema_config.type }}",
+  "name": "{{ site.schema_config.name }}",
+  "image": "{{ site.schema_config.image }}",
+  "logo": "{{ site.schema_config.logo }}",
+  "url": "{{ site.schema_config.url }}",
+  "telephone": "{{ site.schema_config.telephone }}",
+  "email": "{{ site.schema_config.email }}",
+  "description": "{{ site.schema_config.description }}",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "{{ site.schema.address.streetAddress }}",
-    "addressLocality": "{{ site.schema.address.addressLocality }}",
-    "addressRegion": "{{ site.schema.address.addressRegion }}",
-    "postalCode": "{{ site.schema.address.postalCode }}",
-    "addressCountry": "{{ site.schema.address.addressCountry }}"
+    "streetAddress": "{{ site.schema_config.address.streetAddress }}",
+    "addressLocality": "{{ site.schema_config.address.addressLocality }}",
+    "addressRegion": "{{ site.schema_config.address.addressRegion }}",
+    "postalCode": "{{ site.schema_config.address.postalCode }}",
+    "addressCountry": "{{ site.schema_config.address.addressCountry }}"
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "{{ site.schema.geo.latitude }}",
-    "longitude": "{{ site.schema.geo.longitude }}"
+    "latitude": "{{ site.schema_config.geo.latitude }}",
+    "longitude": "{{ site.schema_config.geo.longitude }}"
   },
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",
     "dayOfWeek": [
-      {% for day in site.schema.opening_hours.days %}
+      {% for day in site.schema_config.opening_hours.days %}
       "{{ day }}"{% if not loop.last %},{% endif %}
       {% endfor %}
     ],
-    "opens": "{{ site.schema.opening_hours.opens }}",
-    "closes": "{{ site.schema.opening_hours.closes }}"
+    "opens": "{{ site.schema_config.opening_hours.opens }}",
+    "closes": "{{ site.schema_config.opening_hours.closes }}"
   },
   "sameAs": [
     {% for social in site.socials %}

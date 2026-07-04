@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
 import mimetypes
@@ -5,7 +6,12 @@ import mimetypes
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse
 
-from src.infraestructura.config.settings import APP_TITLE
+from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
+from src.infraestructura.datos.cargadores import (
+    cargar_site,
+    cargar_carrito_defecto,
+    cargar_tarifas,
+)
 from src.infraestructura.logging.logger import configurar_logging, get_logger
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
@@ -14,7 +20,24 @@ from src.infraestructura.tenant.resolutor import resolutor_tenant
 configurar_logging()
 logger = get_logger()
 
-app = FastAPI(title=APP_TITLE)
+
+def _tenants_conocidos() -> set[str]:
+    return set(MAPEO_TENANTS.values()) | set(MAPEO_PUERTOS.values())
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Valida los YAML de todos los tenants conocidos antes de arrancar."""
+    for tenant in sorted(_tenants_conocidos()):
+        logger.info(f"Validando YAML del tenant '{tenant}'...")
+        cargar_site(tenant)
+        cargar_carrito_defecto(tenant)
+        cargar_tarifas(tenant)
+        logger.info(f"Tenant '{tenant}' validado correctamente.")
+    yield
+
+
+app = FastAPI(title=APP_TITLE, lifespan=lifespan)
 
 STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
 

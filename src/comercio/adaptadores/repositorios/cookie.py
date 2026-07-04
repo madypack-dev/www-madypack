@@ -1,13 +1,14 @@
 import json
-from typing import Callable, Any
+from typing import Callable
 from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
 from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+from src.infraestructura.datos.modelos import ArticuloCatalogo
 
 class RepositorioCarritoCookie(IRepositorioCarrito):
     def __init__(
         self, 
         cookies: dict[str, str], 
-        cargar_defecto_yaml: Callable[[], list[dict[str, Any]]],
+        cargar_defecto_yaml: Callable[[], list[ArticuloCatalogo]],
         nombre_cookie: str = "articulos_carrito",
         registrar_error: Callable[[str], None] = lambda m: None
     ):
