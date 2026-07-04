@@ -197,7 +197,7 @@ from src.aplicacion.casos_uso.carrito import CasoUsoActualizarCarrito, CasoUsoAg
 
 router = APIRouter(route_class=LoggingRoute)
 
-PATH_CARRITO_YAML = Path(__file__).resolve().parents[3] / "data" / "carrito_defecto.yml"
+PATH_CARRITO_YAML = Path(__file__).resolve().parents[3] / "data" / "productos_tienda.yml"
 
 def obtener_catalogo_productos() -> list[dict]:
     if not PATH_CARRITO_YAML.exists():

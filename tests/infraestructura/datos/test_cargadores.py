@@ -7,7 +7,7 @@ from pydantic import ValidationError
 from src.infraestructura.datos import cargadores
 from src.infraestructura.datos.cargadores import (
     cargar_site,
-    cargar_carrito_defecto,
+    cargar_productos_tienda,
     cargar_tarifas,
 )
 from src.infraestructura.datos.modelos import SiteConfig, CatalogoConfig
@@ -20,8 +20,8 @@ class TestCargarDefault:
         assert isinstance(site, SiteConfig)
         assert site.site.brand == "Tu Empresa"
 
-    def test_cargar_carrito_defecto_default_devuelve_catalogo_config(self):
-        catalogo = cargar_carrito_defecto("default")
+    def test_cargar_productos_tienda_default_devuelve_catalogo_config(self):
+        catalogo = cargar_productos_tienda("default")
         assert isinstance(catalogo, CatalogoConfig)
         assert len(catalogo.articulos) == 3
         assert catalogo.articulos[0].cantidad_por_defecto == 1000
@@ -41,7 +41,7 @@ class TestValidacionErrores:
             yaml.safe_dump({"analytics": {"gtm_id": "GTM-XXXXXXX"}}), encoding="utf-8"
         )
         # Archivos mínimos para que no falle por fallback
-        (tenant_dir / "carrito_defecto.yml").write_text(
+        (tenant_dir / "productos_tienda.yml").write_text(
             yaml.safe_dump({
                 "articulos": [
                     {"id": 1, "nombre": "A", "descripcion": "Desc", "cantidad_por_defecto": 1000, "imagen": "a.svg"}
@@ -67,11 +67,11 @@ class TestValidacionErrores:
         with pytest.raises(ValidationError):
             cargar_site("default")
 
-    def test_carrito_defecto_cantidad_no_multiplo_de_100_lanza_error(self, tmp_path, monkeypatch):
+    def test_productos_tienda_cantidad_no_multiplo_de_100_lanza_error(self, tmp_path, monkeypatch):
         data_dir = tmp_path / "data"
         tenant_dir = data_dir / "default"
         tenant_dir.mkdir(parents=True)
-        (tenant_dir / "carrito_defecto.yml").write_text(
+        (tenant_dir / "productos_tienda.yml").write_text(
             yaml.safe_dump({
                 "articulos": [
                     {"id": 1, "nombre": "A", "descripcion": "Desc", "cantidad_por_defecto": 150, "imagen": "a.svg"}
@@ -83,7 +83,7 @@ class TestValidacionErrores:
         monkeypatch.setattr(cargadores, "DATA_DIR", data_dir)
 
         with pytest.raises(ValidationError):
-            cargar_carrito_defecto("default")
+            cargar_productos_tienda("default")
 
 
 class TestFallback:
@@ -207,7 +207,7 @@ class TestFallback:
             }),
             encoding="utf-8",
         )
-        (default_dir / "carrito_defecto.yml").write_text(
+        (default_dir / "productos_tienda.yml").write_text(
             yaml.safe_dump({
                 "articulos": [
                     {"id": 1, "nombre": "A", "descripcion": "Desc", "cantidad_por_defecto": 1000, "imagen": "a.svg"}

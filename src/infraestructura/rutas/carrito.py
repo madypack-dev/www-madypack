@@ -9,7 +9,7 @@ from src.infraestructura.rutas.base import templates, LoggingRoute, logger
 from src.infraestructura.tenant.resolutor import resolutor_tenant
 from src.infraestructura.datos.cargadores import (
     cargar_site,
-    cargar_carrito_defecto,
+    cargar_productos_tienda,
     cargar_tarifas,
 )
 from src.infraestructura.datos.modelos import ArticuloCatalogo
@@ -17,16 +17,17 @@ from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCooki
 from src.comercio.aplicacion.casos_uso.carrito import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
+    CasoUsoEliminarDelCarrito,
 )
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 
 router = APIRouter(route_class=LoggingRoute)
 
 
-def obtener_catalogo_productos(tenant: str) -> list[ArticuloCatalogo]:
+def obtener_productos_tienda(tenant: str) -> list[ArticuloCatalogo]:
     """Devuelve el catálogo validado del tenant o una lista vacía si hay error."""
     try:
-        return cargar_carrito_defecto(tenant).articulos
+        return cargar_productos_tienda(tenant).articulos
     except Exception as err:
         logger.error(f"Error obteniendo catálogo para tenant '{tenant}': {err}", exc_info=True)
         return []
@@ -47,11 +48,11 @@ async def ver_tienda(
     tenant: str = Depends(resolutor_tenant),
 ):
     sitio = cargar_site(tenant)
-    catalogo = obtener_catalogo_productos(tenant)
+    productos = obtener_productos_tienda(tenant)
     return templates.TemplateResponse(
         request=request,
         name="pages/tienda.html",
-        context={"site": sitio, "productos": catalogo},
+        context={"site": sitio, "productos": productos},
     )
 
 
@@ -64,7 +65,7 @@ async def agregar_al_carrito(
 ):
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_defecto_yaml=partial(obtener_catalogo_productos, tenant),
+        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
         registrar_error=logger.error,
     )
 
@@ -74,8 +75,8 @@ async def agregar_al_carrito(
     )
 
     try:
-        catalogo = obtener_catalogo_productos(tenant)
-        caso_uso.ejecutar(id_articulo, cantidad, catalogo)
+        productos = obtener_productos_tienda(tenant)
+        caso_uso.ejecutar(id_articulo, cantidad, productos)
         logger.info(
             f"Tenant '{tenant}' | Artículo {id_articulo} agregado al carrito con cantidad {cantidad}"
         )
@@ -94,6 +95,42 @@ async def agregar_al_carrito(
     return respuesta
 
 
+@router.post("/carrito/eliminar")
+async def eliminar_del_carrito(
+    request: Request,
+    tenant: str = Depends(resolutor_tenant),
+    id_articulo: int = Form(...),
+):
+    repositorio = RepositorioCarritoCookie(
+        cookies=request.cookies,
+        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
+        registrar_error=logger.error,
+    )
+
+    caso_uso = CasoUsoEliminarDelCarrito(
+        repositorio=repositorio,
+        registrar_error=logger.error,
+    )
+
+    try:
+        caso_uso.ejecutar(id_articulo)
+        logger.info(f"Tenant '{tenant}' | Artículo {id_articulo} eliminado del carrito")
+    except ValueError as err:
+        logger.error(f"Error al eliminar artículo {id_articulo} del carrito: {err}")
+
+    respuesta = RedirectResponse(url="/carrito/", status_code=303)
+    if repositorio.carrito_serializado:
+        respuesta.set_cookie(
+            key="articulos_carrito",
+            value=repositorio.carrito_serializado,
+            max_age=3600 * 24 * 30,
+            path="/",
+        )
+    else:
+        respuesta.delete_cookie(key="articulos_carrito", path="/")
+    return respuesta
+
+
 @router.get("/carrito/", response_class=HTMLResponse)
 async def ver_carrito(
     request: Request,
@@ -102,7 +139,7 @@ async def ver_carrito(
     sitio = cargar_site(tenant)
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_defecto_yaml=partial(obtener_catalogo_productos, tenant),
+        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
@@ -158,7 +195,7 @@ async def actualizar_carrito(
 
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_defecto_yaml=partial(obtener_catalogo_productos, tenant),
+        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
         registrar_error=logger.error,
     )
 

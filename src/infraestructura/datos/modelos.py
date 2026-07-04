@@ -289,7 +289,7 @@ class SiteConfig(BaseModel):
     schema_config: SchemaConfig = Field(alias="schema")
 
 
-# ---------- carrito_defecto.yml ----------
+# ---------- productos_tienda.yml ----------
 class ArticuloCatalogo(BaseModel):
     id: int
     nombre: str

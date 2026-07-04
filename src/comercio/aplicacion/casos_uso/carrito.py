@@ -48,3 +48,18 @@ class CasoUsoAgregarAlCarrito:
         except ValueError as err:
             self.registrar_error(f"Error de validación al agregar artículo {id_articulo} al carrito: {err}")
             raise err
+
+
+class CasoUsoEliminarDelCarrito:
+    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):
+        self.repositorio = repositorio
+        self.registrar_error = registrar_error
+
+    def ejecutar(self, id_articulo: int) -> None:
+        carrito = self.repositorio.obtener_carrito()
+
+        if not carrito.eliminar_articulo(id_articulo):
+            self.registrar_error(f"Intento de eliminar artículo que no está en el carrito: {id_articulo}")
+            raise ValueError("El artículo no está en el carrito.")
+
+        self.repositorio.guardar_carrito(carrito)

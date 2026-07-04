@@ -29,6 +29,14 @@
                                     <input type="number" id="qty-{{ item.id }}" name="qty_{{ item.id }}" value="{{ item.cantidad }}" min="100" step="100">
                                     <span class="pending-badge">{{ site.cart.pending_quote_label }}</span>
                                 </div>
+                                <form action="/carrito/eliminar" method="post" class="cart-item-remove">
+                                    <input type="hidden" name="id_articulo" value="{{ item.id }}">
+                                    <button type="submit" class="btn-remove" aria-label="Eliminar {{ item.nombre }} del carrito" title="Eliminar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                             {% endfor %}
                             

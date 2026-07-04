@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
 from src.infraestructura.datos.cargadores import (
     cargar_site,
-    cargar_carrito_defecto,
+    cargar_productos_tienda,
     cargar_tarifas,
 )
 from src.infraestructura.logging.logger import configurar_logging, get_logger
@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
     for tenant in sorted(_tenants_conocidos()):
         logger.info(f"Validando YAML del tenant '{tenant}'...")
         cargar_site(tenant)
-        cargar_carrito_defecto(tenant)
+        cargar_productos_tienda(tenant)
         cargar_tarifas(tenant)
         logger.info(f"Tenant '{tenant}' validado correctamente.")
     yield

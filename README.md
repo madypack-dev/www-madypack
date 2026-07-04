@@ -22,11 +22,11 @@ El proyecto está construido con **FastAPI**, **Jinja2** y configuración de con
 ├── data/                           # Datos de contenido por tenant
 │   ├── default/                    # Tenant por defecto (Madypack)
 │   │   ├── site.yml
-│   │   ├── carrito_defecto.yml
+│   │   ├── productos_tienda.yml
 │   │   └── tarifas.yml
 │   └── empresa-1/                  # Ejemplo de tenant adicional
 │       ├── site.yml
-│       ├── carrito_defecto.yml
+│       ├── productos_tienda.yml
 │       └── tarifas.yml
 ├── docs/                           # Documentación del proyecto
 │   ├── DDD.md                      # Arquitectura por capas
@@ -112,7 +112,7 @@ La aplicación resuelve el tenant según el entorno:
 | Staging | Subdominio | `empresa-1.datamaq.com.ar` → `empresa-1` |
 | Producción | Dominio propio | `empresa-1.com.ar` → `empresa-1` |
 
-Cada tenant tiene su propia carpeta en `data/<tenant>/` con `site.yml`, `carrito_defecto.yml` y `tarifas.yml`.
+Cada tenant tiene su propia carpeta en `data/<tenant>/` con `site.yml`, `productos_tienda.yml` y `tarifas.yml`.
 
 Más información en [docs/multi-tenant.md](docs/multi-tenant.md).
 

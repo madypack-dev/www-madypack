@@ -8,12 +8,12 @@ class RepositorioCarritoCookie(IRepositorioCarrito):
     def __init__(
         self, 
         cookies: dict[str, str], 
-        cargar_defecto_yaml: Callable[[], list[ArticuloCatalogo]],
+        cargar_productos_tienda: Callable[[], list[ArticuloCatalogo]],
         nombre_cookie: str = "articulos_carrito",
         registrar_error: Callable[[str], None] = lambda m: None
     ):
         self.cookies = cookies
-        self.cargar_defecto_yaml = cargar_defecto_yaml
+        self.cargar_productos_tienda = cargar_productos_tienda
         self.nombre_cookie = nombre_cookie
         self.registrar_error = registrar_error
         self._carrito_serializado: str | None = None

@@ -70,15 +70,15 @@ def cargar_site(tenant: str) -> SiteConfig:
         raise
 
 
-def cargar_carrito_defecto(tenant: str) -> CatalogoConfig:
-    """Carga y valida el catálogo por defecto (``carrito_defecto.yml``) del tenant."""
-    contenido = _cargar_con_fallback(tenant, "carrito_defecto.yml")
+def cargar_productos_tienda(tenant: str) -> CatalogoConfig:
+    """Carga y valida el catálogo de productos (``productos_tienda.yml``) del tenant."""
+    contenido = _cargar_con_fallback(tenant, "productos_tienda.yml")
     if not isinstance(contenido, dict):
-        raise ValueError(f"carrito_defecto.yml para tenant '{tenant}' debe ser un diccionario.")
+        raise ValueError(f"productos_tienda.yml para tenant '{tenant}' debe ser un diccionario.")
     try:
         return CatalogoConfig(**contenido)
     except ValidationError as exc:
-        logger.error(f"Error validando carrito_defecto.yml para tenant '{tenant}': {exc}")
+        logger.error(f"Error validando productos_tienda.yml para tenant '{tenant}': {exc}")
         raise
 
 

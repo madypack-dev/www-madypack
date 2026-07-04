@@ -35,3 +35,10 @@ class Carrito(BaseModel):
                 articulo.cantidad += nuevo_articulo.cantidad
                 return
         self.articulos.append(nuevo_articulo)
+
+    def eliminar_articulo(self, id_articulo: int) -> bool:
+        for indice, articulo in enumerate(self.articulos):
+            if articulo.id == id_articulo:
+                self.articulos.pop(indice)
+                return True
+        return False

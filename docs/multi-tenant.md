@@ -34,18 +34,18 @@ Los datos de cada empresa se organizan en carpetas separadas bajo `data/`:
 data/
 ├── default/
 │   ├── site.yml              # Contenido, menús, contacto, textos legales
-│   ├── carrito_defecto.yml   # Catálogo de productos
+│   ├── productos_tienda.yml   # Catálogo de productos
 │   └── tarifas.yml           # Tarifas de cotización
 └── empresa-1/
     ├── site.yml
-    ├── carrito_defecto.yml
+    ├── productos_tienda.yml
     └── tarifas.yml
 ```
 
 ### Archivos por tenant
 
 * `site.yml`: configuración global del sitio (brand, menús, textos, schema, etc.).
-* `carrito_defecto.yml`: catálogo de productos disponibles en la tienda.
+* `productos_tienda.yml`: catálogo de productos disponibles en la tienda.
 * `tarifas.yml`: parámetros para el cálculo de precios estimados.
 
 Si un archivo no existe para un tenant específico, la aplicación usa el archivo del tenant `default` como fallback y registra un warning en los logs.
@@ -91,7 +91,7 @@ cp -r data/default data/madypack    # o data/empresa-N
 
 ### Paso 2: Personalizar los YAML
 
-Editar `data/empresa-N/site.yml`, `data/empresa-N/carrito_defecto.yml` y `data/empresa-N/tarifas.yml`.
+Editar `data/empresa-N/site.yml`, `data/empresa-N/productos_tienda.yml` y `data/empresa-N/tarifas.yml`.
 
 ### Paso 3: Configurar el puerto de desarrollo
 
