@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <rect width="200" height="200" rx="16" fill="#f8f9fa"/>
+  <!-- Thermostat control drawing -->
+  <g transform="translate(25, 25)" stroke="#2a5298" stroke-width="8" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Circular temperature scale housing -->
+    <rect x="25" y="25" width="100" height="100" rx="12"/>
+    <circle cx="75" cy="75" r="30"/>
+    <!-- Copper capillary tube coil indicator -->
+    <path d="M75,105 C75,120 60,130 60,140 C60,150 90,150 90,160" stroke="#b87333" stroke-width="4"/>
+    <!-- Temperature values indicator -->
+    <path d="M60,75 L90,75" stroke="#ff7f50"/>
+  </g>
+</svg>
