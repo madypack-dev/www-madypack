@@ -1,16 +1,16 @@
 articulos:
   - id: 1
-    nombre: "Bolsas de Papel Kraft Personalizadas"
-    descripcion: "Impresión Flexográfica | Manijas planas"
+    nombre: "Producto de ejemplo 1"
+    descripcion: "Descripción del producto 1"
     cantidad_por_defecto: 1000
-    imagen: "bolsas-personalizadas.svg"
+    imagen: "producto-1.svg"
   - id: 2
-    nombre: "Bolsas Kraft con Manija Cordón"
-    descripcion: "Lisas estándar | 26x12x35 cm"
-    cantidad_por_defecto: 2500
-    imagen: "bolsas-con-m.svg"
-  - id: 3
-    nombre: "Bolsas Kraft sin Manija (SOS)"
-    descripcion: "Fondo americano autoarmable | Ideal delivery"
+    nombre: "Producto de ejemplo 2"
+    descripcion: "Descripción del producto 2"
     cantidad_por_defecto: 1000
-    imagen: "bolsas-sin-m.svg"
+    imagen: "producto-2.svg"
+  - id: 3
+    nombre: "Producto de ejemplo 3"
+    descripcion: "Descripción del producto 3"
+    cantidad_por_defecto: 1000
+    imagen: "producto-3.svg"

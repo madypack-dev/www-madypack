@@ -10,8 +10,8 @@ from typing import Any
 
 import yaml  # type: ignore
 
-from src.infraestructura.config import FALLBACK_TENANT
-from src.infraestructura.logging import get_logger
+from src.infraestructura.config.settings import FALLBACK_TENANT
+from src.infraestructura.logging.logger import get_logger
 
 logger = get_logger()
 

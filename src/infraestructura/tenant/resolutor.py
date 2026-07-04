@@ -8,7 +8,7 @@ Soporta tres entornos:
 
 from fastapi import Request
 
-from src.infraestructura.config import (
+from src.infraestructura.config.settings import (
     MAPEO_PUERTOS,
     MAPEO_TENANTS,
     FALLBACK_TENANT,

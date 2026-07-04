@@ -1,29 +1,20 @@
 #!/bin/bash
-# Levanta el servidor de desarrollo para un tenant específico.
-# Si el puerto está ocupado, mata el proceso que lo usa.
+# Levanta todas las empresas configuradas en paralelo para desarrollo local.
+# Libera los puertos antes de levantar cada instancia.
 #
 # Uso:
-#   ./run.sh              # puerto 8000 -> default
-#   ./run.sh 8001         # puerto 8001 -> madypack
-#   ./run.sh madypack     # equivalente al anterior
-#   ./run.sh eitec        # puerto 8002 -> eitec
+#   ./run-all.sh
+#
+# Para detener todas las instancias, presioná Ctrl+C.
 
 set -e
 
-PUERTO="${1:-8000}"
+# Obtener los puertos configurados en settings.py
+PUERTOS=($(
+    ./venv/bin/python -c "from src.infraestructura.config.settings import MAPEO_PUERTOS; print(' '.join(sorted(MAPEO_PUERTOS.keys(), key=int)))"
+))
 
-# Si el argumento es un nombre de tenant conocido, derivar el puerto desde settings.
-if ./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; exit(0 if '$PUERTO' in MAPEO_TENANT_PUERTO else 1)" 2>/dev/null; then
-    PUERTO=$(./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; print(MAPEO_TENANT_PUERTO['$PUERTO'])")
-fi
-
-# Validar que el puerto sea numérico.
-if ! [[ "$PUERTO" =~ ^[0-9]+$ ]]; then
-    echo "Uso: $0 [puerto|tenant]"
-    echo "Tenants disponibles:"
-    ./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; [print(f'  $0 {t}   # puerto {p}') for t, p in MAPEO_TENANT_PUERTO.items()]"
-    exit 1
-fi
+PIDS=()
 
 _liberar_puerto() {
     local PUERTO_LIBERAR="$1"
@@ -38,8 +29,27 @@ _liberar_puerto() {
     fi
 }
 
-echo "Liberando puerto $PUERTO si está ocupado..."
-_liberar_puerto "$PUERTO"
+cleanup() {
+    echo ""
+    echo "Deteniendo servidores..."
+    for PID in "${PIDS[@]}"; do
+        kill "$PID" 2>/dev/null || true
+    done
+    wait 2>/dev/null || true
+}
+trap cleanup INT TERM EXIT
 
-echo "Iniciando servidor en puerto $PUERTO..."
-./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload
+for PUERTO in "${PUERTOS[@]}"; do
+    echo "Liberando puerto $PUERTO si está ocupado..."
+    _liberar_puerto "$PUERTO"
+done
+
+for PUERTO in "${PUERTOS[@]}"; do
+    echo "Iniciando servidor en puerto $PUERTO..."
+    ./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload &
+    PIDS+=("$!")
+done
+
+echo "Servidores corriendo en puertos: ${PUERTOS[*]}"
+echo "Presioná Ctrl+C para detenerlos."
+wait

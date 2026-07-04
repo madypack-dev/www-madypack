@@ -1,8 +1,8 @@
 analytics:
-  gtm_id: GTM-WGDHKRW8
-  ga_id: G-MMGJ94QTB5
+  gtm_id: GTM-XXXXXXX
+  ga_id: G-XXXXXXXXXX
 whatsapp:
-  phone: '5491125794649'
+  phone: '5490000000000'
   message: Hola, vengo del sitio web, quiero más información
 site:
   lang: es-AR
@@ -20,14 +20,14 @@ site:
     url: /
 socials:
 - network: facebook
-  url: https://www.facebook.com/madypack.bolsas
+  url: '#'
   label: Facebook
 - network: instagram
-  url: https://www.instagram.com/madypack_bolsas/
+  url: '#'
   label: Instagram
 - network: whatsapp
   label: WhatsApp
-  cta_class: madypack-whatsapp-cta
+  cta_class: whatsapp-cta
 header:
   top_bar:
     text: TU TEXTO DE BARRA SUPERIOR
@@ -62,7 +62,7 @@ header:
     contact_url: /contacto/
 footer:
   logo:
-    src: logo-madypack-white.svg
+    src: logo-placeholder-white.svg
   menu:
   - label: Tienda
     url: /tienda/
@@ -82,48 +82,36 @@ home:
     title: Tu Empresa
     subtitle: Tu mensaje principal aquí
   cta:
-    title: Conseguí tus bolsas
+    title: Tu llamado a la acción
     before_link: Pedí tu
     link_text: cotización
     after_link: aquí
   product_types:
-    title: ¿Qué tipo de bolsas estás buscando?
+    title: ¿Qué productos estás buscando?
     products:
-    - label: Personalizadas
-      image: bolsas-personalizadas.svg
-    - label: Con manijas
-      image: bolsas-con-m.svg
-    - label: Sin manijas
-      image: bolsas-sin-m.svg
+    - label: Producto A
+      image: producto-a.svg
+    - label: Producto B
+      image: producto-b.svg
+    - label: Producto C
+      image: producto-c.svg
   quote_form:
     title: Pedido de cotización
     meta_title: Cotización
-    meta_description: Solicitá un presupuesto para tus bolsas de papel personalizadas
-      o lisas estándar. Madypack Garín.
+    meta_description: Solicitá un presupuesto personalizado para tu pedido.
     description: Completá el formulario para que podamos enviarte un presupuesto personalizado.
     submit: Solicitar cotización
     success_title: ¡Gracias!
-    success_message: Tu solicitud de cotización ha sido recibida con éxito. Nos pondremos
-      en contacto a la brevedad.
+    success_message: Tu solicitud de cotización ha sido recibida con éxito. Nos pondremos en contacto a la brevedad.
     required_marker: '*'
     required_abbreviation: requerido
     details:
     - title: Información Importante para tu Presupuesto
-      text: Para poder brindarte la cotización más precisa y competitiva posible,
-        te sugerimos detallar las especificaciones requeridas de tus bolsas (medidas,
-        tipo de manija, cantidad de colores a imprimir) en el campo de descripción.
-        Si estás buscando bolsas personalizadas, comentanos si contás con el diseño
-        final o si requerís asistencia.
-    - title: ¿Cuáles son las opciones de personalización?
-      text: Podés elegir entre bolsas con manijas (plana o cordón) o sin manijas (tipo
-        SOS / fondo americano). La impresión se realiza en flexografía con tintas
-        al agua ecológicas. Contamos con capacidad para imprimir desde tiradas iniciales
-        medianas hasta grandes volúmenes para cadenas comerciales.
+      text: Describí las especificaciones requeridas para que podamos preparar una cotización precisa.
+    - title: Opciones Disponibles
+      text: Contanos qué opciones o personalizaciones necesitás para tu pedido.
     - title: Envíos y Retiros
-      text: Realizamos envíos a todo el país coordinando con expresos y transportadoras
-        de confianza. También podés retirar tu pedido directamente por nuestra planta
-        gráfica ubicada en Garín, Buenos Aires, en los días y horarios acordados con
-        tu asesor comercial.
+      text: Consultanos por las opciones de envío o retiro disponibles.
     fields:
     - name: name
       label: Nombre y Apellido
@@ -142,7 +130,7 @@ home:
       type: text
       required: false
     - name: message
-      label: ¿Qué tipo de bolsa necesitas?
+      label: ¿Qué producto necesitás?
       type: textarea
       required: false
       rows: 4
@@ -150,34 +138,18 @@ home:
   about:
     title: Quiénes somos
     meta_title: Quiénes somos
-    meta_description: Conocé Madypack, fábrica de bolsas de papel sustentables gestionada
-      por sus trabajadores de Madygraf Garín.
+    meta_description: Conocé más sobre nuestra empresa, historia y valores.
     text: Contá tu historia aquí.
     button_text: Conocenos
     button_url: /quienes-somos/
     image: quienes-somos-home.jpg
     details:
-    - title: Nuestros Valores y Compromiso Social
-      text: Como parte de la cooperativa gráfica <strong>Madygraf</strong> (ex-Donnelley),
-        ubicada en Garín, Provincia de Buenos Aires, en <strong>Madypack</strong>
-        no solo fabricamos envases y bolsas de papel sustentables, sino que defendemos
-        la gestión obrera y el trabajo digno. Toda nuestra producción se organiza
-        bajo principios de solidaridad, igualdad y democracia interna.
-    - title: Producción Sustentable y Cuidado Ambiental
-      text: Estamos plenamente comprometidos con la preservación del medio ambiente.
-        Por ello, nuestras bolsas se elaboran utilizando papel kraft 100% biodegradable
-        y reciclable, proveniente de fuentes responsables certificadas. Empleamos
-        adhesivos a base de almidón natural y tintas al agua no contaminantes, libres
-        de solventes químicos nocivos. Esto garantiza que cada bolsa entregada pueda
-        volver a integrarse a la naturaleza de manera segura, reduciendo la huella
-        de carbono de tu comercio.
-    - title: Soluciones a Medida para Comercios y Empresas
-      text: Entendemos que el packaging es la carta de presentación de tu marca. Ofrecemos
-        una amplia gama de alternativas adaptables a rubros como gastronomía, indumentaria,
-        eventos, tiendas de regalos y comercios en general. Desde bolsas kraft lisas
-        estándar en diversos tamaños hasta impresiones personalizadas de alta calidad
-        con el logo y colores de tu identidad corporativa, brindamos asesoramiento
-        integral y presupuestos flexibles.
+    - title: Nuestros Valores
+      text: Describí los valores que representan a tu empresa.
+    - title: Nuestro Compromiso
+      text: Contá el compromiso de tu empresa con clientes, calidad o el medio ambiente.
+    - title: Soluciones a Medida
+      text: Explicá cómo adaptás tus productos o servicios a las necesidades de cada cliente.
   newsletter:
     title: Suscribite a nuestro newsletter
     placeholder: Ingrese su email
@@ -187,80 +159,65 @@ home:
   contact:
     title: Contacto
     meta_title: Contacto
-    meta_description: Contactate con Madypack. Atención al cliente, teléfono, email,
-      WhatsApp y ubicación en Garín, Buenos Aires.
+    meta_description: Contactate con nosotros. Atención al cliente, teléfono, email, WhatsApp y ubicación.
     email: contacto@tuempresa.com
     whatsapp_label: '5490000000000'
     address: Tu dirección aquí.
-    map_url: https://maps.google.com/maps?q=Madygraf&t=&z=12&ie=UTF8&output=embed
-    map_link: https://maps.app.goo.gl/UMnnhnJHeikihewG6
-    map_title: Ubicación de Madypack
+    map_url: https://maps.google.com/maps?q=Tu+Empresa&t=&z=12&ie=UTF8&output=embed
+    map_link: '#'
+    map_title: Ubicación de Tu Empresa
     labels:
       customer_service: Atención al Cliente
       whatsapp: 'WhatsApp:'
       location: Ubicación
     details:
     - title: Atención Comercial y Consultas
-      text: Nuestro equipo de atención al cliente y soporte comercial está disponible
-        para asesorarte de lunes a viernes en el horario de 08:00 a 17:00 hs. Podés
-        enviarnos un correo electrónico directo, comunicarte a nuestro canal de WhatsApp
-        para respuestas rápidas, o completar el formulario de cotización si ya tenés
-        claro lo que necesitás.
-    - title: ¿Cómo llegar a la planta?
-      text: La fábrica cooperativa se encuentra ubicada estratégicamente sobre la
-        colectora de la Ruta Panamericana km 36.7, en la localidad de Garín, Partido
-        de Escobar, Buenos Aires. El acceso vehicular es sumamente directo desde la
-        autopista, facilitando las tareas de carga y logística de mercadería.
-    - title: Atención Cooperativa Directa
-      text: Al contactar con Madypack, estás dialogando de forma directa con los trabajadores
-        de la cooperativa. Al eliminar intermediarios innecesarios, aseguramos una
-        comunicación transparente, un control estricto sobre los procesos de confección
-        y los precios más justos del mercado.
+      text: Nuestro equipo de atención al cliente está disponible para asesorarte. Podés enviarnos un correo electrónico, comunicarte por WhatsApp o completar el formulario de cotización.
+    - title: ¿Cómo llegar?
+      text: Indicá aquí las indicaciones para llegar a tu ubicación.
+    - title: Atención Directa
+      text: Describí la experiencia de contacto directo con tu empresa.
 cart:
   title: Carrito
-  meta_description: Revisá tu selección de bolsas de papel sustentables antes de solicitar
-    tu cotización formal.
+  meta_description: Revisá tu selección de productos antes de solicitar tu cotización formal.
   heading: Tu Carrito de Cotización
   items_heading: Artículos Seleccionados
   pending_quote_label: Ptes. Cotización
   items:
-  - name: Bolsas de Papel Kraft Personalizadas
-    description: Impresión Flexográfica | Manijas planas
-    quantity_label: 'Cant: 1,000 u.'
-    image: bolsas-personalizadas.svg
-  - name: Bolsas Kraft con Manija Cordón
-    description: Lisas estándar | 26x12x35 cm
-    quantity_label: 'Cant: 2,500 u.'
-    image: bolsas-con-m.svg
+  - name: Producto A
+    description: Descripción del producto A
+    quantity_label: 'Cant: 1 u.'
+    image: producto-a.svg
+  - name: Producto B
+    description: Descripción del producto B
+    quantity_label: 'Cant: 1 u.'
+    image: producto-b.svg
   summary:
     heading: Resumen
-    total_label: 'Total bolsas:'
-    total_value: 3,500 unidades
+    total_label: 'Total productos:'
+    total_value: 2 unidades
     estimated_cost_label: 'Costo estimado:'
     estimated_cost_value: A cotizar
-    note: Los precios de fabricación de bolsas de papel varían según volumen, matriz
-      de impresión y costos de materias primas. Envía el formulario para recibir tu
-      presupuesto formal en menos de 24 hs.
+    note: Los precios pueden variar según volumen y especificaciones. Envía el formulario para recibir tu presupuesto formal.
     submit_button: Solicitar Presupuesto
 schema:
-  type: ManufacturingBusiness
+  type: Organization
   name: Tu Empresa
-  image: https://www.madypack.com.ar/static/images/og-image.jpg
-  logo: https://www.madypack.com.ar/static/images/logo-madypack.svg
-  url: https://www.madypack.com.ar
+  image: https://www.tuempresa.com/static/images/og-image.jpg
+  logo: https://www.tuempresa.com/static/images/logo-placeholder.svg
+  url: https://www.tuempresa.com
   telephone: '+5490000000000'
   email: contacto@tuempresa.com
-  description: Fabricación y confección de bolsas de papel sustentables, lisas y personalizadas
-    en Garín, Buenos Aires, Argentina.
+  description: Descripción breve de tu empresa, productos o servicios.
   address:
-    streetAddress: Ruta Panamericana km 36.7
-    addressLocality: Garín
-    addressRegion: Buenos Aires
-    postalCode: B1619
+    streetAddress: Calle Ejemplo 123
+    addressLocality: Localidad
+    addressRegion: Provincia
+    postalCode: '0000'
     addressCountry: AR
   geo:
-    latitude: '-34.425'
-    longitude: '-58.745'
+    latitude: '-34.000'
+    longitude: '-58.000'
   opening_hours:
     days:
     - Monday

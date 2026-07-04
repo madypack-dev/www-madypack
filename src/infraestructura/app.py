@@ -5,8 +5,8 @@ import mimetypes
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse
 
-from src.infraestructura.config import APP_TITLE
-from src.infraestructura.logging import configurar_logging, get_logger
+from src.infraestructura.config.settings import APP_TITLE
+from src.infraestructura.logging.logger import configurar_logging, get_logger
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
 from src.infraestructura.tenant.resolutor import resolutor_tenant
