@@ -1,0 +1,76 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Confirmación de Presupuesto | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}Tu solicitud de presupuesto ha sido procesada con éxito.{% endblock %}
+
+{% block content %}
+<section class="section confirmation-section">
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="confirmation-icon-wrapper">
+                <span class="confirmation-checkmark">✓</span>
+            </div>
+            
+            <h1 class="confirmation-title">¡Presupuesto Generado!</h1>
+            <p class="confirmation-subtitle">Hemos recibido tus datos de contacto y procesado tu solicitud de presupuesto.</p>
+            
+            <div class="reference-code-box">
+                <p class="reference-label">Código de Referencia</p>
+                <div class="reference-code-row">
+                    <span id="ref-code" class="reference-code-value">{{ response.codigo_referencia }}</span>
+                    <button id="btn-copy-ref" class="copy-button" aria-label="Copiar código" title="Copiar al portapapeles">
+                        <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span id="copy-tooltip" class="copy-tooltip">Copiar</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="confirmation-actions">
+                <a href="{{ response.pdf_url }}" class="action-btn download-btn" id="btn-download-pdf">
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Descargar Presupuesto PDF
+                </a>
+                
+                <a href="{{ response.whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="action-btn whatsapp-btn" id="btn-send-whatsapp">
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.982L2 22l5.202-1.362a9.92 9.92 0 0 0 4.808 1.238h.005c5.507 0 9.99-4.478 9.99-9.985C22.007 6.478 17.52 2 12.012 2zm5.727 14.156c-.255.715-1.488 1.302-2.038 1.393-.497.083-1.15.15-3.327-.75-2.784-1.155-4.577-3.99-4.716-4.175-.139-.185-1.111-1.478-1.111-2.82s.7-2.009.948-2.261c.248-.252.54-.315.72-.315.18 0 .36.003.518.01.163.007.382-.062.596.45.22.525.752 1.838.817 1.971.066.133.11.288.022.464-.088.177-.132.288-.263.441-.131.154-.275.344-.393.462-.132.133-.27.278-.117.54.153.262.68 1.12 1.454 1.81.998.89 1.838 1.166 2.099 1.296.262.13.413.11.566-.067.153-.177.656-.763.83-1.026.175-.263.35-.22.59-.131.24.089 1.527.72 1.789.851.263.131.438.197.503.31.066.113.066.656-.19 1.371z"/>
+                    </svg>
+                    Cerrar Compra por WhatsApp
+                </a>
+            </div>
+            
+            <p class="confirmation-footer-note">Te recomendamos abrir el chat de WhatsApp para coordinar el pago, plazos y envíos directamente con nuestros asesores.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const btnCopy = document.getElementById('btn-copy-ref');
+    const refCode = document.getElementById('ref-code').innerText;
+    const tooltip = document.getElementById('copy-tooltip');
+
+    if (btnCopy) {
+        btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(refCode).then(() => {
+                tooltip.innerText = "¡Copiado!";
+                tooltip.classList.add('visible');
+                setTimeout(() => {
+                    tooltip.innerText = "Copiar";
+                    tooltip.classList.remove('visible');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar el texto: ', err);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

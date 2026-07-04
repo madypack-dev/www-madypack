@@ -19,7 +19,7 @@ class TestPresupuestoEndpoints:
         assert response.status_code == 200
         assert "Pedido de cotización" in response.text
 
-    def test_post_presupuesto_genera_pdf(self, client):
+    def test_post_presupuesto_genera_lead_y_confirmacion(self, client):
         carrito = [
             {
                 "id": 1,
@@ -39,7 +39,7 @@ class TestPresupuestoEndpoints:
             data={
                 "name": "Juan Pérez",
                 "email": "juan@example.com",
-                "phone": "5491112345678",
+                "phone": "+5491112345678",
                 "company": "ACME",
                 "message": "Necesito presupuesto",
             },
@@ -47,9 +47,42 @@ class TestPresupuestoEndpoints:
             headers={"host": "localhost:8000"},
         )
         assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
+        assert "¡Presupuesto Generado!" in response.text
+        assert "Descargar Presupuesto PDF" in response.text
+        assert "Cerrar Compra por WhatsApp" in response.text
+
+    def test_descargar_presupuesto_genera_pdf(self, client):
+        carrito = [
+            {
+                "id": 1,
+                "nombre": "Bolsas de Papel Kraft Personalizadas",
+                "descripcion": "Impresión Flexográfica | Manijas planas",
+                "cantidad": 1000,
+                "imagen": "bolsas-personalizadas.svg",
+                "calculo": {
+                    "tipo": "suma_por_unidad_mas_fijo",
+                    "conceptos": ["base", "manija_plana", "personalizacion"],
+                    "concepto_fijo": "fijo_matriz",
+                },
+            }
+        ]
+        response = client.get(
+            "/presupuesto/descargar/",
+            params={
+                "ref": "COT-20260704-TEST",
+                "name": "Juan Pérez",
+                "company": "ACME",
+                "email": "juan@example.com",
+                "phone": "+5491112345678",
+            },
+            cookies={"articulos_carrito": json.dumps(carrito)},
+            headers={"host": "localhost:8000"},
+        )
+        assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"
         assert response.content.startswith(b"%PDF")
-        assert "presupuesto-tu-empresa.pdf" in response.headers["content-disposition"]
+        assert "presupuesto-COT-20260704-TEST.pdf" in response.headers["content-disposition"]
 
     def test_post_presupuesto_sin_carrito_redirige(self, client):
         response = client.post(

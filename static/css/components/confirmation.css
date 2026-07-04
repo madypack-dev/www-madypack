@@ -1,0 +1,211 @@
+/* Confirmation Page Styles */
+.confirmation-section {
+    padding: 60px 0;
+    background-color: var(--background, #f4f4f9);
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.confirmation-card {
+    max-width: 620px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    text-align: center;
+}
+
+.confirmation-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    background-color: rgba(40, 83, 161, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.confirmation-checkmark {
+    font-size: 2.2rem;
+    color: var(--primary, #2853A1);
+    font-weight: bold;
+    line-height: 1;
+}
+
+.confirmation-title {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark, #342D3F);
+    margin-bottom: 12px;
+}
+
+.confirmation-subtitle {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text, #4a4a4a);
+    margin-bottom: 32px;
+}
+
+.reference-code-box {
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+
+.reference-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+
+.reference-code-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.reference-code-value {
+    font-family: monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary, #2853A1);
+    letter-spacing: 0.02em;
+}
+
+.copy-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+    color: var(--primary, #2853A1);
+    background-color: rgba(40, 83, 161, 0.05);
+}
+
+.copy-tooltip {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333333;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.copy-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333333 transparent transparent transparent;
+}
+
+.copy-button:hover .copy-tooltip,
+.copy-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.confirmation-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 520px) {
+    .confirmation-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+.action-btn {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 14px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.download-btn {
+    background-color: var(--primary, #2853A1);
+    color: #ffffff;
+    border: 1px solid var(--primary, #2853A1);
+}
+
+.download-btn:hover {
+    background-color: var(--primary-dark, #1d3f7a);
+    border-color: var(--primary-dark, #1d3f7a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 83, 161, 0.2);
+}
+
+.download-btn:active {
+    transform: translateY(0);
+}
+
+.whatsapp-btn {
+    background-color: #25D366;
+    color: #ffffff;
+    border: 1px solid #25D366;
+}
+
+.whatsapp-btn:hover {
+    background-color: #128C7E;
+    border-color: #128C7E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-btn:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    flex-shrink: 0;
+}
+
+.confirmation-footer-note {
+    font-size: 0.825rem;
+    line-height: 1.5;
+    color: #8c8c8c;
+    margin: 0;
+}

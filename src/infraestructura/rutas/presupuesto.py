@@ -147,28 +147,90 @@ async def generar_presupuesto(
     request: Request,
     tenant: str = Depends(resolutor_tenant),
 ):
-    """Genera y devuelve el PDF de presupuesto a partir del carrito y datos del solicitante."""
+    """Procesa los datos de contacto del lead, los envía a Chatwoot y retorna la vista de confirmación."""
+    from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
+    from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
+    from src.lead.adaptadores.eventos.noop_publicador import NoOpPublicador
+    from src.lead.aplicacion.casos_uso.crear_lead import CrearLeadDesdePresupuesto
+    from src.infraestructura.config.settings import (
+        CHATWOOT_URL,
+        CHATWOOT_ACCOUNT_ID,
+        CHATWOOT_INBOX_ID,
+        CHATWOOT_API_TOKEN,
+    )
+    import httpx
+
     site = cargar_site(tenant)
     form_data = await request.form()
 
     try:
-        datos_form = SolicitudPresupuestoForm(
-            name=_str_field(form_data.get("name")),
+        datos_form = CrearLeadRequest(
+            nombre=_str_field_required(form_data.get("name")),
+            empresa=_str_field_required(form_data.get("company")),
+            telefono=_str_field_required(form_data.get("phone")),
             email=_str_field_required(form_data.get("email")),
-            phone=_str_field_required(form_data.get("phone")),
-            company=_str_field(form_data.get("company")),
-            message=_str_field(form_data.get("message")),
         )
-    except ValidationError as err:
-        logger.warning(f"Datos de solicitud inválidos: {err}")
+    except (ValidationError, ValueError) as err:
+        logger.warning(f"Datos de contacto inválidos: {err}")
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
+    productos = _obtener_productos_tienda(tenant)
+    repositorio_carrito = RepositorioCarritoCookie(
+        cookies=request.cookies,
+        cargar_productos_tienda=lambda: productos,
+        registrar_error=logger.error,
+    )
+    carrito = repositorio_carrito.obtener_carrito()
+    if not carrito.articulos:
+        return RedirectResponse(url="/cotizacion/?error=carrito_vacio", status_code=303)
+
+    async with httpx.AsyncClient() as http_client:
+        chatwoot_repo = ChatwootContactRepository(
+            http_client=http_client,
+            base_url=CHATWOOT_URL,
+            account_id=CHATWOOT_ACCOUNT_ID,
+            api_token=CHATWOOT_API_TOKEN,
+        )
+        publicador = NoOpPublicador()
+        
+        whatsapp_vendedor = site.whatsapp.phone
+
+        caso_uso_lead = CrearLeadDesdePresupuesto(
+            repositorio=chatwoot_repo,
+            publicador_eventos=publicador,
+            chatwoot_inbox_id=CHATWOOT_INBOX_ID,
+            whatsapp_phone=whatsapp_vendedor,
+            registrar_error=logger.error,
+        )
+
+        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/confirmacion_presupuesto.html",
+        context={"site": site, "response": response_lead},
+    )
+
+
+@router.get("/presupuesto/descargar/")
+async def descargar_presupuesto(
+    request: Request,
+    ref: str,
+    name: str,
+    company: str,
+    email: EmailStr,
+    phone: str,
+    tenant: str = Depends(resolutor_tenant),
+):
+    """Genera al vuelo el PDF de presupuesto a partir de los datos recibidos (sin persistencia local)."""
+    site = cargar_site(tenant)
+    
     datos_solicitante = DatosSolicitante(
-        nombre=datos_form.name,
-        email=str(datos_form.email),
-        telefono=datos_form.phone,
-        empresa=datos_form.company,
-        mensaje=datos_form.message,
+        nombre=name,
+        email=str(email),
+        telefono=phone,
+        empresa=company,
+        mensaje=f"Presupuesto de referencia {ref}",
     )
 
     logo_src = site.header.logo.src
@@ -222,8 +284,7 @@ async def generar_presupuesto(
         logger.error(f"Error generando PDF de presupuesto: {err}", exc_info=True)
         return RedirectResponse(url="/cotizacion/?error=pdf_error", status_code=303)
 
-    brand_slug = site.site.brand.lower().replace(" ", "-")
-    filename = f"presupuesto-{brand_slug}.pdf"
+    filename = f"presupuesto-{ref}.pdf"
 
     return StreamingResponse(
         BytesIO(pdf_bytes),

@@ -37,6 +37,10 @@ class Settings(BaseModel):
     APP_TITLE: str = Field(default_factory=lambda: os.getenv("APP_TITLE", "Ecommerce"))
     LOG_LEVEL: str = Field(default_factory=lambda: os.getenv("LOG_LEVEL", "INFO"))
     FALLBACK_TENANT: str = Field(default_factory=lambda: os.getenv("FALLBACK_TENANT", "default"))
+    CHATWOOT_URL: str = Field(default_factory=lambda: os.getenv("CHATWOOT_URL", "https://chatwoot.com"))
+    CHATWOOT_ACCOUNT_ID: int = Field(default_factory=lambda: int(os.getenv("CHATWOOT_ACCOUNT_ID", "1")))
+    CHATWOOT_INBOX_ID: int = Field(default_factory=lambda: int(os.getenv("CHATWOOT_INBOX_ID", "1")))
+    CHATWOOT_API_TOKEN: str = Field(default_factory=lambda: os.getenv("CHATWOOT_API_TOKEN", ""))
 
     MAPEO_TENANTS: dict[str, str] = Field(
         default_factory=lambda: {
@@ -87,3 +91,7 @@ MAPEO_TENANTS: dict[str, str] = _settings.MAPEO_TENANTS
 MAPEO_PUERTOS: dict[str, str] = _settings.MAPEO_PUERTOS
 MAPEO_TENANT_PUERTO: dict[str, str] = _settings.MAPEO_TENANT_PUERTO
 PATRON_EMPRESA: re.Pattern = _settings.PATRON_EMPRESA
+CHATWOOT_URL: str = _settings.CHATWOOT_URL
+CHATWOOT_ACCOUNT_ID: int = _settings.CHATWOOT_ACCOUNT_ID
+CHATWOOT_INBOX_ID: int = _settings.CHATWOOT_INBOX_ID
+CHATWOOT_API_TOKEN: str = _settings.CHATWOOT_API_TOKEN
