@@ -10,12 +10,12 @@ from typing import Any
 
 import yaml  # type: ignore
 
-import logging
+from src.infraestructura.config import FALLBACK_TENANT
+from src.infraestructura.logging import get_logger
 
-logger = logging.getLogger("madypack")
+logger = get_logger()
 
 DATA_DIR = Path(__file__).resolve().parents[3] / "data"
-FALLBACK_TENANT = "default"
 
 
 def _path_yaml(tenant: str, nombre: str) -> Path:

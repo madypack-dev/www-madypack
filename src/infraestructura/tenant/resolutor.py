@@ -6,32 +6,14 @@ Soporta tres entornos:
 - Producción: dominios propios (madypack.com.ar)
 """
 
-import re
-
 from fastapi import Request
 
-# Mapeo explícito de dominios a tenant.
-# Útil para dominios que no siguen el patrón empresa-N o para alias.
-MAPEO_TENANTS: dict[str, str] = {
-    # Dominios actuales de Madypack
-    "www.madypack.com.ar": "madypack",
-    "madypack.com.ar": "madypack",
-}
-
-# Mapeo de puertos para desarrollo local.
-MAPEO_PUERTOS: dict[str, str] = {
-    "8000": "default",
-    "8001": "madypack",
-    "8002": "eitec",
-    "8003": "upp",
-    "8004": "plasticoselgringo",
-}
-
-FALLBACK_TENANT: str = "default"
-
-# Patrones que permiten inferir el tenant sin mapeo explícito.
-# Ejemplos válidos: empresa-1, empresa-1.datamaq.com.ar, empresa-1.com.ar
-_PATRON_EMPRESA = re.compile(r"^(empresa-\d+)(?:\.datamaq\.com\.ar|\.com\.ar)?$")
+from src.infraestructura.config import (
+    MAPEO_PUERTOS,
+    MAPEO_TENANTS,
+    FALLBACK_TENANT,
+    PATRON_EMPRESA,
+)
 
 
 def _extraer_host_puerto(host_header: str) -> tuple[str, str | None]:
@@ -63,7 +45,7 @@ def resolutor_tenant(request: Request) -> str:
         return MAPEO_TENANTS[host]
 
     # 3. Inferencia por patrón empresa-N (staging/producción).
-    match = _PATRON_EMPRESA.match(host)
+    match = PATRON_EMPRESA.match(host)
     if match:
         return match.group(1)
 

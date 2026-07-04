@@ -6,33 +6,22 @@
 #   ./run.sh              # puerto 8000 -> default
 #   ./run.sh 8001         # puerto 8001 -> madypack
 #   ./run.sh madypack     # equivalente al anterior
-#   ./run.sh empresa-2    # puerto 8002 -> empresa-2
+#   ./run.sh eitec        # puerto 8002 -> eitec
 
 set -e
 
 PUERTO="${1:-8000}"
 
-# Mapeo de nombres de tenant a puertos.
-declare -A TENANT_PUERTO=(
-    ["default"]="8000"
-    ["madypack"]="8001"
-    ["empresa-2"]="8002"
-    ["empresa-3"]="8003"
-    ["empresa-4"]="8004"
-)
-
-# Si el argumento es un nombre de tenant conocido, derivar el puerto.
-if [[ -n "${TENANT_PUERTO[$PUERTO]:-}" ]]; then
-    PUERTO="${TENANT_PUERTO[$PUERTO]}"
+# Si el argumento es un nombre de tenant conocido, derivar el puerto desde settings.
+if ./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; exit(0 if '$PUERTO' in MAPEO_TENANT_PUERTO else 1)" 2>/dev/null; then
+    PUERTO=$(./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; print(MAPEO_TENANT_PUERTO['$PUERTO'])")
 fi
 
 # Validar que el puerto sea numérico.
 if ! [[ "$PUERTO" =~ ^[0-9]+$ ]]; then
     echo "Uso: $0 [puerto|tenant]"
     echo "Tenants disponibles:"
-    for TENANT in "${!TENANT_PUERTO[@]}"; do
-        echo "  $0 $TENANT   # puerto ${TENANT_PUERTO[$TENANT]}"
-    done
+    ./venv/bin/python -c "from src.infraestructura.config import MAPEO_TENANT_PUERTO; [print(f'  $0 {t}   # puerto {p}') for t, p in MAPEO_TENANT_PUERTO.items()]"
     exit 1
 fi
 

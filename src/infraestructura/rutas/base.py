@@ -1,6 +1,5 @@
 from datetime import date
 import time
-import logging
 from pathlib import Path
 from typing import Callable, Any
 
@@ -8,11 +7,11 @@ from fastapi import Request, Response, Depends
 from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 
+from src.infraestructura.logging import get_logger
 from src.infraestructura.tenant.resolutor import resolutor_tenant
 from src.infraestructura.datos.cargadores import cargar_site
 
-logger = logging.getLogger("madypack")
-logging.basicConfig(level=logging.INFO)
+logger = get_logger()
 
 templates = Jinja2Templates(directory="templates")
 

@@ -9,7 +9,11 @@
 
 set -e
 
-PUERTOS=(8000 8001)
+# Obtener los puertos configurados en settings.py
+PUERTOS=($(
+    ./venv/bin/python -c "from src.infraestructura.config import MAPEO_PUERTOS; print(' '.join(sorted(MAPEO_PUERTOS.keys(), key=int)))"
+))
+
 PIDS=()
 
 _liberar_puerto() {

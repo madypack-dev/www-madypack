@@ -5,11 +5,16 @@ import mimetypes
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse
 
+from src.infraestructura.config import APP_TITLE
+from src.infraestructura.logging import configurar_logging, get_logger
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
 from src.infraestructura.tenant.resolutor import resolutor_tenant
 
-app = FastAPI(title="Madypack")
+configurar_logging()
+logger = get_logger()
+
+app = FastAPI(title=APP_TITLE)
 
 STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
 
@@ -40,7 +45,7 @@ def _resolve_static_file(tenant: str, relative_path: str) -> Path | None:
     return None
 
 
-@app.get("/static/{path:path}")
+@app.get("/static/{path:path}", name="static")
 async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
     """Sirve archivos estáticos resolviendo primero la carpeta del tenant."""
     file_path = _resolve_static_file(tenant, path)

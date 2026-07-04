@@ -65,17 +65,19 @@ Orden de resolución:
 
 ### Mapeos actuales
 
+La configuración centralizada vive en `src/infraestructura/config/settings.py`.
+
 ```python
 MAPEO_PUERTOS = {
     "8000": "default",
     "8001": "madypack",
-    "8002": "empresa-2",
-    "8003": "empresa-3",
-    "8004": "empresa-4",
+    "8002": "eitec",
+    "8003": "upp",
+    "8004": "plasticoselgringo",
 }
 ```
 
-Los dominios de staging y producción se inferen automáticamente por el patrón `empresa-N`, por lo que no es necesario agregarlos uno a uno salvo que sean casos especiales.
+Los dominios de staging y producción se inferen automáticamente por el patrón `empresa-N`, por lo que no es necesario agregarlos uno a uno salvo que sean casos especiales. También se pueden sobrescribir mediante la variable de entorno `MAPEO_TENANTS`.
 
 ---
 
@@ -93,13 +95,20 @@ Editar `data/empresa-N/site.yml`, `data/empresa-N/carrito_defecto.yml` y `data/e
 
 ### Paso 3: Configurar el puerto de desarrollo
 
-Agregar en `src/infraestructura/tenant/resolutor.py`:
+Agregar en `src/infraestructura/config/settings.py`:
 
 ```python
 MAPEO_PUERTOS = {
     ...
     "800N": "empresa-N",  # o "madypack"
 }
+```
+
+O, sin modificar código, usando una variable de entorno:
+
+```bash
+export MAPEO_PUERTOS="8005=empresa-5,8006=empresa-6"
+./run.sh empresa-5
 ```
 
 ### Paso 4: Configurar staging y producción
