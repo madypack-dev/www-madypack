@@ -6,48 +6,84 @@ entorno. Los valores por defecto corresponden al entorno de desarrollo local.
 
 import os
 import re
+from typing import Any
 
-APP_TITLE: str = os.getenv("APP_TITLE", "Ecommerce")
-LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+from pydantic import BaseModel, Field, computed_field, field_validator
 
-# Tenant por defecto cuando no se puede resolver otro.
-FALLBACK_TENANT: str = os.getenv("FALLBACK_TENANT", "default")
 
-# Mapeo explícito de dominios a tenant.
-# Formato esperado en la variable de entorno:
-#   DOMINIO1=tenant1,DOMINIO2=tenant2
-_env_tenants = os.getenv("MAPEO_TENANTS", "")
-MAPEO_TENANTS: dict[str, str] = {
-    "www.madypack.com.ar": "madypack",
-    "madypack.com.ar": "madypack",
-}
-if _env_tenants:
-    for par in _env_tenants.split(","):
-        if "=" in par:
-            dominio, tenant = par.split("=", 1)
-            MAPEO_TENANTS[dominio.strip()] = tenant.strip()
+def _parsear_mapeo(valor: Any) -> dict[str, str]:
+    """Parsea un string tipo 'CLAVE1=val1,CLAVE2=val2' a un diccionario."""
+    if isinstance(valor, dict):
+        return {str(k).strip(): str(v).strip() for k, v in valor.items()}
 
-# Mapeo de puertos para desarrollo local.
-# Formato esperado en la variable de entorno:
-#   PUERTO1=tenant1,PUERTO2=tenant2
-_env_puertos = os.getenv("MAPEO_PUERTOS", "")
-MAPEO_PUERTOS: dict[str, str] = {
-    "8000": "default",
-    "8001": "madypack",
-    "8002": "eitec",
-    "8003": "upp",
-    "8004": "plasticoselgringo",
-}
-if _env_puertos:
-    for par in _env_puertos.split(","):
-        if "=" in par:
-            puerto, tenant = par.split("=", 1)
-            MAPEO_PUERTOS[puerto.strip()] = tenant.strip()
+    resultado: dict[str, str] = {}
+    if not valor:
+        return resultado
 
-# Mapeo inverso: tenant -> puerto de desarrollo.
-MAPEO_TENANT_PUERTO: dict[str, str] = {
-    tenant: puerto for puerto, tenant in MAPEO_PUERTOS.items()
-}
+    for par in str(valor).split(","):
+        if "=" not in par:
+            continue
+        clave, val = par.split("=", 1)
+        clave = clave.strip()
+        val = val.strip()
+        if clave and val:
+            resultado[clave] = val
+    return resultado
 
-# Patrón para inferir tenants del tipo empresa-N en staging/producción.
-PATRON_EMPRESA = re.compile(r"^(empresa-\d+)(?:\.datamaq\.com\.ar|\.com\.ar)?$")
+
+class Settings(BaseModel):
+    """Configuración validada con Pydantic."""
+
+    APP_TITLE: str = Field(default_factory=lambda: os.getenv("APP_TITLE", "Ecommerce"))
+    LOG_LEVEL: str = Field(default_factory=lambda: os.getenv("LOG_LEVEL", "INFO"))
+    FALLBACK_TENANT: str = Field(default_factory=lambda: os.getenv("FALLBACK_TENANT", "default"))
+
+    MAPEO_TENANTS: dict[str, str] = Field(
+        default_factory=lambda: {
+            "www.madypack.com.ar": "madypack",
+            "madypack.com.ar": "madypack",
+        }
+    )
+    MAPEO_PUERTOS: dict[str, str] = Field(
+        default_factory=lambda: {
+            "8000": "default",
+            "8001": "madypack",
+            "8002": "eitec",
+            "8003": "upp",
+            "8004": "plasticoselgringo",
+        }
+    )
+
+    PATRON_EMPRESA: re.Pattern = Field(
+        default=re.compile(r"^(empresa-\d+)(?:\.datamaq\.com\.ar|\.com\.ar)?$")
+    )
+
+    @field_validator("MAPEO_TENANTS", "MAPEO_PUERTOS", mode="before")
+    @classmethod
+    def _validar_mapeo(cls, valor: Any) -> dict[str, str]:
+        return _parsear_mapeo(valor)
+
+    def model_post_init(self, __context: Any) -> None:
+        """Mergea variables de entorno con los valores por defecto."""
+        env_tenants = _parsear_mapeo(os.getenv("MAPEO_TENANTS"))
+        env_puertos = _parsear_mapeo(os.getenv("MAPEO_PUERTOS"))
+        self.MAPEO_TENANTS = {**self.MAPEO_TENANTS, **env_tenants}
+        self.MAPEO_PUERTOS = {**self.MAPEO_PUERTOS, **env_puertos}
+
+    @computed_field
+    @property
+    def MAPEO_TENANT_PUERTO(self) -> dict[str, str]:
+        """Mapeo inverso: tenant -> puerto de desarrollo."""
+        return {tenant: puerto for puerto, tenant in self.MAPEO_PUERTOS.items()}
+
+
+# Instancia única exportada para mantener compatibilidad con el resto de la app.
+_settings = Settings()
+
+APP_TITLE: str = _settings.APP_TITLE
+LOG_LEVEL: str = _settings.LOG_LEVEL
+FALLBACK_TENANT: str = _settings.FALLBACK_TENANT
+MAPEO_TENANTS: dict[str, str] = _settings.MAPEO_TENANTS
+MAPEO_PUERTOS: dict[str, str] = _settings.MAPEO_PUERTOS
+MAPEO_TENANT_PUERTO: dict[str, str] = _settings.MAPEO_TENANT_PUERTO
+PATRON_EMPRESA: re.Pattern = _settings.PATRON_EMPRESA
