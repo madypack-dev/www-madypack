@@ -1,12 +1,19 @@
-from pydantic import BaseModel
+"""Modelos de dominio para la configuración genérica de tarifas."""
 
-class TarifasCalculo(BaseModel):
-    costo_papel_base: float
-    costo_manija_plana: float
-    costo_manija_cordon: float
-    costo_personalizacion_base: float
-    costo_fijo_matriz: float
+from pydantic import BaseModel, Field
+
+
+class Tarifas(BaseModel):
+    """Conjunto genérico de conceptos de costo indexados por nombre.
+
+    Cada tenant define los conceptos que necesite para calcular precios.
+    Ejemplos: base, manija_plana, manija_cordon, personalizacion, fijo_matriz.
+    """
+
+    conceptos: dict[str, float] = Field(default_factory=dict)
 
 
 class ConfiguracionTarifas(BaseModel):
-    tarifas: TarifasCalculo
+    """Raíz del archivo tarifas.yml."""
+
+    tarifas: Tarifas

@@ -1,11 +1,25 @@
 from pydantic import BaseModel, Field, field_validator
 
+
+class CalculoArticulo(BaseModel):
+    """Configuración de cálculo de precio para un artículo del catálogo.
+
+    Permite definir, por artículo, qué conceptos de tarifa se usan y con qué
+    estrategia se calcula el precio estimado.
+    """
+
+    tipo: str
+    conceptos: list[str]
+    concepto_fijo: str | None = None
+
+
 class ArticuloCarrito(BaseModel):
     id: int
     nombre: str
     descripcion: str
     cantidad: int = Field(..., ge=100)
     imagen: str
+    calculo: CalculoArticulo | None = None
 
     @field_validator("cantidad")
     @classmethod

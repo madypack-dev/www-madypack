@@ -2,6 +2,8 @@
 
 from pydantic import BaseModel, Field, field_validator
 
+from src.comercio.dominio.modelos.carrito import CalculoArticulo
+
 
 class ArticuloCatalogo(BaseModel):
     """Representa un artículo disponible en el catálogo del tenant."""
@@ -11,6 +13,7 @@ class ArticuloCatalogo(BaseModel):
     descripcion: str
     cantidad_por_defecto: int = Field(..., ge=100)
     imagen: str
+    calculo: CalculoArticulo | None = None
 
     @field_validator("cantidad_por_defecto")
     @classmethod

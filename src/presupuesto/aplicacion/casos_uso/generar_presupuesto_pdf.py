@@ -46,9 +46,7 @@ class CasoUsoGenerarPresupuestoPDF:
 
         for articulo in carrito.articulos:
             try:
-                subtotal = self.servicio_precios.calcular_precio_estimado(
-                    articulo.id, articulo.cantidad
-                )
+                subtotal = self.servicio_precios.calcular_precio_estimado(articulo)
             except Exception as err:
                 self.registrar_error(f"Error calculando precio para artículo {articulo.id}: {err}")
                 subtotal = 0.0

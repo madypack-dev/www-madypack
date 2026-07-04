@@ -27,6 +27,11 @@ class TestPresupuestoEndpoints:
                 "descripcion": "Impresión Flexográfica | Manijas planas",
                 "cantidad": 1000,
                 "imagen": "bolsas-personalizadas.svg",
+                "calculo": {
+                    "tipo": "suma_por_unidad_mas_fijo",
+                    "conceptos": ["base", "manija_plana", "personalizacion"],
+                    "concepto_fijo": "fijo_matriz",
+                },
             }
         ]
         response = client.post(
@@ -68,6 +73,10 @@ class TestPresupuestoEndpoints:
                 "descripcion": "Desc",
                 "cantidad": 1000,
                 "imagen": "bolsas.svg",
+                "calculo": {
+                    "tipo": "suma_por_unidad",
+                    "conceptos": ["base"],
+                },
             }
         ]
         response = client.post(

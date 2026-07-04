@@ -1,7 +1,9 @@
 from typing import Callable
-from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+
 from src.comercio.dominio.modelos.carrito import ArticuloCarrito
 from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
+from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+
 
 class CasoUsoActualizarCarrito:
     def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):
@@ -41,7 +43,8 @@ class CasoUsoAgregarAlCarrito:
                 nombre=datos_producto.nombre,
                 descripcion=datos_producto.descripcion,
                 cantidad=cantidad,
-                imagen=datos_producto.imagen
+                imagen=datos_producto.imagen,
+                calculo=datos_producto.calculo,
             )
             carrito.agregar_articulo(articulo)
             self.repositorio.guardar_carrito(carrito)

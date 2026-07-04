@@ -5,7 +5,7 @@ from typing import Callable
 
 import pytest
 
-from src.comercio.dominio.modelos.carrito import ArticuloCarrito, Carrito
+from src.comercio.dominio.modelos.carrito import ArticuloCarrito, Carrito, CalculoArticulo
 from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
 from src.comercio.dominio.puertos.servicio_precios import IServicioPrecios
 from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
@@ -28,11 +28,8 @@ class RepositorioCarritoFake(IRepositorioCarrito):
 
 
 class ServicioPreciosFake(IServicioPrecios):
-    def __init__(self, precios: dict[int, float]):
-        self._precios = precios
-
-    def calcular_precio_estimado(self, id_articulo: int, cantidad: int) -> float:
-        return self._precios.get(id_articulo, 0.0) * cantidad
+    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
+        return articulo.cantidad * 1.5
 
 
 class GeneradorPDFFake(IGeneradorDocumentoPresupuesto):
@@ -52,10 +49,15 @@ class TestCasoUsoGenerarPresupuestoPDF:
             articulos=[
                 ArticuloCarrito(
                     id=1,
-                    nombre="Bolsas personalizadas",
+                    nombre="Bolsas de Papel Kraft Personalizadas",
                     descripcion="Manija plana",
                     cantidad=1000,
                     imagen="bolsas-personalizadas.svg",
+                    calculo=CalculoArticulo(
+                        tipo="suma_por_unidad_mas_fijo",
+                        conceptos=["base", "manija_plana", "personalizacion"],
+                        concepto_fijo="fijo_matriz",
+                    ),
                 ),
                 ArticuloCarrito(
                     id=2,
@@ -63,11 +65,15 @@ class TestCasoUsoGenerarPresupuestoPDF:
                     descripcion="Lisas",
                     cantidad=500,
                     imagen="bolsas-con-m.svg",
+                    calculo=CalculoArticulo(
+                        tipo="suma_por_unidad",
+                        conceptos=["base", "manija_cordon"],
+                    ),
                 ),
             ]
         )
         repositorio = RepositorioCarritoFake(carrito)
-        servicio_precios = ServicioPreciosFake({1: 1.5, 2: 2.0})
+        servicio_precios = ServicioPreciosFake()
         generador = GeneradorPDFFake()
 
         caso_uso = CasoUsoGenerarPresupuestoPDF(
@@ -99,14 +105,14 @@ class TestCasoUsoGenerarPresupuestoPDF:
 
         assert resultado == b"PDF_FAKE"
         assert generador.ultimo_presupuesto is not None
-        assert generador.ultimo_presupuesto.total_estimado == 2500.0
+        assert generador.ultimo_presupuesto.total_estimado == 2250.0
         assert len(generador.ultimo_presupuesto.lineas) == 2
         assert generador.ultimo_presupuesto.datos_solicitante.email == "juan@example.com"
         assert generador.ultima_identidad.brand == "Madypack"
 
     def test_lanza_error_si_carrito_esta_vacio(self):
         repositorio = RepositorioCarritoFake(Carrito(articulos=[]))
-        servicio_precios = ServicioPreciosFake({})
+        servicio_precios = ServicioPreciosFake()
         generador = GeneradorPDFFake()
 
         caso_uso = CasoUsoGenerarPresupuestoPDF(

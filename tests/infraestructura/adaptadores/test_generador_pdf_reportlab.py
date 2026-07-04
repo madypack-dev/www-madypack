@@ -4,6 +4,7 @@ from datetime import date
 
 import pytest
 
+from src.comercio.dominio.modelos.carrito import CalculoArticulo
 from src.infraestructura.adaptadores.generador_pdf_reportlab import (
     GeneradorPresupuestoPDFReportLab,
 )
@@ -33,12 +34,12 @@ class TestGeneradorPresupuestoPDFReportLab:
                     nombre="Bolsas de Papel Kraft Personalizadas",
                     descripcion="Impresión Flexográfica | Manijas planas",
                     cantidad=1000,
-                    precio_unitario_estimado=0.85,
-                    subtotal=850.0,
+                    precio_unitario_estimado=2.20,
+                    subtotal=2200.0,
                 ),
             ],
             condiciones_comerciales=["Oferta preliminar sujeta a confirmación."],
-            total_estimado=850.0,
+            total_estimado=2200.0,
         )
         identidad = IdentidadVisual(
             brand="Madypack",

@@ -29,7 +29,7 @@ class TestCargarDefault:
     def test_cargar_tarifas_default_devuelve_configuracion_tarifas(self):
         tarifas = cargar_tarifas("default")
         assert isinstance(tarifas, ConfiguracionTarifas)
-        assert tarifas.tarifas.costo_papel_base == 0.10
+        assert tarifas.tarifas.conceptos["base"] == 0.10
 
 
 class TestValidacionErrores:

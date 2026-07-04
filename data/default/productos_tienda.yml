@@ -1,16 +1,26 @@
 articulos:
   - id: 1
-    nombre: "Producto de ejemplo 1"
-    descripcion: "Descripción del producto 1"
+    nombre: "Producto A Personalizado"
+    descripcion: "Descripción del producto A"
     cantidad_por_defecto: 1000
-    imagen: "producto-1.svg"
+    imagen: "producto-a.svg"
+    calculo:
+      tipo: "suma_por_unidad_mas_fijo"
+      conceptos: ["base", "manija_plana", "personalizacion"]
+      concepto_fijo: "fijo_matriz"
   - id: 2
-    nombre: "Producto de ejemplo 2"
-    descripcion: "Descripción del producto 2"
-    cantidad_por_defecto: 1000
-    imagen: "producto-2.svg"
+    nombre: "Producto B Estándar"
+    descripcion: "Descripción del producto B"
+    cantidad_por_defecto: 2500
+    imagen: "producto-b.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "manija_cordon"]
   - id: 3
-    nombre: "Producto de ejemplo 3"
-    descripcion: "Descripción del producto 3"
+    nombre: "Producto C Básico"
+    descripcion: "Descripción del producto C"
     cantidad_por_defecto: 1000
-    imagen: "producto-3.svg"
+    imagen: "producto-c.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base"]
