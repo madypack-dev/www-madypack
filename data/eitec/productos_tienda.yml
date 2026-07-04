@@ -1,0 +1,49 @@
+articulos:
+  - id: 1
+    nombre: "Válvulas para Cocinas Domiciliarias"
+    descripcion: "Cuerpo de aleación de aluminio | Entrada de gas con malla de acero inoxidable"
+    cantidad_por_defecto: 500
+    imagen: "valvulas.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_aluminio", "mecanizado_precision", "ensamblado"]
+  - id: 2
+    nombre: "Válvulas Termostáticas para Termotanques"
+    descripcion: "Seguridad termoeléctrica | Sensor de cobre según normas ASTM"
+    cantidad_por_defecto: 100
+    imagen: "valvulas.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_aluminio", "sensor_cobre", "mecanizado_precision", "ensamblado", "calibracion_flujo"]
+  - id: 3
+    nombre: "Válvulas de Seguridad para Calefactores"
+    descripcion: "Corte termoeléctrico rápido | Cuerpo de latón forjado en caliente"
+    cantidad_por_defecto: 200
+    imagen: "valvulas.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_laton", "sensor_cobre", "mecanizado_precision", "ensamblado", "calibracion_flujo"]
+  - id: 4
+    nombre: "Robinetes para Cocinas Gastronómicas"
+    descripcion: "Diseñados para alta exigencia comercial | Mayor caudal y robustez"
+    cantidad_por_defecto: 100
+    imagen: "robinetes.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_laton", "mecanizado_precision", "ensamblado"]
+  - id: 5
+    nombre: "Termostatos para Estufas"
+    descripcion: "Regulación precisa de temperatura y control de llama de piloto"
+    cantidad_por_defecto: 100
+    imagen: "termostatos.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_aluminio", "mecanizado_precision", "ensamblado"]
+  - id: 6
+    nombre: "Quemadores para Cocinas y Anafes"
+    descripcion: "Inyección de aluminio de alta resistencia térmica y óptima mezcla"
+    cantidad_por_defecto: 300
+    imagen: "valvulas.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "cuerpo_aluminio"]

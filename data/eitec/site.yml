@@ -1,0 +1,248 @@
+analytics:
+  gtm_id: ""
+  ga_id: ""
+
+whatsapp:
+  phone: "5491155667788"
+  message: "Hola, me contacto desde la web de EITEC, quiero solicitar una cotización comercial"
+
+site:
+  lang: "es-AR"
+  brand: "EITEC"
+  tagline: "Válvulas y Robinetes para Gas"
+  title_default: "EITEC – Válvulas de Seguridad, Robinetes y Termostatos para Gas"
+  charset: "UTF-8"
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
+  robots: "max-image-preview:large"
+  profile_url: "https://gmpg.org/xfn/11"
+  logo:
+    width: 250
+    height: 80
+    alt: "EITEC"
+    url: "/"
+
+socials:
+  - network: facebook
+    url: "#"
+    label: Facebook
+  - network: instagram
+    url: "#"
+    label: Instagram
+  - network: whatsapp
+    label: WhatsApp
+    cta_class: "eitec-whatsapp-cta"
+
+header:
+  top_bar:
+    text: "COOPERATIVA METALÚRGICA EITEC – BERNAL OESTE, QUILMES"
+  logo:
+    src: "logo-eitec.svg"
+  menu:
+    - label: Inicio
+      url: "/"
+    - label: Tienda
+      url: "/tienda/"
+    - label: Quiénes somos
+      url: "/quienes-somos/"
+    - label: Cotización
+      url: "/cotizacion/"
+    - label: Contacto
+      url: "/contacto/"
+  actions:
+    search: "Buscar"
+    account: "Cuenta"
+    cart: "Carrito"
+    menu: "Menú"
+  account_modal:
+    title: "Acceso Corporativo"
+    close_label: "Cerrar"
+    email_label: "Email"
+    email_placeholder: "compras@empresa.com"
+    password_label: "Contraseña"
+    password_placeholder: "••••••••"
+    submit_button: "Acceder"
+    no_account_text: "¿Nuevo cliente corporativo?"
+    contact_link_text: "Contactar Ventas"
+    contact_url: "/contacto/"
+
+footer:
+  logo:
+    src: "logo-eitec-white.svg"
+  menu:
+    - label: Tienda
+      url: "/tienda/"
+    - label: Quiénes somos
+      url: "/quienes-somos/"
+    - label: Cotización
+      url: "/cotizacion/"
+    - label: Contacto
+      url: "/contacto/"
+    - label: Términos y Condiciones
+      url: "/terminos-y-condiciones/"
+    - label: Política de Privacidad
+      url: "/politica-de-privacidad/"
+      rel: "privacy-policy"
+
+home:
+  hero:
+    title: "Válvulas y componentes para gas de calidad certificada"
+    subtitle: "Único productor nacional. Abastecimiento estratégico B2B para fabricantes."
+
+  cta:
+    title: "Solicitá cotización mayorista"
+    before_link: "Iniciá tu"
+    link_text: "presupuesto"
+    after_link: "acá"
+
+  product_types:
+    title: "Nuestras Líneas de Fabricación y Componentes"
+    products:
+      - label: Válvulas
+        image: "valvulas.svg"
+      - label: Robinetes
+        image: "robinetes.svg"
+      - label: Termostatos
+        image: "termostatos.svg"
+
+  quote_form:
+    title: "Solicitud de Presupuesto Corporativo"
+    meta_title: "Cotización"
+    meta_description: "Solicitá cotización de válvulas de seguridad, robinetes e insumos para gas. EITEC Bernal Oeste."
+    description: "Completá el formulario con los requerimientos técnicos y cantidades de tu pedido."
+    submit: "Solicitar Presupuesto"
+    success_title: "¡Solicitud Recibida!"
+    success_message: "Tu solicitud de cotización técnica ha sido enviada con éxito. Un asesor comercial se pondrá en contacto en breve."
+    required_marker: "*"
+    required_abbreviation: "requerido"
+    details:
+      - title: "Insumos Técnicos Certificados"
+        text: "Fabricamos bajo estrictos estándares y normativas IGA / EN. Detallar los códigos de diseño requeridos por tu departamento de ingeniería nos permite agilizar la cotización."
+      - title: "Volúmenes y Plazos"
+        text: "Como proveedores de terminales y fabricantes (Orbis, Longvie, Ecotermo), manejamos entregas programadas y contratos de abastecimiento anual con esquemas de precios B2B."
+      - title: "Entrega y Despacho"
+        text: "Retiros de mercadería coordinados en nuestra planta industrial de Bernal Oeste, Quilmes, o envíos a nivel nacional con la transportadora de tu elección."
+    fields:
+      - name: name
+        label: "Nombre y Apellido"
+        type: text
+        required: false
+      - name: email
+        label: "Email Corporativo"
+        type: email
+        required: true
+      - name: phone
+        label: "Teléfono de Contacto"
+        type: text
+        required: true
+      - name: company
+        label: "Empresa / Fabricante"
+        type: text
+        required: false
+      - name: message
+        label: "Detalle técnico de las válvulas, robinetes o quemadores a cotizar"
+        type: textarea
+        required: false
+        rows: 4
+        full_width: true
+
+  about:
+    title: "Quiénes Somos — Cooperativa EITEC"
+    meta_title: "Quiénes somos"
+    meta_description: "Conocé la Cooperativa EITEC (ex-EITAR y Tecno Forja), productores nacionales de válvulas para gas en Quilmes."
+    text: "Somos la fusión de dos plantas históricas convertidas en cooperativa bajo control de sus trabajadores, garantizando el único suministro nacional de válvulas de seguridad y robinetes."
+    button_text: "Conocé nuestra historia"
+    button_url: "/quienes-somos/"
+    image: "quienes-somos-eitec.jpg"
+    details:
+      - title: "Nuestra Historia de Recuperación Obrera"
+        text: "Nacimos en septiembre de 2019 tras el cierre intempestivo de las firmas EITAR y Tecno Forja. Los trabajadores resistimos, nos constituimos como cooperativa regulada por el INAES y unimos la capacidad metalúrgica y el ensamblado de precisión bajo una sola gestión integrada."
+      - title: "Único Productor Nacional de Válvulas de Gas"
+        text: "EITEC es el único fabricante en Argentina de válvulas con seguridad termoeléctrica para cocinas, calefactores y termotanques. Nuestra producción nacional evita la total dependencia de componentes importados, asegurando stock constante a los fabricantes del sector."
+      - title: "Procesos Industriales Integrados"
+        text: "Heredamos y operamos toda la cadena metalúrgica de Tecno Forja y EITAR: desde el forjado de cuerpos de latón y aluminio, inyección de componentes de precisión, mecanizado CNC, hasta el ensamblado final, calibrado fino de caudales y rigurosos controles neumáticos de estanqueidad."
+
+  newsletter:
+    title: "Novedades Técnicas e Industriales"
+    placeholder: "Ingrese su email corporativo"
+    submit: "Suscripción"
+    success_title: "Suscrito"
+    success_message: "Gracias por suscribirte al boletín técnico de EITEC."
+
+  contact:
+    title: "Contacto Industrial"
+    meta_title: "Contacto"
+    meta_description: "Contactate con la administración y ventas de la Cooperativa EITEC en Quilmes, Buenos Aires."
+    email: "ventas@eitec.coop"
+    whatsapp_label: "5491155667788"
+    address: "Calle 189 Nº 950, Bernal Oeste, Quilmes, Buenos Aires, Argentina."
+    map_url: "https://maps.google.com/maps?q=Calle%20189%20950%20Bernal%20Oeste&t=&z=14&ie=UTF8&output=embed"
+    map_link: "https://maps.google.com/?q=Calle+189+950+Bernal+Oeste+Quilmes"
+    map_title: "Planta Industrial EITEC"
+    labels:
+      customer_service: "Ventas y Administración"
+      whatsapp: "Canal de WhatsApp:"
+      location: "Planta Bernal Oeste"
+    details:
+      - title: "Horarios Administrativos"
+        text: "Nuestra administración y planta productiva operan de lunes a viernes de 07:00 a 16:00 hs para la recepción de planos técnicos, órdenes de compra y carga de mercadería."
+      - title: "Ubicación en el Polo Metalúrgico de Quilmes"
+        text: "Nuestra planta industrial se ubica en Bernal Oeste, Quilmes, zona estratégica con excelente conectividad logística para el despacho de insumos hacia todo el cinturón industrial de Buenos Aires y el interior del país."
+      - title: "Canal Cooperativo Directo"
+        text: "Al contactar a EITEC, tratás directamente con los socios trabajadores. Esto asegura transparencia de costos, agilidad de respuesta y un profundo compromiso con la calidad de entrega de cada válvula."
+
+cart:
+  title: "Carrito de Cotización"
+  meta_description: "Revisá las válvulas y componentes seleccionados para tu solicitud de cotización comercial."
+  heading: "Lista de Cotización de Insumos"
+  items_heading: "Componentes Solicitados"
+  pending_quote_label: "B2B A Cotizar"
+  items:
+    - name: "Válvulas para Cocinas Domiciliarias"
+      description: "Cuerpo de aluminio | Con corte de seguridad"
+      quantity_label: "Cant: 500 u."
+      image: "valvula-cocina.svg"
+  summary:
+    heading: "Resumen de Solicitud"
+    total_label: "Total Componentes:"
+    total_value: "500 unidades"
+    estimated_cost_label: "Costo estimado:"
+    estimated_cost_value: "A cotizar"
+    note: "El costo de las válvulas se ajusta según el volumen de compra programado y los sensores termoeléctricos requeridos. Enviá tu solicitud y un asesor comercial elaborará una propuesta a medida en 24 hs."
+    submit_button: "Solicitar Cotización de Lote"
+
+presupuesto:
+  validez_dias: 30
+  condiciones_comerciales:
+    - "Los precios comerciales son de lista netos y se confirmarán en la propuesta comercial formal."
+    - "El presupuesto tiene una validez técnica y comercial de 30 días desde su emisión."
+    - "Las condiciones de entrega se pactan FOB Bernal Oeste o despacho acordado con el comprador."
+    - "Precios cotizados en pesos argentinos, IVA no incluido."
+  oferta_preliminar_label: "Presupuesto preliminar técnico"
+
+schema:
+  type: "ManufacturingBusiness"
+  name: "EITEC Cooperativa Metalúrgica"
+  image: "https://www.eitec.coop/static/images/og-image.jpg"
+  logo: "https://www.eitec.coop/static/images/logo-eitec.svg"
+  url: "https://www.eitec.coop"
+  telephone: "+5491155667788"
+  email: "ventas@eitec.coop"
+  description: "Único productor nacional de válvulas de seguridad, robinetes y termostatos certificados para cocinas, estufas y termotanques. Bernal Oeste, Quilmes."
+  address:
+    streetAddress: "Calle 189 Nº 950"
+    addressLocality: "Bernal Oeste"
+    addressRegion: "Buenos Aires"
+    postalCode: "B1883"
+    addressCountry: "AR"
+  geo:
+    latitude: "-34.7150"
+    longitude: "-58.3050"
+  opening_hours:
+    days:
+      - "Monday"
+      - "Tuesday"
+      - "Wednesday"
+      - "Thursday"
+      - "Friday"
+    opens: "07:00"
+    closes: "16:00"
