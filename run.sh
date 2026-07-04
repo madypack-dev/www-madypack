@@ -1,5 +1,6 @@
 #!/bin/bash
 # Levanta el servidor de desarrollo para un tenant específico.
+# Si el puerto está ocupado, mata el proceso que lo usa.
 #
 # Uso:
 #   ./run.sh              # puerto 8000 -> default
@@ -34,6 +35,22 @@ if ! [[ "$PUERTO" =~ ^[0-9]+$ ]]; then
     done
     exit 1
 fi
+
+_liberar_puerto() {
+    local PUERTO_LIBERAR="$1"
+    if command -v fuser &> /dev/null; then
+        fuser -k "${PUERTO_LIBERAR}/tcp" 2>/dev/null || true
+    elif command -v lsof &> /dev/null; then
+        local PID
+        PID=$(lsof -ti ":$PUERTO_LIBERAR" 2>/dev/null || true)
+        if [ -n "$PID" ]; then
+            kill -9 "$PID" 2>/dev/null || true
+        fi
+    fi
+}
+
+echo "Liberando puerto $PUERTO si está ocupado..."
+_liberar_puerto "$PUERTO"
 
 echo "Iniciando servidor en puerto $PUERTO..."
 ./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload
