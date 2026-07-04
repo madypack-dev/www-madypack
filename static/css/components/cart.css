@@ -198,11 +198,7 @@
     text-decoration: none;
 }
 
-.cart-item-remove {
-    margin-left: 10px;
-}
-
-.cart-item-remove .btn-remove {
+.cart-item .btn-remove {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,12 +212,12 @@
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.cart-item-remove .btn-remove:hover {
+.cart-item .btn-remove:hover {
     background-color: #f5f5f5;
     color: #c62828;
 }
 
-.cart-item-remove .btn-remove:focus {
+.cart-item .btn-remove:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
