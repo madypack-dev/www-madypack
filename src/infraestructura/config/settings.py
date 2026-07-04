@@ -37,7 +37,7 @@ class Settings(BaseModel):
     APP_TITLE: str = Field(default_factory=lambda: os.getenv("APP_TITLE", "Ecommerce"))
     LOG_LEVEL: str = Field(default_factory=lambda: os.getenv("LOG_LEVEL", "INFO"))
     FALLBACK_TENANT: str = Field(default_factory=lambda: os.getenv("FALLBACK_TENANT", "default"))
-    CHATWOOT_URL: str = Field(default_factory=lambda: os.getenv("CHATWOOT_URL", "https://chatwoot.com"))
+    CHATWOOT_URL: str = Field(default_factory=lambda: os.getenv("CHATWOOT_URL", "http://localhost:3000"))
     CHATWOOT_ACCOUNT_ID: int = Field(default_factory=lambda: int(os.getenv("CHATWOOT_ACCOUNT_ID", "1")))
     CHATWOOT_INBOX_ID: int = Field(default_factory=lambda: int(os.getenv("CHATWOOT_INBOX_ID", "1")))
     CHATWOOT_API_TOKEN: str = Field(default_factory=lambda: os.getenv("CHATWOOT_API_TOKEN", ""))

@@ -116,9 +116,7 @@ async def read_cotizacion(
     precio_total = 0.0
     for articulo in carrito.articulos:
         try:
-            precio_total += cotizador.calcular_precio_estimado(
-                articulo.id, articulo.cantidad
-            )
+            precio_total += cotizador.calcular_precio_estimado(articulo)
         except Exception as err:
             logger.warning(f"No se pudo cotizar artículo {articulo.id}: {err}")
 

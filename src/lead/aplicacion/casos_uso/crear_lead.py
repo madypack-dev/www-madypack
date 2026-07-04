@@ -1,5 +1,7 @@
 import uuid
 import urllib.parse
+import json
+import os
 from datetime import datetime
 from typing import Callable
 
@@ -19,20 +21,22 @@ class CrearLeadDesdePresupuesto:
         publicador_eventos: IPublicadorEventos,
         chatwoot_inbox_id: int,
         whatsapp_phone: str,
-        registrar_error: Callable[[str], None] = lambda m: None
+        registrar_error: Callable[[str], None] = lambda m: None,
+        fallback_file_path: str = "logs/failed_leads.log"
     ):
         self.repositorio = repositorio
         self.publicador_eventos = publicador_eventos
         self.chatwoot_inbox_id = chatwoot_inbox_id
         self.whatsapp_phone = whatsapp_phone
         self.registrar_error = registrar_error
+        self.fallback_file_path = fallback_file_path
 
     async def ejecutar(self, request: CrearLeadRequest, carrito: Carrito) -> ConfirmacionPresupuestoResponse:
         """
         Flujo de Negocio:
         1. Instancia y genera el Lead (entidad de dominio).
         2. Intenta persistir el contacto en Chatwoot a través del puerto.
-        3. En caso de falla de Chatwoot, captura la excepción y continúa usando un ID temporal.
+        3. En caso de falla de Chatwoot, captura la excepción, asigna un ID temporal, y escribe el Lead en el archivo fallback.
         4. Construye y dispara el evento de dominio LeadCreado.
         5. Formatea el mensaje para WhatsApp (wa.me) con el conteo de líneas.
         6. Retorna los enlaces correspondientes para la vista de confirmación.
@@ -53,6 +57,8 @@ class CrearLeadDesdePresupuesto:
             self.registrar_error(f"Error de integración con Chatwoot: {err}")
             # Fallback: ID temporal
             lead.id = f"FALLBACK-{uuid.uuid4()}"
+            # Registrar el lead fallido localmente para sincronización manual posterior (P0)
+            self._guardar_fallback_local(lead, str(err))
 
         # 3. Emitir evento de dominio
         resumen_lineas = carrito.total_lineas
@@ -98,3 +104,27 @@ class CrearLeadDesdePresupuesto:
             whatsapp_url=whatsapp_url,
             pdf_url=pdf_url
         )
+
+    def _guardar_fallback_local(self, lead: Lead, error_msg: str) -> None:
+        """Escribe los datos del lead en un archivo de log estructurado local para su posterior recuperación manual."""
+        fallback_data = {
+            "timestamp": datetime.now().isoformat(),
+            "lead_id": lead.id,
+            "codigo_referencia": lead.codigo_referencia,
+            "nombre": lead.nombre,
+            "empresa": lead.empresa,
+            "email": str(lead.email),
+            "telefono": lead.telefono,
+            "error": error_msg
+        }
+        
+        try:
+            # Asegurar la existencia del directorio de logs (ej: logs/)
+            dir_name = os.path.dirname(self.fallback_file_path)
+            if dir_name:
+                os.makedirs(dir_name, exist_ok=True)
+                
+            with open(self.fallback_file_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(fallback_data) + "\n")
+        except Exception as file_err:
+            self.registrar_error(f"No se pudo guardar el lead en el archivo de contingencia local: {file_err}")

@@ -41,6 +41,84 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=APP_TITLE, lifespan=lifespan)
 
 
+@app.middleware("http")
+async def agregar_request_id_middleware(request: Request, call_next):
+    import uuid
+    import structlog
+    # Limpiar y asociar request ID único en las variables de contexto
+    structlog.contextvars.clear_contextvars()
+    request_id = str(uuid.uuid4())
+    structlog.contextvars.bind_contextvars(request_id=request_id)
+    
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request_id
+    return response
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception("Excepción no manejada en el request", error=str(exc))
+    from fastapi.responses import HTMLResponse
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Error en el Servidor | Madypack</title>
+        <style>
+            body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; color: #333; }
+            h1 { color: #2853A1; }
+            p { color: #666; }
+        </style>
+    </head>
+    <body>
+        <h1>Ha ocurrido un error inesperado</h1>
+        <p>Nuestro equipo técnico ha sido notificado. Por favor, intente nuevamente más tarde.</p>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content, status_code=500)
+
+
+@app.get("/.well-known/appspecific/com.chrome.devtools.json", include_in_schema=False)
+async def chrome_devtools_silent():
+    """Silencia el request automático de Chrome DevTools retornando 200 vacío."""
+    return {}
+
+
+@app.get("/health", include_in_schema=False)
+async def health_check():
+    """Endpoint liviano para validar que el ecommerce y sus integraciones básicas responden."""
+    from fastapi.responses import JSONResponse
+    import httpx
+    from src.infraestructura.config.settings import CHATWOOT_URL
+    
+    health_status = {
+        "status": "healthy",
+        "timestamp": date.today().isoformat(),
+        "services": {
+            "catalog": "ok",
+            "chatwoot": "unknown"
+        }
+    }
+    
+    try:
+        cargar_productos_tienda("default")
+    except Exception as e:
+        health_status["status"] = "unhealthy"
+        health_status["services"]["catalog"] = f"error: {str(e)}"
+        
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.head(CHATWOOT_URL, timeout=1.0)
+            health_status["services"]["chatwoot"] = "ok" if resp.status_code < 500 else f"status_{resp.status_code}"
+    except Exception as e:
+        health_status["services"]["chatwoot"] = f"error: {str(e)}"
+        
+    status_code = 200 if health_status["status"] == "healthy" else 503
+    return JSONResponse(content=health_status, status_code=status_code)
+
+
 @app.get("/static/{path:path}", name="static")
 async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
     """Sirve archivos estáticos resolviendo primero la carpeta del tenant."""

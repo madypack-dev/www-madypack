@@ -63,7 +63,7 @@ async def test_crear_lead_desde_presupuesto_caso_uso_success():
     pub.publicar_lead_creado.assert_called_once()
 
 @pytest.mark.asyncio
-async def test_crear_lead_desde_presupuesto_caso_uso_fallback():
+async def test_crear_lead_desde_presupuesto_caso_uso_fallback(tmp_path):
     repo = AsyncMock(spec=ILeadRepository)
     repo.guardar.side_effect = Exception("Chatwoot is down")
     
@@ -73,12 +73,15 @@ async def test_crear_lead_desde_presupuesto_caso_uso_fallback():
     request = CrearLeadRequest(nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com")
     carrito = Carrito()
 
+    fallback_file = tmp_path / "failed_leads.log"
+
     caso_uso = CrearLeadDesdePresupuesto(
         repositorio=repo,
         publicador_eventos=pub,
         chatwoot_inbox_id=10,
         whatsapp_phone="5491125794649",
-        registrar_error=registrar_error
+        registrar_error=registrar_error,
+        fallback_file_path=str(fallback_file)
     )
 
     response = await caso_uso.ejecutar(request, carrito)
@@ -86,3 +89,10 @@ async def test_crear_lead_desde_presupuesto_caso_uso_fallback():
     assert response.lead_id.startswith("FALLBACK-")
     registrar_error.assert_called_once()
     pub.publicar_lead_creado.assert_called_once()
+    
+    # Verificar que se escribió el lead de contingencia
+    assert fallback_file.exists()
+    lines = fallback_file.read_text().splitlines()
+    assert len(lines) == 1
+    assert "ACME" in lines[0]
+    assert "Chatwoot is down" in lines[0]
