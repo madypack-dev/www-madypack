@@ -52,13 +52,27 @@ async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
     return FileResponse(file_path, media_type=content_type)
 
 
-@app.get("/robots.txt", response_class=FileResponse)
-async def robots_txt(tenant: str = Depends(resolutor_tenant)):
-    """Sirve robots.txt del tenant si existe; si no, el genérico."""
-    file_path = resolver_archivo_estatico(tenant, "robots.txt")
-    if file_path is None:
-        raise HTTPException(status_code=404, detail="Not found")
-    return FileResponse(file_path)
+@app.get("/robots.txt")
+async def robots_txt(request: Request, tenant: str = Depends(resolutor_tenant)):
+    """Sirve robots.txt del tenant si existe; si no, genera uno dinámico.
+
+    La versión dinámica apunta al sitemap del host actual, evitando
+    hardcodear dominios de un tenant particular.
+    """
+    file_path = resolver_archivo_estatico(tenant, "robots.txt", incluir_fallback=False)
+    if file_path is not None:
+        return FileResponse(file_path)
+
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("host", "localhost")
+    base_url = f"{scheme}://{host}".rstrip("/")
+
+    content = f"""User-agent: *
+Allow: /
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    return Response(content=content, media_type="text/plain")
 
 
 @app.get("/sitemap.xml")
