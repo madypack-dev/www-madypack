@@ -24,7 +24,8 @@ def _resolve_static_file(tenant: str, relative_path: str) -> Path | None:
 
     Devuelve None si no se encuentra o si el path intenta salir de STATIC_DIR.
     """
-    if ".." in relative_path or relative_path.startswith("/"):
+    relative_path = relative_path.lstrip("/")
+    if ".." in relative_path:
         return None
 
     candidates = [
