@@ -5,6 +5,45 @@
 
 {% block content %}
 {% set is_page = True %}
+
+<section class="section quote-cart-summary">
+    <div class="container">
+        <h2>Resumen de tu carrito de cotización</h2>
+        {% if cart_items %}
+        <div class="quote-summary-card">
+            <table class="quote-summary-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-right">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.nombre }}</strong><br>
+                            <small>{{ item.descripcion }}</small>
+                        </td>
+                        <td class="text-right">{{ item.cantidad }} u.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total estimado</strong></td>
+                        <td class="text-right"><strong>{{ estimated_cost_formatted }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p class="quote-summary-note">Total de bolsas: {{ total_bags_formatted }}</p>
+        </div>
+        {% else %}
+        <p>Tu carrito está vacío. <a href="/tienda/">Agregá productos</a> para solicitar un presupuesto.</p>
+        {% endif %}
+    </div>
+</section>
+
 {% include "components/sections/quote_form.html" %}
 
 <section class="section quote-details page-details">

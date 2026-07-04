@@ -1,12 +1,12 @@
 from contextlib import asynccontextmanager
 from datetime import date
-from pathlib import Path
 import mimetypes
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse
 
 from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
+from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.datos.cargadores import (
     cargar_site,
     cargar_productos_tienda,
@@ -15,6 +15,7 @@ from src.infraestructura.datos.cargadores import (
 from src.infraestructura.logging.logger import configurar_logging, get_logger
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
+from src.infraestructura.rutas.presupuesto import router as presupuesto_router
 from src.infraestructura.tenant.resolutor import resolutor_tenant
 
 configurar_logging()
@@ -39,40 +40,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=APP_TITLE, lifespan=lifespan)
 
-STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
-
-
-def _resolve_static_file(tenant: str, relative_path: str) -> Path | None:
-    """Busca un archivo estático primero en el tenant y luego en la base.
-
-    Devuelve None si no se encuentra o si el path intenta salir de STATIC_DIR.
-    """
-    relative_path = relative_path.lstrip("/")
-    if ".." in relative_path:
-        return None
-
-    candidates = [
-        STATIC_DIR / "tenants" / tenant / relative_path,
-        STATIC_DIR / relative_path,
-    ]
-
-    static_root = STATIC_DIR.resolve()
-    for candidate in candidates:
-        try:
-            full_path = candidate.resolve()
-        except (OSError, RuntimeError):
-            continue
-        if not str(full_path).startswith(str(static_root)):
-            continue
-        if full_path.is_file():
-            return full_path
-    return None
-
 
 @app.get("/static/{path:path}", name="static")
 async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
     """Sirve archivos estáticos resolviendo primero la carpeta del tenant."""
-    file_path = _resolve_static_file(tenant, path)
+    file_path = resolver_archivo_estatico(tenant, path)
     if file_path is None:
         raise HTTPException(status_code=404, detail="Not found")
 
@@ -83,7 +55,7 @@ async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
 @app.get("/robots.txt", response_class=FileResponse)
 async def robots_txt(tenant: str = Depends(resolutor_tenant)):
     """Sirve robots.txt del tenant si existe; si no, el genérico."""
-    file_path = _resolve_static_file(tenant, "robots.txt")
+    file_path = resolver_archivo_estatico(tenant, "robots.txt")
     if file_path is None:
         raise HTTPException(status_code=404, detail="Not found")
     return FileResponse(file_path)
@@ -144,3 +116,4 @@ async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant))
 
 app.include_router(paginas_router)
 app.include_router(carrito_router)
+app.include_router(presupuesto_router)

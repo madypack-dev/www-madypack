@@ -200,6 +200,14 @@ cart:
     estimated_cost_value: A cotizar
     note: Los precios pueden variar según volumen y especificaciones. Envía el formulario para recibir tu presupuesto formal.
     submit_button: Solicitar Presupuesto
+presupuesto:
+  validez_dias: 15
+  condiciones_comerciales:
+    - "Los precios indicados son estimados y están sujetos a confirmación formal."
+    - "La oferta tiene una validez de 15 días corridos desde su fecha de emisión."
+    - "Los plazos de entrega, formas de pago y condiciones financieras se coordinarán con el asesor comercial."
+  oferta_preliminar_label: "Oferta preliminar"
+
 schema:
   type: Organization
   name: Tu Empresa

@@ -214,6 +214,15 @@ cart:
     note: "Los precios de fabricación de bolsas de papel varían según volumen, matriz de impresión y costos de materias primas. Envía el formulario para recibir tu presupuesto formal en menos de 24 hs."
     submit_button: "Solicitar Presupuesto"
 
+presupuesto:
+  validez_dias: 15
+  condiciones_comerciales:
+    - "Los precios indicados son estimados y están sujetos a confirmación formal por parte de nuestro equipo comercial."
+    - "La oferta tiene una validez de 15 días corridos desde su fecha de emisión."
+    - "Los plazos de entrega, formas de pago y condiciones financieras se coordinarán con el asesor asignado."
+    - "No incluye IVA. Los envíos se cotizan aparte según destino y volumen."
+  oferta_preliminar_label: "Oferta preliminar"
+
 schema:
   type: "ManufacturingBusiness"
   name: "Madypack"

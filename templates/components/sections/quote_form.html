@@ -12,7 +12,12 @@
                 <strong>{{ site.home.quote_form.success_title }}</strong> {{ site.home.quote_form.success_message }}
             </div>
             {% endif %}
-            <form class="quote-form" action="#" method="post">
+            {% if error %}
+            <div class="error-message" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+            <form class="quote-form" action="{{ form_action | default('#') }}" method="post">
                 {% for field in site.home.quote_form.fields %}
                 <label class="form-field{% if field.full_width %} form-field-full{% endif %}">
                     <span>

@@ -274,6 +274,13 @@ class SchemaConfig(BaseModel):
     opening_hours: SchemaOpeningHoursConfig
 
 
+# ---------- presupuesto ----------
+class PresupuestoConfig(BaseModel):
+    validez_dias: int = Field(..., ge=1)
+    condiciones_comerciales: list[str]
+    oferta_preliminar_label: str
+
+
 # ---------- site.yml completo ----------
 class SiteConfig(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
@@ -286,6 +293,7 @@ class SiteConfig(BaseModel):
     footer: FooterConfig
     home: HomeConfig
     cart: CartConfig
+    presupuesto: PresupuestoConfig
     schema_config: SchemaConfig = Field(alias="schema")
 
 

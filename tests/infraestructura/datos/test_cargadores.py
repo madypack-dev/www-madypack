@@ -185,6 +185,11 @@ class TestFallback:
                         "submit_button": "S",
                     },
                 },
+                "presupuesto": {
+                    "validez_dias": 15,
+                    "condiciones_comerciales": ["Condición 1"],
+                    "oferta_preliminar_label": "Oferta preliminar",
+                },
                 "schema": {
                     "type": "Organization",
                     "name": "Fallback",

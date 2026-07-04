@@ -33,20 +33,6 @@ async def read_quienes_somos(request: Request, site: dict[str, Any] = Depends(lo
     )
 
 
-@router.get("/cotizacion/", response_class=HTMLResponse)
-async def read_cotizacion(request: Request, site: dict[str, Any] = Depends(load_site)):
-    return templates.TemplateResponse(
-        request=request,
-        name="pages/cotizacion.html",
-        context={"site": site, "success": request.query_params.get("success")},
-    )
-
-
-@router.post("/cotizacion/")
-async def post_cotizacion(request: Request):
-    return RedirectResponse(url="/cotizacion/?success=quote", status_code=303)
-
-
 @router.get("/contacto/", response_class=HTMLResponse)
 async def read_contacto(request: Request, site: dict[str, Any] = Depends(load_site)):
     return templates.TemplateResponse(

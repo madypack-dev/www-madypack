@@ -382,3 +382,73 @@
         text-align: center;
     }
 }
+
+/* --- Quote cart summary (cotizacion page) --- */
+.quote-cart-summary {
+    background-color: var(--background);
+    padding: 40px 0;
+}
+
+.quote-cart-summary h2 {
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.quote-summary-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.quote-summary-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.quote-summary-table th,
+.quote-summary-table td {
+    border-bottom: 1px solid #eee;
+    padding: 14px 18px;
+    text-align: left;
+}
+
+.quote-summary-table th {
+    background-color: #f9f9f9;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.quote-summary-table td small {
+    color: #666;
+    display: block;
+    margin-top: 4px;
+}
+
+.quote-summary-table tfoot td {
+    border-bottom: none;
+    font-size: 1.05rem;
+}
+
+.quote-summary-note {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 14px 18px;
+}
+
+.quote-card .error-message {
+    background-color: #fce8e8;
+    border: 1px solid #f5c2c2;
+    border-radius: 8px;
+    color: #a82424;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
