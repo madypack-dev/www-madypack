@@ -36,6 +36,10 @@ class Carrito(BaseModel):
     def total_bolsas(self) -> int:
         return sum(articulo.cantidad for articulo in self.articulos)
 
+    @property
+    def total_lineas(self) -> int:
+        return len(self.articulos)
+
     def actualizar_cantidad(self, id_articulo: int, nueva_cantidad: int) -> bool:
         for articulo in self.articulos:
             if articulo.id == id_articulo:

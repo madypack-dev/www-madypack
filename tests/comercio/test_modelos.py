@@ -43,12 +43,14 @@ def test_articulo_carrito_cantidad_invalida_menor_que_100():
 def test_carrito_operaciones():
     carrito = Carrito()
     assert carrito.total_bolsas == 0
+    assert carrito.total_lineas == 0
 
     art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     art2 = ArticuloCarrito(id=2, nombre="Bolsa B", descripcion="B", cantidad=200, imagen="img.png")
 
     carrito.agregar_articulo(art1)
     assert carrito.total_bolsas == 100
+    assert carrito.total_lineas == 1
 
     # Agregar el mismo artículo incrementa cantidad
     carrito.agregar_articulo(art1)
