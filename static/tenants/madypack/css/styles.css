@@ -1,0 +1,15 @@
+@import url("../../base/variables.css");
+@import url("../../base/reset.css");
+@import url("../../layout.css");
+@import url("../../components/buttons.css");
+@import url("../../components/social.css");
+@import url("../../components/header.css");
+@import url("../../components/footer.css");
+@import url("../../components/home.css");
+@import url("../../components/cart.css");
+
+/* Overrides específicos del tenant madypack */
+:root {
+    --primary: #c12a2a;
+    --primary-dark: #8f1f1f;
+}

@@ -22,9 +22,9 @@ MAPEO_TENANTS: dict[str, str] = {
 MAPEO_PUERTOS: dict[str, str] = {
     "8000": "default",
     "8001": "madypack",
-    "8002": "empresa-2",
-    "8003": "empresa-3",
-    "8004": "empresa-4",
+    "8002": "eitec",
+    "8003": "upp",
+    "8004": "plasticoselgringo",
 }
 
 FALLBACK_TENANT: str = "default"

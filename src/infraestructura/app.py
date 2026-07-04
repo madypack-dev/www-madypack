@@ -1,59 +1,109 @@
 from datetime import date
 from pathlib import Path
-from fastapi import FastAPI, Response
+import mimetypes
+
+from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
+from src.infraestructura.tenant.resolutor import resolutor_tenant
 
 app = FastAPI(title="Madypack")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
+
+
+def _resolve_static_file(tenant: str, relative_path: str) -> Path | None:
+    """Busca un archivo estático primero en el tenant y luego en la base.
+
+    Devuelve None si no se encuentra o si el path intenta salir de STATIC_DIR.
+    """
+    if ".." in relative_path or relative_path.startswith("/"):
+        return None
+
+    candidates = [
+        STATIC_DIR / "tenants" / tenant / relative_path,
+        STATIC_DIR / relative_path,
+    ]
+
+    static_root = STATIC_DIR.resolve()
+    for candidate in candidates:
+        try:
+            full_path = candidate.resolve()
+        except (OSError, RuntimeError):
+            continue
+        if not str(full_path).startswith(str(static_root)):
+            continue
+        if full_path.is_file():
+            return full_path
+    return None
+
+
+@app.get("/static/{path:path}")
+async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
+    """Sirve archivos estáticos resolviendo primero la carpeta del tenant."""
+    file_path = _resolve_static_file(tenant, path)
+    if file_path is None:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    content_type, _ = mimetypes.guess_type(str(file_path))
+    return FileResponse(file_path, media_type=content_type)
 
 
 @app.get("/robots.txt", response_class=FileResponse)
-async def robots_txt():
-    return FileResponse(Path(__file__).resolve().parents[2] / "static" / "robots.txt")
+async def robots_txt(tenant: str = Depends(resolutor_tenant)):
+    """Sirve robots.txt del tenant si existe; si no, el genérico."""
+    file_path = _resolve_static_file(tenant, "robots.txt")
+    if file_path is None:
+        raise HTTPException(status_code=404, detail="Not found")
+    return FileResponse(file_path)
 
 
 @app.get("/sitemap.xml")
-async def sitemap_xml():
+async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant)):
+    """Genera el sitemap usando el dominio del tenant actual."""
     today = date.today().isoformat()
+
+    # Respetar el esquema de un posible reverse proxy (X-Forwarded-Proto).
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("host", "localhost")
+    base_url = f"{scheme}://{host}".rstrip("/")
+
     xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.madypack.com.ar/</loc>
+    <loc>{base_url}/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.madypack.com.ar/quienes-somos/</loc>
+    <loc>{base_url}/quienes-somos/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.madypack.com.ar/cotizacion/</loc>
+    <loc>{base_url}/cotizacion/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.madypack.com.ar/contacto/</loc>
+    <loc>{base_url}/contacto/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.madypack.com.ar/terminos-y-condiciones/</loc>
+    <loc>{base_url}/terminos-y-condiciones/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.madypack.com.ar/politica-de-privacidad/</loc>
+    <loc>{base_url}/politica-de-privacidad/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
