@@ -6,8 +6,8 @@ from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infraestructura.rutas.base import templates, LoggingRoute, logger
-from src.infraestructura.tenant import resolutor_tenant
-from src.infraestructura.datos import (
+from src.infraestructura.tenant.resolutor import resolutor_tenant
+from src.infraestructura.datos.cargadores import (
     cargar_site,
     cargar_carrito_defecto,
     cargar_tarifas,

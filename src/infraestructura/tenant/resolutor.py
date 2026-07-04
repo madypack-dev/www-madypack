@@ -1,9 +1,9 @@
 """Resolución de tenant a partir del subdominio y puerto de la petición.
 
 Soporta tres entornos:
-- Desarrollo local: se distingue por puerto (8000 default, 8001 empresa-1, etc.)
-- Staging: subdominios bajo datamaq.com.ar (empresa-1.datamaq.com.ar)
-- Producción: dominios propios (empresa-1.com.ar)
+- Desarrollo local: se distingue por puerto (8000 default, 8001 madypack, etc.)
+- Staging: subdominios bajo datamaq.com.ar (madypack.datamaq.com.ar)
+- Producción: dominios propios (madypack.com.ar)
 """
 
 import re
@@ -13,14 +13,15 @@ from fastapi import Request
 # Mapeo explícito de dominios a tenant.
 # Útil para dominios que no siguen el patrón empresa-N o para alias.
 MAPEO_TENANTS: dict[str, str] = {
-    "www.madypack.com.ar": "default",
-    "madypack.com.ar": "default",
+    # Dominios actuales de Madypack
+    "www.madypack.com.ar": "madypack",
+    "madypack.com.ar": "madypack",
 }
 
 # Mapeo de puertos para desarrollo local.
 MAPEO_PUERTOS: dict[str, str] = {
     "8000": "default",
-    "8001": "empresa-1",
+    "8001": "madypack",
     "8002": "empresa-2",
     "8003": "empresa-3",
     "8004": "empresa-4",

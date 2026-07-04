@@ -18,7 +18,7 @@ Cada empresa (tenant) tiene su propia configuración de contenido, catálogo y t
 
 | Entorno | Criterio | Ejemplo | Tenant resultante |
 |---------|----------|---------|-------------------|
-| Desarrollo local | Puerto | `localhost:8001` | `empresa-1` |
+| Desarrollo local | Puerto | `localhost:8001` | `madypack` |
 | Staging | Subdominio | `empresa-1.datamaq.com.ar` | `empresa-1` |
 | Producción | Dominio propio | `empresa-1.com.ar` | `empresa-1` |
 
@@ -68,7 +68,7 @@ Orden de resolución:
 ```python
 MAPEO_PUERTOS = {
     "8000": "default",
-    "8001": "empresa-1",
+    "8001": "madypack",
     "8002": "empresa-2",
     "8003": "empresa-3",
     "8004": "empresa-4",
@@ -84,7 +84,7 @@ Los dominios de staging y producción se inferen automáticamente por el patrón
 ### Paso 1: Crear la carpeta de datos
 
 ```bash
-cp -r data/default data/empresa-N
+cp -r data/default data/madypack    # o data/empresa-N
 ```
 
 ### Paso 2: Personalizar los YAML
@@ -98,7 +98,7 @@ Agregar en `src/infraestructura/tenant/resolutor.py`:
 ```python
 MAPEO_PUERTOS = {
     ...
-    "800N": "empresa-N",
+    "800N": "empresa-N",  # o "madypack"
 }
 ```
 

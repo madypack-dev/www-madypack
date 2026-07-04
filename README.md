@@ -71,22 +71,31 @@ pip install -r requirements.txt
 ### 3. Ejecutar el Servidor de Desarrollo
 
 ```bash
-chmod +x run.sh
+chmod +x run.sh run-all.sh
 ./run.sh
 ```
 
-O directamente:
+El sitio estará disponible en [http://localhost:8000](http://localhost:8000) (`default`).
+
+Para levantar una empresa específica:
+
+```bash
+./run.sh 8001      # madypack
+./run.sh madypack  # equivalente al anterior
+./run.sh 8002      # empresa-2
+```
+
+Para levantar todas las empresas configuradas en paralelo:
+
+```bash
+./run-all.sh
+```
+
+O directamente con Uvicorn:
 
 ```bash
 ./venv/bin/uvicorn src.infraestructura.app:app --reload
-```
-
-El sitio estará disponible en [http://localhost:8000](http://localhost:8000).
-
-Para levantar una empresa específica en desarrollo, usá el puerto correspondiente:
-
-```bash
-./venv/bin/uvicorn src.infraestructura.app:app --port 8001  # empresa-1
+./venv/bin/uvicorn src.infraestructura.app:app --port 8001
 ```
 
 Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
