@@ -95,11 +95,11 @@ home:
       - title: "Fábrica Autogestionada"
         text: "Tu compra apoya de manera directa a la cooperativa de trabajo integrada por ex trabajadores de Molinari."
     fields:
-      - name: "nombre"
+      - name: "name"
         label: "Nombre del Responsable"
         type: "text"
         required: true
-      - name: "empresa"
+      - name: "company"
         label: "Fábrica / Razón Social"
         type: "text"
         required: true
@@ -107,11 +107,11 @@ home:
         label: "Email Corporativo"
         type: "email"
         required: true
-      - name: "telefono"
+      - name: "phone"
         label: "Teléfono / Celular"
         type: "tel"
         required: true
-      - name: "mensaje"
+      - name: "message"
         label: "Detalle del pedido (ej. Diámetro en mm, color, corte en cm)"
         type: "textarea"
         required: false

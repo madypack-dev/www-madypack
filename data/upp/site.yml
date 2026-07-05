@@ -98,11 +98,11 @@ home:
       - title: "Compromiso Sustentable"
         text: "Todos nuestros productos son fabricados a partir de papel y cartón recuperado localmente."
     fields:
-      - name: "nombre"
+      - name: "name"
         label: "Nombre y Apellido"
         type: "text"
         required: true
-      - name: "empresa"
+      - name: "company"
         label: "Razón Social / Empresa"
         type: "text"
         required: true
@@ -110,11 +110,11 @@ home:
         label: "Correo Electrónico"
         type: "email"
         required: true
-      - name: "telefono"
+      - name: "phone"
         label: "Teléfono de Contacto"
         type: "tel"
         required: true
-      - name: "mensaje"
+      - name: "message"
         label: "Detalle del pedido / Medidas especiales"
         type: "textarea"
         required: false
