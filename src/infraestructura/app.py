@@ -27,9 +27,53 @@ def _tenants_conocidos() -> set[str]:
     return set(MAPEO_TENANTS.values()) | set(MAPEO_PUERTOS.values())
 
 
+def compilar_bundle_css():
+    """Une todos los archivos CSS de la aplicación en un único static/css/bundle.css
+
+    para optimizar la entrega reduciendo las peticiones HTTP concurrentes (evitando render-blocking).
+    """
+    try:
+        from pathlib import Path
+        infra_dir = Path(__file__).resolve().parent
+        root_dir = infra_dir.parents[1]
+        css_dir = root_dir / "static" / "css"
+
+        css_files = [
+            css_dir / "base" / "variables.css",
+            css_dir / "base" / "reset.css",
+            css_dir / "layout.css",
+            css_dir / "components" / "buttons.css",
+            css_dir / "components" / "social.css",
+            css_dir / "components" / "header.css",
+            css_dir / "components" / "footer.css",
+            css_dir / "components" / "home.css",
+            css_dir / "components" / "cart.css",
+            css_dir / "components" / "tienda.css",
+            css_dir / "components" / "cookie-banner.css",
+            css_dir / "components" / "confirmation.css",
+        ]
+
+        bundle_content = []
+        for file_path in css_files:
+            if file_path.exists():
+                rel_path = file_path.relative_to(root_dir / "static")
+                bundle_content.append(f"/* --- Start of {rel_path} --- */")
+                bundle_content.append(file_path.read_text(encoding="utf-8"))
+                bundle_content.append(f"/* --- End of {rel_path} --- */\n")
+            else:
+                logger.warning(f"Archivo CSS no encontrado para empaquetar: {file_path}")
+
+        bundle_file = css_dir / "bundle.css"
+        bundle_file.write_text("\n".join(bundle_content), encoding="utf-8")
+        logger.info(f"CSS bundle compilado con éxito en {bundle_file}")
+    except Exception as exc:
+        logger.error(f"Error al compilar el bundle de CSS: {exc}", exc_info=True)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Valida los YAML de todos los tenants conocidos antes de arrancar."""
+    """Valida los YAML de todos los tenants conocidos y compila el CSS bundle antes de arrancar."""
+    compilar_bundle_css()
     for tenant in sorted(_tenants_conocidos()):
         logger.info(f"Validando YAML del tenant '{tenant}'...")
         cargar_site(tenant)

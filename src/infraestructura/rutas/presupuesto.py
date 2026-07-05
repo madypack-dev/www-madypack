@@ -201,7 +201,59 @@ async def generar_presupuesto(
             registrar_error=logger.error,
         )
 
-        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
+        try:
+            response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
+        except Exception as err:
+            logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
+            import uuid
+            import urllib.parse
+            from src.lead.aplicacion.dtos.lead_dtos import ConfirmacionPresupuestoResponse
+
+            ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
+
+            # Intentar registrar localmente el lead de contingencia
+            try:
+                import json
+                import os
+                from datetime import datetime
+                fallback_data = {
+                    "timestamp": datetime.now().isoformat(),
+                    "lead_id": f"INFRA-ERR-{uuid.uuid4()}",
+                    "codigo_referencia": ref_code,
+                    "nombre": datos_form.nombre,
+                    "empresa": datos_form.empresa,
+                    "email": str(datos_form.email),
+                    "telefono": datos_form.telefono,
+                    "error": f"Falla crítica de infraestructura: {str(err)}"
+                }
+                os.makedirs("logs", exist_ok=True)
+                with open("logs/failed_leads.log", "a", encoding="utf-8") as f:
+                    f.write(json.dumps(fallback_data) + "\n")
+            except Exception as file_err:
+                logger.error(f"No se pudo guardar el lead de emergencia en logs/failed_leads.log: {file_err}")
+
+            # Construir respuesta mockeada segura para evitar 500 y permitir la continuidad comercial
+            encoded_message = urllib.parse.quote(
+                f"Hola, mi nombre es {datos_form.nombre} de la empresa *{datos_form.empresa}*. "
+                f"Ocurrió una interrupción al generar la cotización online ({ref_code}). "
+                f"Quisiera coordinar la cotización comercial directamente por acá."
+            )
+            whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
+            query_params = urllib.parse.urlencode({
+                "ref": ref_code,
+                "name": datos_form.nombre,
+                "company": datos_form.empresa,
+                "email": str(datos_form.email),
+                "phone": datos_form.telefono
+            })
+            pdf_url = f"/presupuesto/descargar/?{query_params}"
+
+            response_lead = ConfirmacionPresupuestoResponse(
+                lead_id=f"ERR-{uuid.uuid4()}",
+                codigo_referencia=ref_code,
+                whatsapp_url=whatsapp_url,
+                pdf_url=pdf_url
+            )
 
     return templates.TemplateResponse(
         request=request,

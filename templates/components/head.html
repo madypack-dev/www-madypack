@@ -2,15 +2,5 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600;700&display=swap">
 
-<link rel="stylesheet" href="{{ url_for('static', path='/css/base/variables.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/base/reset.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/buttons.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/social.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/header.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/footer.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/home.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/cart.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/tienda.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/cookie-banner.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/components/confirmation.css') }}">
+<!-- Unified single stylesheet to avoid render-blocking requests (CLS / LCP Optimization) -->
+<link rel="stylesheet" href="{{ url_for('static', path='/css/bundle.css') }}">
