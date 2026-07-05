@@ -10,7 +10,12 @@ from src.infraestructura.datos.cargadores import (
     cargar_productos_tienda,
     cargar_tarifas,
 )
-from src.infraestructura.datos.modelos import SiteConfig, CatalogoConfig
+from src.infraestructura.datos.modelos import (
+    CatalogoConfig,
+    QuoteFormConfig,
+    QuoteFormFieldConfig,
+    SiteConfig,
+)
 from src.precios.dominio.modelos.tarifas import ConfiguracionTarifas
 
 
@@ -237,3 +242,69 @@ class TestFallback:
 
         site = cargar_site("tenant_que_no_existe")
         assert site.site.brand == "Fallback"
+
+
+class TestValidacionCamposQuoteForm:
+    def test_campo_con_nombre_invalido_lanza_validation_error(self):
+        with pytest.raises(ValidationError) as exc_info:
+            QuoteFormConfig(
+                title="Q",
+                meta_title="Q",
+                meta_description="D",
+                description="D",
+                submit="S",
+                success_title="OK",
+                success_message="OK",
+                required_marker="*",
+                required_abbreviation="req",
+                details=[],
+                fields=[
+                    QuoteFormFieldConfig(
+                        name="telefono", label="Tel", type="tel", required=True
+                    )
+                ],
+            )
+        assert "telefono" in str(exc_info.value)
+        assert "phone" in str(exc_info.value)
+
+    def test_campos_validos_cargan_correctamente(self):
+        config = QuoteFormConfig(
+            title="Q",
+            meta_title="Q",
+            meta_description="D",
+            description="D",
+            submit="S",
+            success_title="OK",
+            success_message="OK",
+            required_marker="*",
+            required_abbreviation="req",
+            details=[],
+            fields=[
+                QuoteFormFieldConfig(
+                    name="name", label="Nombre", type="text", required=True
+                ),
+                QuoteFormFieldConfig(
+                    name="company", label="Empresa", type="text", required=True
+                ),
+                QuoteFormFieldConfig(
+                    name="email", label="Email", type="email", required=True
+                ),
+                QuoteFormFieldConfig(
+                    name="phone", label="Tel", type="tel", required=True
+                ),
+                QuoteFormFieldConfig(
+                    name="message",
+                    label="Mensaje",
+                    type="textarea",
+                    required=False,
+                    rows=4,
+                ),
+            ],
+        )
+        assert len(config.fields) == 5
+
+    @pytest.mark.parametrize("tenant", ["default", "madypack", "eitec", "upp", "plasticoselgringo"])
+    def test_tenants_actuales_tienen_campos_validos(self, tenant):
+        site = cargar_site(tenant)
+        nombres = {field.name for field in site.home.quote_form.fields}
+        assert nombres.issubset({"name", "company", "email", "phone", "message"})

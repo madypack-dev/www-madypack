@@ -1,8 +1,16 @@
 """Modelos Pydantic para la carga y validación de archivos YAML por tenant."""
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
+
+
+# Conjunto de nombres de campo HTML permitidos en el formulario de cotización.
+# Estos valores deben coincidir con los nombres que espera el endpoint POST
+# /presupuesto/ en src.infraestructura.rutas.presupuesto. El YAML del tenant
+# puede configurar labels, orden y visibilidad, pero no puede alterar este
+# contrato técnico.
+QUOTE_FORM_FIELD_NAMES = frozenset({"name", "company", "email", "phone", "message"})
 
 
 # ---------- analytics ----------
@@ -150,6 +158,24 @@ class QuoteFormConfig(BaseModel):
     required_abbreviation: str
     details: list[QuoteFormDetailConfig]
     fields: list[QuoteFormFieldConfig]
+
+    @field_validator("fields")
+    @classmethod
+    def validar_nombres_de_campos(cls, fields: list[QuoteFormFieldConfig]) -> list[QuoteFormFieldConfig]:
+        """Garantiza que los campos del formulario usen nombres HTML válidos.
+
+        El atributo ``name`` de cada campo se renderiza directamente como
+        atributo ``name`` en el HTML, por lo que debe pertenecer al conjunto
+        acordado con el backend. Cualquier otro nombre falla en el startup.
+        """
+        nombres_permitidos = QUOTE_FORM_FIELD_NAMES
+        for field in fields:
+            if field.name not in nombres_permitidos:
+                raise ValueError(
+                    f"Campo de formulario '{field.name}' no es válido. "
+                    f"Los nombres permitidos son: {', '.join(sorted(nombres_permitidos))}"
+                )
+        return fields
 
 
 # ---------- home.about ----------
