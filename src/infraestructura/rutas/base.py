@@ -40,26 +40,23 @@ def load_site(tenant: str = Depends(resolutor_tenant)) -> SiteConfig:
 
 
 class LoggingRoute(APIRoute):
+    """Ruta con manejo de excepciones sin logging duplicado.
+
+    El logging estructurado de cada request ya lo realiza el middleware
+    ``agregar_request_id_middleware`` en ``src.infraestructura.app``. Esta
+    clase centraliza el manejo de excepciones de la ruta sin volver a
+    imprimir métricas que ya se loguean en capa de infraestructura.
+    """
+
     def get_route_handler(self) -> Callable:
         original_route_handler = super().get_route_handler()
-        
+
         async def custom_route_handler(request: Request) -> Response:
-            start_time = time.time()
             try:
-                response: Response = await original_route_handler(request)
-                duration = time.time() - start_time
-                logger.info(
-                    f"Method: {request.method} | Path: {request.url.path} | "
-                    f"Status: {response.status_code} | Duration: {duration:.4f}s"
-                )
-                return response
-            except Exception as exc:
-                duration = time.time() - start_time
-                logger.error(
-                    f"EXCEPTION - Method: {request.method} | Path: {request.url.path} | "
-                    f"Duration: {duration:.4f}s | Error: {str(exc)}",
-                    exc_info=True
-                )
-                raise exc
-                
+                return await original_route_handler(request)
+            except Exception:
+                # Las excepciones se propagan al middleware/global exception handler
+                # donde ya se loguean con request_id y tenant.
+                raise
+
         return custom_route_handler
