@@ -10,7 +10,7 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
     padding: 20px 24px;
     z-index: 9999;
@@ -57,19 +57,25 @@
     font-family: 'Nunito Sans', sans-serif;
     font-size: 0.925rem;
     line-height: 1.5;
-    color: #4a4a4a;
+    color: var(--text);
     margin: 0;
 }
 
 .cookie-banner-link {
-    color: var(--primary, #2853A1);
+    color: var(--primary);
     text-decoration: underline;
     font-weight: 600;
     transition: color 0.2s ease;
 }
 
 .cookie-banner-link:hover {
-    color: var(--primary-dark, #1d3f7a);
+    color: var(--primary-dark);
+}
+
+.cookie-btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-md);
 }
 
 .cookie-banner-actions {

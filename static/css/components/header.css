@@ -1,6 +1,6 @@
 .site-header {
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-sm);
     position: relative;
     z-index: 1000;
 }
@@ -88,6 +88,18 @@
     transform: scaleX(1);
 }
 
+.main-nav a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+}
+
+.site-logo:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+}
+
 .header-actions {
     align-items: center;
     display: flex;
@@ -97,7 +109,7 @@
 
 /* Mobile menu */
 .mobile-menu {
-    background-color: #fff;
+    background-color: var(--surface);
     border-top: 1px solid var(--border);
     padding: 8px 0 16px;
 }
@@ -114,6 +126,11 @@
 .mobile-menu .current a {
     background-color: var(--background);
     color: var(--primary);
+}
+
+.mobile-menu a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 @media only screen and (max-width: 999px) {
@@ -170,9 +187,9 @@
 }
 
 .modal-content {
-    background: #fff;
+    background: var(--surface);
     padding: 30px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     max-width: 400px;
     width: 90%;
     position: relative;
@@ -190,17 +207,23 @@
     top: 15px;
     right: 15px;
     font-size: 1.5rem;
-    color: #666;
+    color: var(--text-muted);
     text-decoration: none;
     line-height: 1;
 }
 
+.modal-close:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+}
+
 .modal-title {
     font-size: 1.4rem;
-    color: #1e3f20;
+    color: var(--text-heading);
     margin-bottom: 20px;
     font-weight: 700;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-light);
     padding-bottom: 10px;
 }
 
@@ -240,12 +263,18 @@
     margin-top: 20px;
     text-align: center;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--text-muted);
 }
 
 .modal-link {
-    color: #2e7d32;
+    color: var(--color-success);
     font-weight: 600;
     text-decoration: none;
+}
+
+.modal-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
 }
 

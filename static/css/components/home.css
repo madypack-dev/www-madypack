@@ -33,7 +33,7 @@
 
 /* --- CTA --- */
 .cta-section {
-    background-color: #fff;
+    background-color: var(--surface);
     text-align: center;
 }
 
@@ -63,9 +63,9 @@
 }
 
 .product-type-card {
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    background-color: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
     padding: 32px 24px;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -73,7 +73,7 @@
 }
 
 .product-type-card:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
     transform: translateY(-4px);
 }
 
@@ -93,25 +93,25 @@
 
 /* --- Quote form --- */
 .quote-section {
-    background-color: #fff;
+    background-color: var(--surface);
 }
 
 .quote-card {
     background-color: var(--background);
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     margin: 0 auto;
     max-width: 800px;
     padding: 40px;
 }
 
 .quote-card .success-message {
-    background-color: #e6f4ea;
-    color: #137333;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     margin-bottom: 20px;
     text-align: center;
-    border: 1px solid #ceead6;
+    border: 1px solid var(--color-success-border);
     font-size: 0.95rem;
     line-height: 1.5;
 }
@@ -188,8 +188,8 @@
 }
 
 .about-image img {
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
     width: 100%;
 }
 
@@ -214,13 +214,13 @@
 }
 
 .newsletter-form .success-message {
-    background-color: #e6f4ea;
-    color: #137333;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
     padding: 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     margin-bottom: 15px;
     text-align: center;
-    border: 1px solid #ceead6;
+    border: 1px solid var(--color-success-border);
     font-size: 0.9rem;
     width: 100%;
 }
@@ -254,7 +254,7 @@
 
 /* --- Contact --- */
 .contact-section {
-    background-color: #fff;
+    background-color: var(--surface);
     padding-bottom: 0;
     padding-top: 0;
 }
@@ -374,9 +374,9 @@
 }
 
 .quote-summary-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 16px;
     overflow: hidden;
 }
@@ -388,20 +388,20 @@
 
 .quote-summary-table th,
 .quote-summary-table td {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-light);
     padding: 14px 18px;
     text-align: left;
 }
 
 .quote-summary-table th {
-    background-color: #f9f9f9;
+    background-color: var(--surface-elevated);
     font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .quote-summary-table td small {
-    color: #666;
+    color: var(--text-muted);
     display: block;
     margin-top: 4px;
 }
@@ -412,17 +412,17 @@
 }
 
 .quote-summary-note {
-    color: #666;
+    color: var(--text-muted);
     font-size: 0.9rem;
     margin: 0;
     padding: 14px 18px;
 }
 
 .quote-card .error-message {
-    background-color: #fce8e8;
-    border: 1px solid #f5c2c2;
-    border-radius: 8px;
-    color: #a82424;
+    background-color: var(--color-error-bg);
+    border: 1px solid var(--color-error-border);
+    border-radius: var(--radius-md);
+    color: var(--color-error);
     margin-bottom: 20px;
     padding: 15px;
     text-align: center;

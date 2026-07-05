@@ -5,9 +5,9 @@ main {
 
 /* Page extra details sections (e.g. Quienes somos, Cotización, Contacto) */
 .page-details {
-    padding: 60px 0;
-    background-color: #fbfbfb;
-    border-top: 1px solid #eee;
+    padding: var(--space-3xl) 0;
+    background-color: var(--background-soft);
+    border-top: 1px solid var(--border-light);
 }
 
 .page-details .container {
@@ -15,32 +15,32 @@ main {
     margin: 0 auto;
     line-height: 1.8;
     font-size: 1.05rem;
-    color: #333;
+    color: var(--text);
 }
 
 .page-details h2 {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    color: #1e3f20;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    color: var(--text-heading);
     font-size: 1.6rem;
     font-weight: 700;
 }
 
 .page-details h3 {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: #1e3f20;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-md);
+    color: var(--text-heading);
     font-size: 1.3rem;
     font-weight: 600;
 }
 
 .page-details p {
-    margin-bottom: 20px;
+    margin-bottom: var(--space-lg);
 }
 
 /* Legal sections (e.g. Política de Privacidad, Términos y Condiciones) */
 .legal-section {
-    padding: 60px 0;
+    padding: var(--space-3xl) 0;
 }
 
 .legal-section .container {
@@ -50,15 +50,15 @@ main {
 }
 
 .legal-section h1 {
-    margin-bottom: 20px;
+    margin-bottom: var(--space-lg);
 }
 
 .legal-section .update-date {
-    color: #666;
-    margin-bottom: 30px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xl);
 }
 
 .legal-section h2 {
-    margin-top: 30px;
-    margin-bottom: 15px;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
 }

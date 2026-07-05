@@ -46,6 +46,14 @@
     opacity: 0.6;
 }
 
+.footer-nav a:focus-visible,
+.footer-logo:focus-visible,
+.footer-socials a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--text-light);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+}
+
 .footer-socials {
     flex-shrink: 0;
 }

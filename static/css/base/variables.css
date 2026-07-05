@@ -1,10 +1,64 @@
 :root {
+    /* Brand */
     --primary: #2853A1;
     --primary-dark: #1d3f7a;
     --dark: #342D3F;
-    --text: #4a4a4a;
-    --text-light: #ffffff;
+
+    /* Surfaces */
+    --surface: #ffffff;
+    --surface-elevated: #fafafa;
     --background: #f4f4f9;
+    --background-soft: #fbfbfb;
+
+    /* Text */
+    --text: #4a4a4a;
+    --text-heading: #1e3f20;
+    --text-muted: #666666;
+    --text-subtle: #888888;
+    --text-light: #ffffff;
+
+    /* Borders */
     --border: #e0e0e0;
+    --border-light: #eeeeee;
+    --border-soft: #f5f5f5;
+
+    /* Feedback */
+    --color-success: #2e7d32;
+    --color-success-bg: #e6f4ea;
+    --color-success-border: #ceead6;
+    --color-error: #c62828;
+    --color-error-bg: #fce8e8;
+    --color-error-border: #f5c2c2;
+    --color-warning: #f9a825;
+    --color-info: #2853A1;
+
+    /* Spacing scale */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 40px;
+    --space-3xl: 60px;
+
+    /* Radius scale */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-pill: 30px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+    --shadow-xl: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    /* Layout */
     --max-width: 1290px;
+
+    /* Focus ring */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+    --focus-ring-color: var(--primary);
 }
