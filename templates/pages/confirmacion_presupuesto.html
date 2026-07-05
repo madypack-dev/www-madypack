@@ -55,26 +55,5 @@
     </div>
 </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const btnCopy = document.getElementById('btn-copy-ref');
-    const refCode = document.getElementById('ref-code').innerText;
-    const tooltip = document.getElementById('copy-tooltip');
-
-    if (btnCopy) {
-        btnCopy.addEventListener('click', () => {
-            navigator.clipboard.writeText(refCode).then(() => {
-                tooltip.innerText = "¡Copiado!";
-                tooltip.classList.add('visible');
-                setTimeout(() => {
-                    tooltip.innerText = "Copiar";
-                    tooltip.classList.remove('visible');
-                }, 2000);
-            }).catch(err => {
-                console.error('Error al copiar el texto: ', err);
-            });
-        });
-    }
-});
-</script>
+<script type="module" src="{{ url_for('static', path='/js/pages/confirmacion_presupuesto.js') }}"></script>
 {% endblock %}
