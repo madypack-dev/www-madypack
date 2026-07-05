@@ -19,7 +19,7 @@
             {% endif %}
             <form class="quote-form" action="{{ form_action | default('#') }}" method="post">
                 {% for field in site.home.quote_form.fields %}
-                <label class="form-field{% if field.full_width %} form-field-full{% endif %}">
+                <label class="form-field{% if field.full_width %} form-field-full{% endif %}" for="quote-field-{{ field.name }}">
                     <span>
                         {{ field.label }}
                         {% if field.required %}
@@ -27,9 +27,9 @@
                         {% endif %}
                     </span>
                     {% if field.type == "textarea" %}
-                    <textarea name="{{ field.name }}" rows="{{ field.rows | default(4) }}"{% if field.required %} required{% endif %}></textarea>
+                    <textarea id="quote-field-{{ field.name }}" name="{{ field.name }}" rows="{{ field.rows | default(4) }}"{% if field.required %} required{% endif %}></textarea>
                     {% else %}
-                    <input type="{{ field.type }}" name="{{ field.name }}"{% if field.required %} required{% endif %}>
+                    <input id="quote-field-{{ field.name }}" type="{{ field.type }}" name="{{ field.name }}"{% if field.required %} required{% endif %}>
                     {% endif %}
                 </label>
                 {% endfor %}

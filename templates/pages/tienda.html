@@ -30,7 +30,7 @@
             {% for producto in productos %}
             <div class="product-card">
                 <div class="product-image-container">
-                    <img src="{{ url_for('static', path='/images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" class="product-image" width="120" height="120">
+                    <img src="{{ url_for('static', path='/images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                 </div>
                 <div class="product-info">
                     <h3><a href="/tienda/{{ producto.url_slug }}/">{{ producto.nombre }}</a></h3>
