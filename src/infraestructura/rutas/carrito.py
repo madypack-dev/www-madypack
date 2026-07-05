@@ -45,14 +45,24 @@ def obtener_tarifas(tenant: str) -> dict:
 @router.get("/tienda/", response_class=HTMLResponse)
 async def ver_tienda(
     request: Request,
+    q: str | None = None,
     tenant: str = Depends(resolutor_tenant),
 ):
     sitio = cargar_site(tenant)
     productos = obtener_productos_tienda(tenant)
+
+    query_filtrada = q.strip() if q else ""
+    if query_filtrada:
+        query_lower = query_filtrada.lower()
+        productos = [
+            p for p in productos
+            if query_lower in p.nombre.lower() or query_lower in p.descripcion.lower()
+        ]
+
     return templates.TemplateResponse(
         request=request,
         name="pages/tienda.html",
-        context={"site": sitio, "productos": productos},
+        context={"site": sitio, "productos": productos, "q": query_filtrada},
     )
 
 

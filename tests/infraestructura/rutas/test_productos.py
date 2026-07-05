@@ -43,3 +43,33 @@ class TestProductosEndpoints:
         assert "<loc>http://localhost:8000/tienda/producto-a-personalizado/</loc>" in response.text
         assert "<loc>http://localhost:8000/tienda/producto-b-estandar/</loc>" in response.text
         assert "<loc>http://localhost:8000/tienda/producto-c-basico/</loc>" in response.text
+
+    def test_search_productos_returns_filtered_results_with_noindex(self, client):
+        # Búsqueda con coincidencia
+        response = client.get("/tienda/?q=Personalizado", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Producto A Personalizado" in response.text
+        assert "Producto B Estándar" not in response.text
+
+        # Debe incluir la directiva noindex, nofollow para SEO
+        assert '<meta name="robots" content="noindex, nofollow">' in response.text
+
+        # El canonical URL debe seguir apuntando a la tienda limpia sin parámetros de query
+        assert '<link rel="canonical" href="https://www.tuempresa.com/tienda/">' in response.text
+
+    def test_search_productos_no_query_does_not_contain_noindex(self, client):
+        # Búsqueda vacía / sin parámetro de query
+        response = client.get("/tienda/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Producto A Personalizado" in response.text
+        assert "Producto B Estándar" in response.text
+
+        # NO debe incluir noindex, nofollow sino indexar por defecto
+        assert '<meta name="robots" content="noindex, nofollow">' not in response.text
+
+    def test_search_productos_sin_resultados_muestra_mensaje(self, client):
+        # Búsqueda que no coincide con nada
+        response = client.get("/tienda/?q=inexistente_total_query", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "No se encontraron productos que coincidan con la búsqueda" in response.text
+        assert '<meta name="robots" content="noindex, nofollow">' in response.text

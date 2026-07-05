@@ -2,11 +2,29 @@
 
 {% block title %}Tienda | {{ site.site.brand }}{% endblock %}
 
+{% block meta_robots %}
+  {% if q %}
+    <meta name="robots" content="noindex, nofollow">
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 <section class="section shop-section">
     <div class="container">
         <h1>Catálogo de {{ site.site.brand }}</h1>
         <p class="subtitle">Seleccioná los modelos y la cantidad necesaria para solicitar tu cotización formal.</p>
+        
+        <div class="search-bar-container">
+            <form action="/tienda/" method="get" class="search-form-shop">
+                <input type="text" name="q" value="{{ q }}" placeholder="Buscar productos..." class="search-input-shop" aria-label="Buscar productos">
+                <button type="submit" class="button button-primary btn-search-shop">Buscar</button>
+                {% if q %}
+                <a href="/tienda/" class="button button-secondary btn-clear-search">Limpiar</a>
+                {% endif %}
+            </form>
+        </div>
         
         <div class="products-grid">
             {% for producto in productos %}
@@ -27,6 +45,11 @@
                         <button type="submit" class="button button-primary btn-add">Agregar a mi cotización</button>
                     </form>
                 </div>
+            </div>
+            {% else %}
+            <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--muted-text);">
+                <p style="font-size: 1.2rem; font-weight: 500;">No se encontraron productos que coincidan con la búsqueda.</p>
+                <p>Intentá con palabras clave como "Bolsas", "Personalizadas", "Kraft" o "Caja".</p>
             </div>
             {% endfor %}
         </div>
