@@ -46,3 +46,15 @@ class TestPaginasEndpoints:
     def test_get_politica_de_privacidad(self, client):
         response = client.get("/politica-de-privacidad/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
+
+    def test_get_tienda_renders_schema(self, client):
+        response = client.get("/tienda/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        # Verificar contenido general
+        assert "Catálogo de" in response.text
+        # Verificar marcado estructurado JSON-LD
+        assert 'application/ld+json' in response.text
+        assert '"@type": "ItemList"' in response.text
+        assert '"@type": "Product"' in response.text
+        assert '"name":' in response.text
+        assert '"image":' in response.text

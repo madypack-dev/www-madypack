@@ -49,6 +49,7 @@ class TestPresupuestoEndpoints:
         assert response.status_code == 200
         assert "text/html" in response.headers["content-type"]
         assert "¡Presupuesto Generado!" in response.text
+        assert '<meta name="robots" content="noindex, nofollow">' in response.text
         assert "Descargar Presupuesto PDF" in response.text
         assert "Cerrar Compra por WhatsApp" in response.text
 

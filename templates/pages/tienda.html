@@ -32,4 +32,29 @@
         </div>
     </div>
 </section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Catálogo de {{ site.site.brand }}",
+  "description": "{{ site.schema_config.description }}",
+  "url": "{{ site.schema_config.url }}{{ request.url.path }}",
+  "numberOfItems": {{ productos | length }},
+  "itemListElement": [
+    {% for producto in productos %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "item": {
+        "@type": "Product",
+        "name": "{{ producto.nombre }}",
+        "description": "{{ producto.descripcion }}",
+        "image": "{{ site.schema_config.url }}{{ url_for('static', path='/images/' ~ producto.imagen) }}"
+      }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
 {% endblock %}
