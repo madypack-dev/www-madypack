@@ -197,6 +197,22 @@ async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant))
     host = request.headers.get("host", "localhost")
     base_url = f"{scheme}://{host}".rstrip("/")
 
+    # Cargar los productos del tenant para indexarlos de forma individual
+    try:
+        productos = cargar_productos_tienda(tenant).articulos
+    except Exception:
+        productos = []
+
+    product_urls = ""
+    for producto in productos:
+        product_urls += f"""  <url>
+    <loc>{base_url}/tienda/{producto.url_slug}/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+"""
+
     xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -211,7 +227,7 @@ async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant))
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url>
+{product_urls}  <url>
     <loc>{base_url}/quienes-somos/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>

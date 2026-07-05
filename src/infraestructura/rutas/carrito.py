@@ -2,7 +2,7 @@
 
 from functools import partial
 
-from fastapi import APIRouter, Request, Depends, Form
+from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infraestructura.rutas.base import templates, LoggingRoute, logger
@@ -53,6 +53,39 @@ async def ver_tienda(
         request=request,
         name="pages/tienda.html",
         context={"site": sitio, "productos": productos},
+    )
+
+
+@router.get("/tienda/{producto_slug}/", response_class=HTMLResponse)
+async def ver_producto(
+    request: Request,
+    producto_slug: str,
+    tenant: str = Depends(resolutor_tenant),
+):
+    sitio = cargar_site(tenant)
+    productos = obtener_productos_tienda(tenant)
+
+    # Buscar el producto por su slug
+    producto_encontrado = None
+    for p in productos:
+        if p.url_slug == producto_slug:
+            producto_encontrado = p
+            break
+
+    if producto_encontrado is None:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    # Obtener hasta 3 productos relacionados
+    relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
+
+    return templates.TemplateResponse(
+        request=request,
+        name="pages/producto.html",
+        context={
+            "site": sitio,
+            "producto": producto_encontrado,
+            "relacionados": relacionados,
+        },
     )
 
 

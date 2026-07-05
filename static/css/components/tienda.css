@@ -140,3 +140,239 @@
 .btn-add:active {
     transform: scale(0.98);
 }
+
+/* --- Breadcrumbs --- */
+.breadcrumbs-wrapper {
+    background-color: var(--background);
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.breadcrumbs ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.breadcrumbs li {
+    display: flex;
+    align-items: center;
+    color: #888;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+    content: "/";
+    margin-left: 8px;
+    color: #ccc;
+}
+
+.breadcrumbs a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* --- Product Detail split layout --- */
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+.product-visuals-details {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.product-detail-image-box {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    border: 1px solid #f5f5f5;
+}
+
+.product-detail-image-box img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-technical-info h1 {
+    font-size: 2.2rem;
+    color: var(--dark);
+    margin: 0 0 15px;
+    font-weight: 700;
+}
+
+.product-lead-text {
+    font-size: 1.15rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.technical-tabs {
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.tab-title {
+    font-size: 1.3rem;
+    color: var(--dark);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.specs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.specs-list li {
+    font-size: 0.95rem;
+    color: #444;
+    padding-left: 20px;
+    position: relative;
+}
+
+.specs-list li::before {
+    content: "•";
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+
+/* --- Cotizador Actions Box (Right column) --- */
+.product-actions-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 20px;
+}
+
+.quote-action-box h2 {
+    font-size: 1.5rem;
+    color: var(--dark);
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+.quote-action-sub {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.add-to-cart-form-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.add-to-cart-form-detail .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-to-cart-form-detail label {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 700;
+}
+
+.add-to-cart-form-detail input {
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.add-to-cart-form-detail input:focus {
+    border-color: var(--primary);
+}
+
+.field-hint {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.lead-support-info {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.lead-support-info p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.lead-support-info a {
+    text-decoration: none;
+}
+
+/* --- Related products --- */
+.related-products-section {
+    margin-top: 80px;
+    border-top: 1px solid #eee;
+    padding-top: 50px;
+}
+
+.related-products-section h2 {
+    font-size: 1.6rem;
+    color: var(--dark);
+    margin-bottom: 30px;
+    font-weight: 700;
+}

@@ -14,6 +14,18 @@ class ArticuloCatalogo(BaseModel):
     cantidad_por_defecto: int = Field(..., ge=100)
     imagen: str
     calculo: CalculoArticulo | None = None
+    slug: str | None = None
+
+    @property
+    def url_slug(self) -> str:
+        if self.slug:
+            return self.slug
+        import re
+        import unicodedata
+        s = unicodedata.normalize('NFKD', self.nombre).encode('ascii', 'ignore').decode('utf-8')
+        s = re.sub(r'[^\w\s-]', '', s).strip().lower()
+        s = re.sub(r'[-\s]+', '-', s)
+        return s
 
     @field_validator("cantidad_por_defecto")
     @classmethod

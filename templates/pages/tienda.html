@@ -15,7 +15,7 @@
                     <img src="{{ url_for('static', path='/images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" class="product-image" width="120" height="120">
                 </div>
                 <div class="product-info">
-                    <h3>{{ producto.nombre }}</h3>
+                    <h3><a href="/tienda/{{ producto.url_slug }}/">{{ producto.nombre }}</a></h3>
                     <p class="description">{{ producto.descripcion }}</p>
                     
                     <form action="/carrito/agregar" method="post" class="add-to-cart-form">
