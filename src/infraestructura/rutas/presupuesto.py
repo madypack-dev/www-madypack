@@ -197,6 +197,15 @@ async def generar_presupuesto(
     site = cargar_site(tenant)
     form_data = await request.form()
 
+    # Debug: visibilidad de qué campos llegan realmente desde el navegador
+    logger.debug(
+        "Formulario de presupuesto recibido",
+        form_keys=list(form_data.keys()),
+        phone_present="phone" in form_data,
+        phone_type=type(form_data.get("phone")).__name__ if "phone" in form_data else None,
+        email_present="email" in form_data,
+    )
+
     try:
         datos_form = CrearLeadRequest(
             nombre=_str_field_required(form_data.get("name")),
@@ -205,7 +214,17 @@ async def generar_presupuesto(
             email=_str_field_required(form_data.get("email")),
         )
     except (ValidationError, ValueError) as err:
-        logger.warning(f"Datos de contacto inválidos: {err}")
+        campos_faltantes = [
+            campo for campo in ("name", "company", "phone", "email")
+            if not _str_field(form_data.get(campo))
+        ]
+        logger.warning(
+            "Datos de contacto inválidos",
+            error=str(err),
+            campos_faltantes=campos_faltantes,
+            phone_present="phone" in form_data,
+            phone_value_len=len(_str_field(form_data.get("phone")) or ""),
+        )
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
     productos = _obtener_productos_tienda(tenant)
