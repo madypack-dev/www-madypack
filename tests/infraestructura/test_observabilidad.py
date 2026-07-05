@@ -37,3 +37,20 @@ def test_global_exception_handler():
     assert response.status_code == 500
     assert "text/html" in response.headers["content-type"]
     assert "Ha ocurrido un error inesperado" in response.text
+
+def test_response_compression(client):
+    # robots.txt tiene menos de 1000 bytes, no debe comprimirse
+    response_robots = client.get("/robots.txt", headers={
+        "host": "localhost:8000",
+        "accept-encoding": "gzip"
+    })
+    assert response_robots.status_code == 200
+    assert "content-encoding" not in response_robots.headers
+
+    # La página de inicio es mayor a 1000 bytes, debe comprimirse
+    response_home = client.get("/", headers={
+        "host": "localhost:8000",
+        "accept-encoding": "gzip"
+    })
+    assert response_home.status_code == 200
+    assert response_home.headers["content-encoding"] == "gzip"

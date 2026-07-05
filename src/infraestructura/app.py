@@ -4,6 +4,7 @@ import mimetypes
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.middleware.gzip import GZipMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
@@ -85,6 +86,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title=APP_TITLE, lifespan=lifespan, redirect_slashes=False)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 class TrailingSlashMiddleware(BaseHTTPMiddleware):
