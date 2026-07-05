@@ -161,27 +161,6 @@
     outline: none;
 }
 
-/* --- Buttons --- */
-.button {
-    align-items: center;
-    border-radius: 30px;
-    display: inline-flex;
-    font-weight: 700;
-    justify-content: center;
-    padding: 12px 28px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.button-primary {
-    background-color: var(--primary);
-    color: var(--text-light);
-}
-
-.button-primary:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
 /* --- About --- */
 .about-section {
     background-color: var(--background);

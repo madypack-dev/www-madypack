@@ -54,3 +54,15 @@ def test_response_compression(client):
     })
     assert response_home.status_code == 200
     assert response_home.headers["content-encoding"] == "gzip"
+
+def test_tenant_css_bundle_isolation(client):
+    # 1. Solicitar bundle con host por defecto (eitec)
+    response_default = client.get("/static/css/bundle.css", headers={"host": "localhost:8000"})
+    assert response_default.status_code == 200
+    assert "--primary: #2853A1;" in response_default.text
+
+    # 2. Solicitar bundle con host de madypack
+    response_madypack = client.get("/static/css/bundle.css", headers={"host": "madypack.com.ar"})
+    assert response_madypack.status_code == 200
+    assert "--primary: #c12a2a;" in response_madypack.text
+    assert "--primary-dark: #8f1f1f;" in response_madypack.text

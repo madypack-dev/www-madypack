@@ -32,12 +32,14 @@ def compilar_bundle_css():
     """Une todos los archivos CSS de la aplicación en un único static/css/bundle.css
 
     para optimizar la entrega reduciendo las peticiones HTTP concurrentes (evitando render-blocking).
+    También compila bundles específicos de tenants que tengan overrides (estilos locales).
     """
     try:
         from pathlib import Path
         infra_dir = Path(__file__).resolve().parent
         root_dir = infra_dir.parents[1]
-        css_dir = root_dir / "static" / "css"
+        static_dir = root_dir / "static"
+        css_dir = static_dir / "css"
 
         css_files = [
             css_dir / "base" / "fonts.css",
@@ -58,7 +60,7 @@ def compilar_bundle_css():
         bundle_content = []
         for file_path in css_files:
             if file_path.exists():
-                rel_path = file_path.relative_to(root_dir / "static")
+                rel_path = file_path.relative_to(static_dir)
                 bundle_content.append(f"/* --- Start of {rel_path} --- */")
                 bundle_content.append(file_path.read_text(encoding="utf-8"))
                 bundle_content.append(f"/* --- End of {rel_path} --- */\n")
@@ -67,7 +69,31 @@ def compilar_bundle_css():
 
         bundle_file = css_dir / "bundle.css"
         bundle_file.write_text("\n".join(bundle_content), encoding="utf-8")
-        logger.info(f"CSS bundle compilado con éxito en {bundle_file}")
+        logger.info(f"CSS root bundle compilado con éxito en {bundle_file}")
+
+        # Compilar bundles específicos por tenant
+        tenants_dir = static_dir / "tenants"
+        if tenants_dir.exists():
+            for tenant_path in tenants_dir.iterdir():
+                if tenant_path.is_dir():
+                    tenant_name = tenant_path.name
+                    tenant_css_file = tenant_path / "css" / "styles.css"
+                    if tenant_css_file.exists():
+                        content = tenant_css_file.read_text(encoding="utf-8")
+                        lines = content.splitlines()
+                        # Extraer solo las reglas no importadas (overrides específicos)
+                        overrides = [line for line in lines if not line.strip().startswith("@import")]
+
+                        tenant_bundle_dir = tenant_path / "css"
+                        tenant_bundle_dir.mkdir(parents=True, exist_ok=True)
+                        tenant_bundle_path = tenant_bundle_dir / "bundle.css"
+
+                        tenant_content = bundle_content.copy()
+                        tenant_content.append("/* --- Tenant Overrides --- */")
+                        tenant_content.append("\n".join(overrides))
+
+                        tenant_bundle_path.write_text("\n".join(tenant_content), encoding="utf-8")
+                        logger.info(f"CSS bundle para tenant '{tenant_name}' compilado con éxito en {tenant_bundle_path}")
     except Exception as exc:
         logger.error(f"Error al compilar el bundle de CSS: {exc}", exc_info=True)
 
