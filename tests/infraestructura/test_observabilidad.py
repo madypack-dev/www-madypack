@@ -66,3 +66,42 @@ def test_tenant_css_bundle_isolation(client):
     assert response_madypack.status_code == 200
     assert "--primary: #c12a2a;" in response_madypack.text
     assert "--primary-dark: #8f1f1f;" in response_madypack.text
+
+def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
+    import json
+    import logging
+    import structlog
+    from src.infraestructura.logging.logger import configurar_logging, get_logger
+
+    # Forzar formato JSON usando variable de entorno
+    monkeypatch.setenv("LOG_FORMAT", "json")
+    configurar_logging()
+
+    logger_test = get_logger("test-json")
+
+    # Bind variables de contexto de structlog
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(request_id="test-req-123", tenant="test-tenant")
+
+    with caplog.at_level(logging.INFO):
+        logger_test.info("Mensaje de prueba", extra_field="value")
+
+    assert caplog.text != ""
+    # El logger puede tener otros prefijos dependientes del test run, extraemos el json del cuerpo
+    line = caplog.text.strip().splitlines()[-1]
+    # Si pytest le mete el prefijo del nivel (ej: "INFO     test-json:test_observabilidad.py:82 "), lo limpiamos
+    if " {" in line:
+        line = "{" + line.split(" {", 1)[1]
+    
+    log_data = json.loads(line)
+
+    assert log_data["event"] == "Mensaje de prueba"
+    assert log_data["request_id"] == "test-req-123"
+    assert log_data["tenant"] == "test-tenant"
+    assert log_data["extra_field"] == "value"
+    assert log_data["level"] == "info"
+    assert "timestamp" in log_data
+
+    # Restaurar formateador por defecto para no interferir con otros tests
+    monkeypatch.delenv("LOG_FORMAT", raising=False)
+    configurar_logging()

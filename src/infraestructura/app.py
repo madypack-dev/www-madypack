@@ -158,15 +158,44 @@ app.add_middleware(TrailingSlashMiddleware)
 @app.middleware("http")
 async def agregar_request_id_middleware(request: Request, call_next):
     import uuid
+    import time
     import structlog
-    # Limpiar y asociar request ID único en las variables de contexto
-    structlog.contextvars.clear_contextvars()
-    request_id = str(uuid.uuid4())
-    structlog.contextvars.bind_contextvars(request_id=request_id)
     
-    response = await call_next(request)
-    response.headers["X-Request-ID"] = request_id
-    return response
+    # 1. Resolver identificadores únicos de petición y tenant
+    request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+    tenant = resolutor_tenant(request)
+
+    # 2. Asociar variables de contexto para estructurar todas las trazas de este hilo/corrutina
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
+        request_id=request_id,
+        tenant=tenant,
+    )
+    
+    start_time = time.time()
+    try:
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        logger.info(
+            "Petición HTTP procesada",
+            http_method=request.method,
+            http_path=request.url.path,
+            http_status=response.status_code,
+            duration_ms=round(process_time * 1000, 2),
+        )
+        response.headers["X-Request-ID"] = request_id
+        return response
+    except Exception as err:
+        process_time = time.time() - start_time
+        logger.error(
+            "Excepción durante el procesamiento de la petición HTTP",
+            http_method=request.method,
+            http_path=request.url.path,
+            duration_ms=round(process_time * 1000, 2),
+            error=str(err),
+            exc_info=True,
+        )
+        raise err
 
 
 @app.exception_handler(Exception)

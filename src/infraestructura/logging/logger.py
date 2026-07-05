@@ -18,6 +18,14 @@ def configurar_logging() -> None:
         level=getattr(logging, LOG_LEVEL.upper(), logging.INFO),
     )
 
+    import os
+    usar_json = (
+        not sys.stdout.isatty()
+        or os.getenv("LOG_FORMAT") == "json"
+        or os.getenv("ENV") == "production"
+    )
+    renderer = structlog.processors.JSONRenderer() if usar_json else structlog.dev.ConsoleRenderer(colors=True)
+
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
@@ -26,7 +34,7 @@ def configurar_logging() -> None:
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
-            structlog.dev.ConsoleRenderer(colors=True) if sys.stdout.isatty() else structlog.processors.JSONRenderer(),
+            renderer,
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
