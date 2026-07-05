@@ -5,7 +5,6 @@ import os
 from datetime import datetime
 from typing import Callable
 
-from src.comercio.dominio.modelos.carrito import Carrito
 from src.lead.dominio.modelos.lead import Lead
 from src.lead.dominio.modelos.eventos import LeadCreado
 from src.lead.dominio.puertos.repositorio import ILeadRepository
@@ -31,7 +30,7 @@ class CrearLeadDesdePresupuesto:
         self.registrar_error = registrar_error
         self.fallback_file_path = fallback_file_path
 
-    async def ejecutar(self, request: CrearLeadRequest, carrito: Carrito) -> ConfirmacionPresupuestoResponse:
+    async def ejecutar(self, request: CrearLeadRequest, total_articulos: int) -> ConfirmacionPresupuestoResponse:
         """
         Flujo de Negocio:
         1. Instancia y genera el Lead (entidad de dominio).
@@ -61,7 +60,7 @@ class CrearLeadDesdePresupuesto:
             self._guardar_fallback_local(lead, str(err))
 
         # 3. Emitir evento de dominio
-        resumen_lineas = carrito.total_lineas
+        resumen_lineas = total_articulos
         evento = LeadCreado(
             id_evento=uuid.uuid4(),
             ocurrido_en=datetime.now(),

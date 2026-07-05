@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 from pydantic import ValidationError
 from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
 from src.lead.aplicacion.casos_uso.crear_lead import CrearLeadDesdePresupuesto
-from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
+
 from src.lead.dominio.puertos.repositorio import ILeadRepository
 from src.lead.dominio.puertos.publicador_eventos import IPublicadorEventos
 
@@ -38,10 +38,6 @@ async def test_crear_lead_desde_presupuesto_caso_uso_success():
     
     request = CrearLeadRequest(nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com")
     
-    carrito = Carrito()
-    art = ArticuloCarrito(id=1, nombre="Bolsa", descripcion="D", cantidad=100, imagen="img.png")
-    carrito.agregar_articulo(art)
-
     caso_uso = CrearLeadDesdePresupuesto(
         repositorio=repo,
         publicador_eventos=pub,
@@ -49,7 +45,7 @@ async def test_crear_lead_desde_presupuesto_caso_uso_success():
         whatsapp_phone="5491125794649"
     )
 
-    response = await caso_uso.ejecutar(request, carrito)
+    response = await caso_uso.ejecutar(request, total_articulos=1)
     
     assert response.lead_id == "chatwoot-contact-123"
     assert response.codigo_referencia.startswith("COT-")
@@ -71,8 +67,6 @@ async def test_crear_lead_desde_presupuesto_caso_uso_fallback(tmp_path):
     registrar_error = MagicMock()
     
     request = CrearLeadRequest(nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com")
-    carrito = Carrito()
-
     fallback_file = tmp_path / "failed_leads.log"
 
     caso_uso = CrearLeadDesdePresupuesto(
@@ -84,7 +78,7 @@ async def test_crear_lead_desde_presupuesto_caso_uso_fallback(tmp_path):
         fallback_file_path=str(fallback_file)
     )
 
-    response = await caso_uso.ejecutar(request, carrito)
+    response = await caso_uso.ejecutar(request, total_articulos=0)
     
     assert response.lead_id.startswith("FALLBACK-")
     registrar_error.assert_called_once()

@@ -221,7 +221,7 @@ async def generar_presupuesto(
     whatsapp_vendedor = site.whatsapp.phone
 
     try:
-        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
+        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito.total_lineas)
     except Exception as err:
         logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
         import uuid
@@ -325,16 +325,36 @@ async def descargar_presupuesto(
         cargar_productos_tienda=lambda: productos,
         registrar_error=logger.error,
     )
+    carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
         cargar_tarifas_yaml=partial(_obtener_tarifas, tenant),
         registrar_error=logger.error,
     )
 
+    from src.presupuesto.dominio.modelos.presupuesto import LineaPresupuesto
+    lineas = []
+    for articulo in carrito.articulos:
+        try:
+            subtotal = cotizador.calcular_precio_estimado(articulo)
+        except Exception as err:
+            logger.error(f"Error calculando precio para artículo {articulo.id}: {err}")
+            subtotal = 0.0
+
+        precio_unitario = subtotal / articulo.cantidad if articulo.cantidad > 0 else 0.0
+        lineas.append(
+            LineaPresupuesto(
+                id_articulo=articulo.id,
+                nombre=articulo.nombre,
+                descripcion=articulo.descripcion,
+                cantidad=articulo.cantidad,
+                precio_unitario_estimado=precio_unitario,
+                subtotal=subtotal,
+            )
+        )
+
     generador_pdf = GeneradorPresupuestoPDFReportLab()
     caso_uso = CasoUsoGenerarPresupuestoPDF(
-        repositorio_carrito=repositorio,
-        servicio_precios=cotizador,
         generador_pdf=generador_pdf,
         registrar_error=logger.error,
     )
@@ -342,6 +362,7 @@ async def descargar_presupuesto(
     try:
         pdf_bytes = caso_uso.ejecutar(
             datos_solicitante=datos_solicitante,
+            lineas=lineas,
             identidad_visual=identidad_visual,
             validez_dias=site.presupuesto.validez_dias,
             condiciones_comerciales=site.presupuesto.condiciones_comerciales,
