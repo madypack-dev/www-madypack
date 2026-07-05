@@ -39,6 +39,7 @@ def compilar_bundle_css():
         css_dir = root_dir / "static" / "css"
 
         css_files = [
+            css_dir / "base" / "fonts.css",
             css_dir / "base" / "variables.css",
             css_dir / "base" / "reset.css",
             css_dir / "layout.css",
