@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <rect width="200" height="200" rx="16" fill="#faf6f0"/>
+  <!-- Corrugated cardboard drawing -->
+  <g transform="translate(25, 30)" stroke="#a1887f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Top flat sheet -->
+    <path d="M20,40 L130,40"/>
+    <!-- Corrugated wave middle sheet -->
+    <path d="M20,65 Q27,50 35,65 T50,65 T65,65 T80,65 T95,65 T110,65 T125,65 T130,65" stroke="#8d6e63" stroke-width="6"/>
+    <!-- Bottom flat sheet -->
+    <path d="M20,80 L130,80"/>
+    <!-- Isometric stack lines to give volume -->
+    <path d="M130,40 L160,60 L160,100 M130,80 L160,100"/>
+    <path d="M20,80 L50,100 L160,100"/>
+  </g>
+</svg>

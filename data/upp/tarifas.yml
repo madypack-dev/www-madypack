@@ -1,0 +1,11 @@
+# data/upp/tarifas.yml
+# Estructura de tarifas industriales para Unión Papelera Platense (valores unitarios en ARS por kg / unidad)
+tarifas:
+  conceptos:
+    base: 450.00                  # Costo base de procesamiento y energía por unidad/kg
+    fibra_reciclada: 320.00        # Materia prima celulósica recuperada
+    tratamiento_agua: 90.00       # Proceso de depuración de agua y pulpeado
+    aditivo_resistencia: 110.00    # Aditivos para papeles kraft/corrugado
+    bobinado_industrial: 80.00    # Proceso de rebobinado a canuto de cartón
+    corte_pliegos: 150.00         # Mano de obra de guillotinado a medidas estándar
+    empaque_palet: 210.00         # Flejado y paletizado de resmas/bobinas

@@ -1,0 +1,12 @@
+# data/plasticoselgringo/tarifas.yml
+# Tarifario de extrusión de monofilamento para Plásticos El Gringo (valores en ARS por kg / unidad)
+tarifas:
+  conceptos:
+    base: 380.00                  # Costo de procesamiento básico de extrusora por kg
+    polipropileno_virgen: 850.00   # Polipropileno de alta densidad virgen (grado extrusión)
+    pead_reciclado: 600.00        # Polietileno de alta densidad recuperado (PEAD)
+    pigmento_color: 90.00         # Pigmento especial para colores vívidos (verde, rojo, amarillo)
+    tratamiento_uv: 120.00        # Aditivo estabilizante UV para cepillería de exterior
+    corte_fraccionado: 140.00     # Mano de obra de guillotina para corte a longitud exacta
+    bobinado: 70.00               # Embobinado en carreteles plásticos o de cartón
+    empaque_atado: 80.00          # Atado de mazos en bolsas protectoras y flejado

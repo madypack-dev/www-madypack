@@ -1,0 +1,96 @@
+articulos:
+  - id: 1
+    sku: "ELG-PP-DOM"
+    nombre: "Hilo de PP Fraccionado para Escobas Domésticas"
+    descripcion: "Hilo de polipropileno de 0.50 mm. Cortado en mazos de 32 cm. Color verde."
+    descripcion_larga: "Materia prima plástica para la confección de escobas domésticas y cepillos de mano. Fabricado en Polipropileno virgen de excelente memoria de doblado, asegurando que las cerdas vuelvan a su posición y no se abran con el uso diario."
+    precio_lista: 1460.00
+    unidad_venta: "kg"
+    cantidad_por_defecto: 200
+    diametro_hilo_mm: 0.50
+    longitud_fraccionada_cm: 32
+    material: "PP"
+    color: "Verde"
+    marca: "Plásticos El Gringo"
+    origen: "Santa Lucía, San Pedro, Argentina"
+    tags: ["hilado", "polipropileno", "limpieza", "domestico"]
+    imagen: "monofilamento-pp.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "polipropileno_virgen", "pigmento_color", "corte_fraccionado", "empaque_atado"]
+  - id: 2
+    sku: "ELG-PE-IND"
+    nombre: "Hilo de PEAD Fraccionado para Cepillos Industriales"
+    descripcion: "Monofilamento de polietileno (PEAD) de 1.20 mm. Corte de 45 cm. Color negro."
+    descripcion_larga: "Monofilamento grueso y de alta rigidez diseñado para cepillos industriales de lavado de cajones, escobillones de fábrica y rodillos de barredoras. Gran resistencia a agentes químicos, desgaste e intemperie."
+    precio_lista: 1200.00
+    unidad_venta: "kg"
+    cantidad_por_defecto: 100
+    diametro_hilo_mm: 1.20
+    longitud_fraccionada_cm: 45
+    material: "PEAD"
+    color: "Negro"
+    marca: "Plásticos El Gringo"
+    origen: "Santa Lucía, San Pedro, Argentina"
+    tags: ["monofilamento", "pead", "industrial", "limpieza"]
+    imagen: "monofilamento-pead.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "pead_reciclado", "corte_fraccionado", "empaque_atado"]
+  - id: 3
+    sku: "ELG-PP-UV"
+    nombre: "Hilo de PP con Tratamiento UV para Escobillones de Calle"
+    descripcion: "Hilo de polipropileno de 0.80 mm con aditivo UV de alta durabilidad. Corte de 38 cm."
+    descripcion_larga: "Hilado de polipropileno de sección cilíndrica formulado con aditivo protector UV que retarda la degradación solar. Ideal para escobillones municipales, barredoras de vía pública y cepillos para exteriores expuestos al sol."
+    precio_lista: 1540.00
+    unidad_venta: "kg"
+    cantidad_por_defecto: 200
+    diametro_hilo_mm: 0.80
+    longitud_fraccionada_cm: 38
+    material: "PP"
+    color: "Amarillo"
+    marca: "Plásticos El Gringo"
+    origen: "Santa Lucía, San Pedro, Argentina"
+    tags: ["hilado", "polipropileno", "uv", "calle"]
+    imagen: "monofilamento-pp.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "polipropileno_virgen", "pigmento_color", "tratamiento_uv", "corte_fraccionado", "empaque_atado"]
+  - id: 4
+    sku: "ELG-ACC-BASE"
+    nombre: "Bases de Madera para Escobillones B2B"
+    descripcion: "Bases de madera de pino cepillada con perforaciones estándar y rosca metálica."
+    descripcion_larga: "Bases de madera maciza seca de pino de 40 cm de largo, listas para el insertado y abrochado de los monofilamentos plásticos. Incluye inserto de rosca metálica universal de alta fijación para cabos estándar."
+    precio_lista: 350.00
+    unidad_venta: "paquete"
+    cantidad_por_defecto: 100
+    diametro_hilo_mm: null
+    longitud_fraccionada_cm: 40
+    material: "Madera"
+    color: "Natural"
+    marca: "Molinari"
+    origen: "Santa Lucía, San Pedro, Argentina"
+    tags: ["madera", "bases", "accesorios", "cepilleria"]
+    imagen: "accesorios-cepilleria.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "empaque_atado"]
+  - id: 5
+    sku: "ELG-PE-ROLL"
+    nombre: "Monofilamento PEAD Continuo en Bobina"
+    descripcion: "Hilado de polietileno continuo en carretel industrial para máquinas automáticas."
+    descripcion_larga: "Monofilamento continuo sin cortar de polietileno de alta densidad (PEAD) arrollado en bobinas de cartón reforzado de 10 kg. Ideal para alimentar cepilladoras automáticas de alta producción que insertan y cortan en un solo ciclo."
+    precio_lista: 1470.00
+    unidad_venta: "bobina"
+    cantidad_por_defecto: 100
+    diametro_hilo_mm: 0.70
+    longitud_fraccionada_cm: null
+    material: "PEAD"
+    color: "Rojo"
+    marca: "Plásticos El Gringo"
+    origen: "Santa Lucía, San Pedro, Argentina"
+    tags: ["bobina", "pead", "continuo", "cepilleria"]
+    imagen: "monofilamento-pead.svg"
+    calculo:
+      tipo: "suma_por_unidad"
+      conceptos: ["base", "pead_reciclado", "pigmento_color", "bobinado", "empaque_atado"]

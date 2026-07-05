@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="100%" height="100%">
+  <!-- Recycling and Paper Roll Icon -->
+  <g transform="translate(10, 10)">
+    <circle cx="40" cy="40" r="35" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <path d="M40,12 A28,28 0 0,1 68,40 M68,40 L62,34 M68,40 L74,34" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <path d="M40,68 A28,28 0 0,1 12,40 M12,40 L18,46 M12,40 L6,46" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <rect x="30" y="28" width="20" height="24" rx="2" fill="none" stroke="#ffb300" stroke-width="4"/>
+    <line x1="35" y1="36" x2="45" y2="36" stroke="#ffb300" stroke-width="2"/>
+    <line x1="35" y1="42" x2="45" y2="42" stroke="#ffb300" stroke-width="2"/>
+  </g>
+  <!-- Text -->
+  <text x="110" y="62" font-family="'Nunito Sans', sans-serif" font-size="44" font-weight="900" fill="#ffffff">UPP</text>
+  <text x="112" y="82" font-family="'Nunito Sans', sans-serif" font-size="12" font-weight="700" fill="#e9ecef" letter-spacing="1.5">UNION PAPELERA PLATENSE</text>
+</svg>

@@ -1,0 +1,213 @@
+# data/upp/site.yml
+analytics:
+  gtm_id: "GTM-UPP123"
+  ga_id: "G-UPP123"
+whatsapp:
+  phone: "549221556677"
+  message: "Hola UPP, quiero consultar por una cotización mayorista de papel industrial."
+site:
+  lang: "es"
+  brand: "UPP"
+  tagline: "Papel Industrial Reciclado"
+  title_default: "Unión Papelera Platense | Fábrica Recuperada de Papel"
+  charset: "UTF-8"
+  viewport: "width=device-width, initial-scale=1.0"
+  robots: "index, follow"
+  profile_url: "http://gmpg.org/xfn/11"
+  logo:
+    width: 180
+    height: 60
+    alt: "Logo UPP"
+    url: "/"
+socials:
+  - network: "instagram"
+    url: "https://instagram.com/unionpapeleraplatense"
+    label: "Instagram"
+  - network: "linkedin"
+    url: "https://linkedin.com/company/union-papelera-platense"
+    label: "LinkedIn"
+header:
+  top_bar:
+    text: "UPP - Cooperativa de Trabajo Metalúrgica y Papelera - Producción Nacional 100% Reciclada"
+  logo:
+    src: "logo-upp.svg"
+  menu:
+    - label: "Inicio"
+      url: "/"
+    - label: "Productos"
+      url: "/tienda/"
+    - label: "Quiénes Somos"
+      url: "/quienes-somos/"
+    - label: "Contacto"
+      url: "/contacto/"
+  actions:
+    search: "Buscar"
+    account: "Mi Cuenta"
+    cart: "Ver Carrito"
+    menu: "Menú"
+  account_modal:
+    title: "Ingreso B2B"
+    close_label: "Cerrar"
+    email_label: "Correo Corporativo"
+    email_placeholder: "ejemplo@empresa.com"
+    password_label: "Contraseña"
+    password_placeholder: "••••••••"
+    submit_button: "Acceder al Portal"
+    no_account_text: "¿Sos cliente nuevo?"
+    contact_link_text: "Contactanos por WhatsApp"
+    contact_url: "https://wa.me/549221556677"
+footer:
+  logo:
+    src: "logo-upp-white.svg"
+  menu:
+    - label: "Preguntas Frecuentes"
+      url: "/faqs"
+    - label: "Términos de Venta B2B"
+      url: "/terminos"
+home:
+  hero:
+    title: "Papel Industrial de Fibra 100% Reciclada"
+    subtitle: "Abastecimiento mayorista para industrias, agro y embalaje desde La Plata."
+  cta:
+    title: "¿Necesitás bobinas o pliegos a medida?"
+    before_link: "Consultá con nuestro departamento comercial por"
+    link_text: "descuentos por volumen"
+    after_link: "en despachos de fábrica."
+  product_types:
+    title: "Líneas de Producción Papelera"
+    products:
+      - label: "Papel Kraft y Onda"
+        image: "papel-kraft.svg"
+      - label: "Papel Tisú Industrial"
+        image: "papel-tisu.svg"
+      - label: "Cartón Corrugado"
+        image: "carton-corrugado.svg"
+  quote_form:
+    title: "Solicitud de Cotización Mayorista"
+    meta_title: "Presupuesto Mayorista de Papel | UPP"
+    meta_description: "Solicitá cotización de papel kraft, tisú y cartón corrugado directamente a la fábrica UPP."
+    description: "Completá los datos de tu empresa y el volumen estimado para recibir una cotización formal de fábrica."
+    submit: "Enviar Solicitud a UPP"
+    success_title: "Solicitud Recibida"
+    success_message: "Tu consulta comercial ha sido registrada. Un representante de la cooperativa se contactará en breve."
+    required_marker: "*"
+    required_abbreviation: "requerido"
+    details:
+      - title: "Venta Directa de Fábrica"
+        text: "Despachos mayoristas directos desde nuestra planta en Camino Centenario, La Plata."
+      - title: "Compromiso Sustentable"
+        text: "Todos nuestros productos son fabricados a partir de papel y cartón recuperado localmente."
+    fields:
+      - name: "nombre"
+        label: "Nombre y Apellido"
+        type: "text"
+        required: true
+      - name: "empresa"
+        label: "Razón Social / Empresa"
+        type: "text"
+        required: true
+      - name: "email"
+        label: "Correo Electrónico"
+        type: "email"
+        required: true
+      - name: "telefono"
+        label: "Teléfono de Contacto"
+        type: "tel"
+        required: true
+      - name: "mensaje"
+        label: "Detalle del pedido / Medidas especiales"
+        type: "textarea"
+        required: false
+        rows: 4
+  about:
+    title: "Sobre Unión Papelera Platense (UPP)"
+    meta_title: "Fábrica Recuperada UPP | Quiénes Somos"
+    meta_description: "Conocé la historia de Unión Papelera Platense (UPP), cooperativa de trabajo que recuperó la planta papelera de La Plata."
+    text: "UPP es una cooperativa de trabajo constituida por sus trabajadores tras la recuperación de la histórica planta papelera de La Plata. Nos especializamos en la transformación de residuos celulósicos en papeles industriales y de embalaje de alta resistencia."
+    button_text: "Conocer nuestra Planta"
+    button_url: "/quienes-somos/"
+    image: "quienes-somos-upp.jpg"
+    details:
+      - title: "Capacidad Productiva"
+        text: "Procesamos toneladas de papel recuperado diariamente para abastecer la demanda industrial de la provincia."
+      - title: "Gestión Obrera Autogestionada"
+        text: "Sostenemos el trabajo genuino de más de 60 familias mediante democracia interna y compromiso productivo."
+  newsletter:
+    title: "Recibí novedades comerciales de UPP"
+    placeholder: "tu-email@empresa.com"
+    submit: "Suscribirse"
+    success_title: "Suscripción Exitosa"
+    success_message: "Gracias por suscribirte al boletín de novedades de la fábrica UPP."
+  contact:
+    title: "Contacto Directo con UPP"
+    meta_title: "Contacto Comercial UPP | La Plata"
+    meta_description: "Comunicate con Unión Papelera Platense. Ubicación en Camino Centenario, teléfono y consultas por correo."
+    email: "ventas@upp.coop"
+    whatsapp_label: "Ventas y Despachos"
+    address: "Camino Centenario y Calle 514, B1900 La Plata, Provincia de Buenos Aires"
+    map_url: "https://maps.google.com/?q=Camino+Centenario+y+Calle+514,+La+Plata"
+    map_link: "Ver en Google Maps"
+    map_title: "Planta UPP La Plata"
+    labels:
+      customer_service: "Atención de Lunes a Viernes de 08:00 a 17:00 hs"
+      whatsapp: "Atención Comercial Directa"
+      location: "Planta Industrial y Recepción de Papel"
+    details:
+      - title: "Retiros por Planta"
+        text: "La carga y despacho de bobinas y palets se realiza en nuestra dársena comercial en La Plata."
+      - title: "Recepción de Reciclables"
+        text: "Coordinamos con cooperativas de cartoneros y grandes generadores para el ingreso de materia prima celulósica."
+cart:
+  title: "Carrito de Presupuesto | UPP"
+  meta_description: "Revisá los insumos de papel y cartón industrial seleccionados antes de solicitar cotización a UPP."
+  heading: "Insumos Celulósicos Solicitados"
+  items_heading: "Productos en Lista"
+  pending_quote_label: "A Cotizar B2B"
+  items:
+    - name: "Papel Kraft Reciclado en Bobina"
+      description: "Kraft de 80g/m² | Ancho estándar de 100 cm"
+      quantity_label: "Cant: 200 kg"
+      image: "papel-kraft.svg"
+  summary:
+    heading: "Resumen de Solicitud"
+    total_label: "Total Solicitado:"
+    total_value: "200 kg"
+    estimated_cost_label: "Precio Estimado (Lista):"
+    estimated_cost_value: "$ 0,00"
+    note: "El costo final puede variar según volumen de compra, flete y condiciones de pago B2B."
+    submit_button: "Confirmar Solicitud de Presupuesto"
+presupuesto:
+  validez_dias: 15
+  condiciones_comerciales:
+    - "Precios netos expresados en Pesos Argentinos (ARS) sin IVA."
+    - "Entrega sobre camión en planta UPP (La Plata). Flete a cargo del comprador."
+    - "Forma de pago: Transferencia bancaria a la cuenta de la cooperativa (50% anticipo, saldo contra entrega)."
+    - "Sujeto a disponibilidad de stock de fibra de reciclaje al momento de la orden."
+  oferta_preliminar_label: "OFERTA COMERCIAL PRELIMINAR - UPP COOPERATIVA"
+schema:
+  type: "ManufacturingBusiness"
+  name: "Unión Papelera Platense"
+  image: "/static/tenants/upp/images/quienes-somos-upp.jpg"
+  logo: "/static/tenants/upp/images/logo-upp.svg"
+  url: "https://www.upp.coop"
+  telephone: "+54 221 484-0234"
+  email: "contacto@upp.coop"
+  description: "Fábrica recuperada dedicada a la producción de papel industrial kraft, tisú y cartón corrugado a partir de papel y cartón 100% reciclados en La Plata."
+  address:
+    streetAddress: "Camino Centenario y Calle 514"
+    addressLocality: "La Plata"
+    addressRegion: "Buenos Aires"
+    postalCode: "B1900"
+    addressCountry: "AR"
+  geo:
+    latitude: "-34.8879"
+    longitude: "-57.9942"
+  opening_hours:
+    days:
+      - "Monday"
+      - "Tuesday"
+      - "Wednesday"
+      - "Thursday"
+      - "Friday"
+    opens: "08:00"
+    closes: "17:00"
