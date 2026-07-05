@@ -31,6 +31,51 @@ from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
 from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
 from src.presupuesto.dominio.modelos.presupuesto import DatosSolicitante
 
+import httpx
+from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
+from src.lead.adaptadores.eventos.noop_publicador import NoOpPublicador
+from src.lead.aplicacion.casos_uso.crear_lead import CrearLeadDesdePresupuesto
+from src.infraestructura.config.settings import (
+    CHATWOOT_URL,
+    CHATWOOT_ACCOUNT_ID,
+    CHATWOOT_INBOX_ID,
+    CHATWOOT_API_TOKEN,
+)
+
+def get_http_client(request: Request) -> httpx.AsyncClient:
+    """Obtiene el cliente HTTP singleton de la aplicación FastAPI.
+
+    Si no se ha inicializado (por ejemplo, en tests de integración que no disparan el lifespan),
+    se inicializa de manera perezosa (lazy load) para evitar excepciones.
+    """
+    if not hasattr(request.app.state, "http_client"):
+        request.app.state.http_client = httpx.AsyncClient(timeout=10.0)
+    return request.app.state.http_client
+
+def get_chatwoot_repo(http_client: httpx.AsyncClient = Depends(get_http_client)) -> ChatwootContactRepository:
+    """Inyecta el cliente HTTP singleton para construir el repositorio de Chatwoot Contact."""
+    return ChatwootContactRepository(
+        http_client=http_client,
+        base_url=CHATWOOT_URL,
+        account_id=CHATWOOT_ACCOUNT_ID,
+        api_token=CHATWOOT_API_TOKEN,
+    )
+
+def get_caso_uso_lead(
+    repo: ChatwootContactRepository = Depends(get_chatwoot_repo),
+    tenant: str = Depends(resolutor_tenant)
+) -> CrearLeadDesdePresupuesto:
+    """Ensambla el caso de uso de lead inyectando el repositorio y parámetros de tenant."""
+    site = cargar_site(tenant)
+    whatsapp_vendedor = site.whatsapp.phone
+    return CrearLeadDesdePresupuesto(
+        repositorio=repo,
+        publicador_eventos=NoOpPublicador(),
+        chatwoot_inbox_id=CHATWOOT_INBOX_ID,
+        whatsapp_phone=whatsapp_vendedor,
+        registrar_error=logger.error,
+    )
+
 router = APIRouter(route_class=LoggingRoute)
 logger = get_logger()
 
@@ -144,19 +189,10 @@ async def read_cotizacion(
 async def generar_presupuesto(
     request: Request,
     tenant: str = Depends(resolutor_tenant),
+    caso_uso_lead: CrearLeadDesdePresupuesto = Depends(get_caso_uso_lead),
 ):
     """Procesa los datos de contacto del lead, los envía a Chatwoot y retorna la vista de confirmación."""
     from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
-    from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
-    from src.lead.adaptadores.eventos.noop_publicador import NoOpPublicador
-    from src.lead.aplicacion.casos_uso.crear_lead import CrearLeadDesdePresupuesto
-    from src.infraestructura.config.settings import (
-        CHATWOOT_URL,
-        CHATWOOT_ACCOUNT_ID,
-        CHATWOOT_INBOX_ID,
-        CHATWOOT_API_TOKEN,
-    )
-    import httpx
 
     site = cargar_site(tenant)
     form_data = await request.form()
@@ -182,78 +218,61 @@ async def generar_presupuesto(
     if not carrito.articulos:
         return RedirectResponse(url="/cotizacion/?error=carrito_vacio", status_code=303)
 
-    async with httpx.AsyncClient() as http_client:
-        chatwoot_repo = ChatwootContactRepository(
-            http_client=http_client,
-            base_url=CHATWOOT_URL,
-            account_id=CHATWOOT_ACCOUNT_ID,
-            api_token=CHATWOOT_API_TOKEN,
-        )
-        publicador = NoOpPublicador()
-        
-        whatsapp_vendedor = site.whatsapp.phone
+    whatsapp_vendedor = site.whatsapp.phone
 
-        caso_uso_lead = CrearLeadDesdePresupuesto(
-            repositorio=chatwoot_repo,
-            publicador_eventos=publicador,
-            chatwoot_inbox_id=CHATWOOT_INBOX_ID,
-            whatsapp_phone=whatsapp_vendedor,
-            registrar_error=logger.error,
-        )
+    try:
+        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
+    except Exception as err:
+        logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
+        import uuid
+        import urllib.parse
+        from src.lead.aplicacion.dtos.lead_dtos import ConfirmacionPresupuestoResponse
 
+        ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
+
+        # Intentar registrar localmente el lead de contingencia
         try:
-            response_lead = await caso_uso_lead.ejecutar(datos_form, carrito)
-        except Exception as err:
-            logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
-            import uuid
-            import urllib.parse
-            from src.lead.aplicacion.dtos.lead_dtos import ConfirmacionPresupuestoResponse
-
-            ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
-
-            # Intentar registrar localmente el lead de contingencia
-            try:
-                import json
-                import os
-                from datetime import datetime
-                fallback_data = {
-                    "timestamp": datetime.now().isoformat(),
-                    "lead_id": f"INFRA-ERR-{uuid.uuid4()}",
-                    "codigo_referencia": ref_code,
-                    "nombre": datos_form.nombre,
-                    "empresa": datos_form.empresa,
-                    "email": str(datos_form.email),
-                    "telefono": datos_form.telefono,
-                    "error": f"Falla crítica de infraestructura: {str(err)}"
-                }
-                os.makedirs("logs", exist_ok=True)
-                with open("logs/failed_leads.log", "a", encoding="utf-8") as f:
-                    f.write(json.dumps(fallback_data) + "\n")
-            except Exception as file_err:
-                logger.error(f"No se pudo guardar el lead de emergencia en logs/failed_leads.log: {file_err}")
-
-            # Construir respuesta mockeada segura para evitar 500 y permitir la continuidad comercial
-            encoded_message = urllib.parse.quote(
-                f"Hola, mi nombre es {datos_form.nombre} de la empresa *{datos_form.empresa}*. "
-                f"Ocurrió una interrupción al generar la cotización online ({ref_code}). "
-                f"Quisiera coordinar la cotización comercial directamente por acá."
-            )
-            whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
-            query_params = urllib.parse.urlencode({
-                "ref": ref_code,
-                "name": datos_form.nombre,
-                "company": datos_form.empresa,
+            import json
+            import os
+            from datetime import datetime
+            fallback_data = {
+                "timestamp": datetime.now().isoformat(),
+                "lead_id": f"INFRA-ERR-{uuid.uuid4()}",
+                "codigo_referencia": ref_code,
+                "nombre": datos_form.nombre,
+                "empresa": datos_form.empresa,
                 "email": str(datos_form.email),
-                "phone": datos_form.telefono
-            })
-            pdf_url = f"/presupuesto/descargar/?{query_params}"
+                "telefono": datos_form.telefono,
+                "error": f"Falla crítica de infraestructura: {str(err)}"
+            }
+            os.makedirs("logs", exist_ok=True)
+            with open("logs/failed_leads.log", "a", encoding="utf-8") as f:
+                f.write(json.dumps(fallback_data) + "\n")
+        except Exception as file_err:
+            logger.error(f"No se pudo guardar el lead de emergencia en logs/failed_leads.log: {file_err}")
 
-            response_lead = ConfirmacionPresupuestoResponse(
-                lead_id=f"ERR-{uuid.uuid4()}",
-                codigo_referencia=ref_code,
-                whatsapp_url=whatsapp_url,
-                pdf_url=pdf_url
-            )
+        # Construir respuesta mockeada segura para evitar 500 y permitir la continuidad comercial
+        encoded_message = urllib.parse.quote(
+            f"Hola, mi nombre es {datos_form.nombre} de la empresa *{datos_form.empresa}*. "
+            f"Ocurrió un inconveniente al generar la cotización online ({ref_code}). "
+            f"Quisiera coordinar la cotización comercial directamente por acá."
+        )
+        whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
+        query_params = urllib.parse.urlencode({
+            "ref": ref_code,
+            "name": datos_form.nombre,
+            "company": datos_form.empresa,
+            "email": str(datos_form.email),
+            "phone": datos_form.telefono
+        })
+        pdf_url = f"/presupuesto/descargar/?{query_params}"
+
+        response_lead = ConfirmacionPresupuestoResponse(
+            lead_id=f"ERR-{uuid.uuid4()}",
+            codigo_referencia=ref_code,
+            whatsapp_url=whatsapp_url,
+            pdf_url=pdf_url
+        )
 
     return templates.TemplateResponse(
         request=request,

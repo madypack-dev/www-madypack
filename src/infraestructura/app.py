@@ -101,6 +101,7 @@ def compilar_bundle_css():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Valida los YAML de todos los tenants conocidos y compila el CSS bundle antes de arrancar."""
+    import httpx
     compilar_bundle_css()
     for tenant in sorted(_tenants_conocidos()):
         logger.info(f"Validando YAML del tenant '{tenant}'...")
@@ -108,7 +109,16 @@ async def lifespan(app: FastAPI):
         cargar_productos_tienda(tenant)
         cargar_tarifas(tenant)
         logger.info(f"Tenant '{tenant}' validado correctamente.")
+
+    # Inicializar cliente HTTP singleton con límites del pool para reutilizar sockets TCP/TLS
+    limits = httpx.Limits(max_keepalive_connections=20, max_connections=50)
+    app.state.http_client = httpx.AsyncClient(limits=limits, timeout=10.0)
+    logger.info("Cliente HTTP singleton inicializado en el state de la aplicación.")
     yield
+
+    # Cerrar cliente HTTP de forma limpia en el apagado
+    await app.state.http_client.aclose()
+    logger.info("Cliente HTTP singleton cerrado correctamente.")
 
 
 app = FastAPI(title=APP_TITLE, lifespan=lifespan, redirect_slashes=False)
