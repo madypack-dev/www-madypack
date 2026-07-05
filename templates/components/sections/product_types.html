@@ -4,7 +4,7 @@
         <div class="product-types-grid">
             {% for item in site.home.product_types.products %}
             <article class="product-type-card">
-                <img src="{{ url_for('static', path='/images/' ~ item.image) }}" alt="{{ item.label }}" width="120" height="120" loading="lazy">
+                <img src="{{ url_for('static', path='images/' ~ item.image) }}" alt="{{ item.label }}" width="120" height="120" loading="lazy">
                 <h3>{{ item.label }}</h3>
             </article>
             {% endfor %}

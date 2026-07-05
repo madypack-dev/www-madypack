@@ -20,7 +20,7 @@
                         {% if cart_items %}
                             {% for item in cart_items %}
                             <div class="cart-item">
-                                <img src="{{ url_for('static', path='/images/' ~ item.imagen) }}" alt="{{ item.nombre }}" width="80" height="80">
+                                <img src="{{ url_for('static', path='images/' ~ item.imagen) }}" alt="{{ item.nombre }}" width="80" height="80">
                                 <div class="cart-item-details">
                                     <h3>{{ item.nombre }}</h3>
                                     <p>{{ item.descripcion }}</p>

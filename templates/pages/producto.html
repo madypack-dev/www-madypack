@@ -22,7 +22,7 @@
             <!-- Columna Izquierda: Imagen y Ficha Técnica -->
             <div class="product-visuals-details">
                 <div class="product-detail-image-box">
-                    <img src="{{ url_for('static', path='/images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
+                    <img src="{{ url_for('static', path='images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
                 </div>
                 
                 <div class="product-technical-info">
@@ -76,7 +76,7 @@
                 {% for rel in relacionados %}
                 <div class="product-card">
                     <div class="product-image-container">
-                        <img src="{{ url_for('static', path='/images/' ~ rel.imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
+                        <img src="{{ url_for('static', path='images/' ~ rel.imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                     </div>
                     <div class="product-info">
                         <h3><a href="/tienda/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
@@ -98,7 +98,7 @@
   "@type": "Product",
   "name": "{{ producto.nombre }}",
   "description": "{{ producto.descripcion }}",
-  "image": "{{ site.schema_config.url }}{{ url_for('static', path='/images/' ~ producto.imagen) }}",
+  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.imagen) }}",
   "brand": {
     "@type": "Brand",
     "name": "{{ site.site.brand }}"

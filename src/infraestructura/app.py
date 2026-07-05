@@ -133,7 +133,13 @@ class TrailingSlashMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
-        
+
+        # Solo normalizar trailing slash en GET/HEAD. Los métodos mutantes
+        # (POST, PUT, DELETE, PATCH) no deben ser redirigidos porque un 301
+        # puede cambiar el método a GET y romper formularios (ej: /carrito/agregar).
+        if request.method not in {"GET", "HEAD"}:
+            return await call_next(request)
+
         # Excluir rutas específicas que no deben ser normalizadas con /
         exclusiones = {"/health", "/robots.txt", "/sitemap.xml"}
         es_estatico = path.startswith("/static/")
