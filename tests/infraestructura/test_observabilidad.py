@@ -29,11 +29,11 @@ def test_global_exception_handler():
     # Instanciamos TestClient con raise_server_exceptions=False para verificar el exception handler de FastAPI
     client_no_raise = TestClient(app, raise_server_exceptions=False)
     
-    @app.get("/test-error-500", include_in_schema=False)
+    @app.get("/test-error-500/", include_in_schema=False)
     async def route_error():
         raise RuntimeError("Test simulated crash")
 
-    response = client_no_raise.get("/test-error-500", headers={"host": "localhost:8000"})
+    response = client_no_raise.get("/test-error-500/", headers={"host": "localhost:8000"})
     assert response.status_code == 500
     assert "text/html" in response.headers["content-type"]
     assert "Ha ocurrido un error inesperado" in response.text

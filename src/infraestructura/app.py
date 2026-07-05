@@ -3,7 +3,8 @@ from datetime import date
 import mimetypes
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
 from src.infraestructura.estaticos import resolver_archivo_estatico
@@ -38,7 +39,37 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title=APP_TITLE, lifespan=lifespan)
+app = FastAPI(title=APP_TITLE, lifespan=lifespan, redirect_slashes=False)
+
+
+class TrailingSlashMiddleware(BaseHTTPMiddleware):
+    """Middleware global para normalizar URLs redirigiendo permanentemente (301) a trailing slash.
+
+    Evita redirigir archivos estáticos, rutas del sistema (/health, /robots.txt, etc.) y URLs con extensión.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        path = request.url.path
+        
+        # Excluir rutas específicas que no deben ser normalizadas con /
+        exclusiones = {"/health", "/robots.txt", "/sitemap.xml"}
+        es_estatico = path.startswith("/static/")
+        tiene_extension = "." in path.split("/")[-1]
+
+        if (
+            path != "/"
+            and not path.endswith("/")
+            and not es_estatico
+            and not tiene_extension
+            and path not in exclusiones
+        ):
+            query = f"?{request.url.query}" if request.url.query else ""
+            return RedirectResponse(url=f"{path}/{query}", status_code=301)
+
+        return await call_next(request)
+
+
+app.add_middleware(TrailingSlashMiddleware)
 
 
 @app.middleware("http")
@@ -147,6 +178,9 @@ async def robots_txt(request: Request, tenant: str = Depends(resolutor_tenant)):
 
     content = f"""User-agent: *
 Allow: /
+Disallow: /carrito/
+Disallow: /presupuesto/
+Disallow: /presupuesto/descargar/
 
 Sitemap: {base_url}/sitemap.xml
 """
@@ -170,6 +204,12 @@ async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant))
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{base_url}/tienda/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>{base_url}/quienes-somos/</loc>

@@ -1,6 +1,8 @@
 <meta charset="{{ site.site.charset }}">
 <meta name="viewport" content="{{ site.site.viewport }}">
+{% block meta_robots %}
 <meta name="robots" content="{{ site.site.robots }}">
+{% endblock %}
 <link rel="profile" href="{{ site.site.profile_url }}">
 
 <title>{% block title %}{{ site.site.title_default }}{% endblock %}</title>
