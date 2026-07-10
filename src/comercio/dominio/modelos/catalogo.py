@@ -6,7 +6,7 @@ from src.comercio.dominio.modelos.carrito import CalculoArticulo
 
 
 class ArticuloCatalogo(BaseModel):
-    """Representa un artículo disponible en el catálogo del tenant."""
+    """Representa un artículo disponible en el catálogo."""
 
     id: int
     nombre: str

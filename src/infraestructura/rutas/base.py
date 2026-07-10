@@ -1,5 +1,3 @@
-import time
-
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 

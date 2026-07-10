@@ -1,6 +1,6 @@
-# Madypack – Plantilla de Ecommerce Multi-Tenant
+# Madypack – Ecommerce de Bolsas de Papel Sustentables
 
-Plantilla de ecommerce ligera y de alto rendimiento para la comercialización de bolsas de papel sustentables. Está pensada para servir a **múltiples empresas** desde el mismo código, permitiendo personalizar catálogo, tarifas y contenido por tenant.
+Ecommerce ligero y de alto rendimiento para la comercialización de bolsas de papel sustentables. El contenido, catálogo y tarifas se configuran en YAML sin modificar código.
 
 El proyecto está construido con **FastAPI**, **Jinja2** y configuración de contenidos en **YAML**.
 
@@ -12,36 +12,27 @@ El proyecto está construido con **FastAPI**, **Jinja2** y configuración de con
 * **Servidor ASGI:** [Uvicorn](https://www.uvicorn.org/)
 * **Plantillas:** [Jinja2](https://jinja2.palletsprojects.com/) (HTML5 y macros reutilizables)
 * **Estilos:** CSS Vanilla (organizado en módulos en `static/css`)
-* **Configuración de Contenidos:** YAML (PyYAML para cargar datos estructurados por tenant)
+* **Configuración de Contenidos:** YAML (PyYAML para cargar datos estructurados)
 
 ---
 
 ## 📁 Estructura del Proyecto
 
 ```text
-├── data/                           # Datos de contenido por tenant
-│   ├── default/                    # Tenant por defecto (Madypack)
-│   │   ├── site.yml
-│   │   ├── productos_tienda.yml
-│   │   └── tarifas.yml
-│   └── empresa-1/                  # Ejemplo de tenant adicional
-│       ├── site.yml
-│       ├── productos_tienda.yml
-│       └── tarifas.yml
-├── docs/                           # Documentación del proyecto
-│   ├── DDD.md                      # Arquitectura por capas
-│   ├── multi-tenant.md             # Modelo de tenants y resolución
-│   ├── refactoring_plan.md         # Plan de refactorización
-│   ├── TODO.md
-│   └── UIUX.md
+├── data/                           # Datos de contenido
+│   ├── site.yml
+│   ├── productos_tienda.yml
+│   └── tarifas.yml
 ├── src/
 │   ├── comercio/                   # Dominio y aplicación del carrito
 │   ├── precios/                    # Dominio y lógica de cotización
+│   ├── presupuesto/                # Dominio y aplicación de presupuestos
+│   ├── lead/                       # Dominio y adaptadores de leads
 │   └── infraestructura/            # Frameworks, rutas, templates y datos
 │       ├── app.py
 │       ├── datos/
 │       ├── rutas/
-│       └── tenant/
+│       └── config/
 ├── static/                         # CSS, imágenes y JS
 ├── templates/                      # Componentes, layouts, macros y páginas
 ├── venv/                           # Entorno virtual
@@ -71,67 +62,31 @@ pip install -r requirements.txt
 ### 3. Ejecutar el Servidor de Desarrollo
 
 ```bash
-chmod +x run.sh run-all.sh
+chmod +x run.sh
 ./run.sh
 ```
 
-El sitio estará disponible en [http://localhost:8000](http://localhost:8000) (`default`).
-
-Para levantar una empresa específica:
-
-```bash
-./run.sh 8001      # madypack
-./run.sh madypack  # equivalente al anterior
-./run.sh 8002      # empresa-2
-```
-
-Para levantar todas las empresas configuradas en paralelo:
-
-```bash
-./run-all.sh
-```
+El sitio estará disponible en [http://localhost:8000](http://localhost:8000).
 
 O directamente con Uvicorn:
 
 ```bash
 ./venv/bin/uvicorn src.infraestructura.app:app --reload
-./venv/bin/uvicorn src.infraestructura.app:app --port 8001
 ```
-
-Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
-
----
-
-## 🏢 Modelo Multi-Tenant
-
-> **Nota:** el modelo multi-tenant está documentado como diseño futuro pero **no está implementado** en el código actual.
-> La aplicación funciona como single-tenant y carga los datos desde `data/`.
-
-La aplicación resuelve el tenant según el entorno:
-
-| Entorno | Criterio de resolución | Ejemplo |
-|---------|------------------------|---------|
-| Desarrollo | Puerto | `localhost:8000` → `default`, `localhost:8001` → `empresa-1` |
-| Staging | Subdominio | `empresa-1.datamaq.com.ar` → `empresa-1` |
-| Producción | Dominio propio | `empresa-1.com.ar` → `empresa-1` |
-
-Cada tenant tiene su propia carpeta en `data/<tenant>/` con `site.yml`, `productos_tienda.yml` y `tarifas.yml`.
-
-Más información en [docs/multi-tenant.md](docs/multi-tenant.md).
 
 ---
 
 ## 💡 Características Clave
 
-* **Configuración por tenant:** cada empresa puede tener su propio catálogo, tarifas y contenido sin modificar código.
+* **Configuración por YAML:** catálogo, tarifas y contenido se editan en `data/` sin modificar código.
 * **Arquitectura por capas:** separación entre dominio, aplicación, adaptadores e infraestructura.
 * **Bypass de Analíticas en Local:** los códigos de seguimiento no se cargan en `localhost` ni `127.0.0.1`.
 * **Rutas modulares:** enrutamiento limpio en FastAPI con plantillas Jinja2.
 
 ---
 
-## 📚 Documentación
+## 🧪 Tests
 
-* [docs/DDD.md](docs/DDD.md) – Arquitectura por capas y análisis DDD/SOLID.
-* [docs/multi-tenant.md](docs/multi-tenant.md) – Modelo multi-tenant y guía de configuración.
-* [docs/refactoring_plan.md](docs/refactoring_plan.md) – Plan de refactorización por capas.
+```bash
+PYTHONPATH=. ./venv/bin/pytest
+```

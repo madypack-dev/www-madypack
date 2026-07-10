@@ -138,7 +138,6 @@ async def agregar_request_id_middleware(request: Request, call_next):
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         request_id=request_id,
-        tenant="madypack",
     )
     
     start_time = time.time()

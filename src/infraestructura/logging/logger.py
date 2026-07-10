@@ -21,7 +21,7 @@ def formateador_consola_uvicorn(logger, method_name, event_dict):
     # Extraer variables de contexto extra
     extras = []
     for k, v in event_dict.items():
-        if k not in ("event", "level", "timestamp", "logger", "request_id", "tenant"):
+        if k not in ("event", "level", "timestamp", "logger", "request_id"):
             extras.append(f"{k}={v}")
             
     context = f" | {' '.join(extras)}" if extras else ""

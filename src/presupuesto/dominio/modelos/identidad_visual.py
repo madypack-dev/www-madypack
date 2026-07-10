@@ -1,10 +1,10 @@
-"""Value object con la identidad visual del emisor (tenant) para el PDF."""
+"""Value object con la identidad visual del emisor para el PDF."""
 
 from pydantic import BaseModel
 
 
 class IdentidadVisual(BaseModel):
-    """Datos de identidad visual del tenant que aparecerán en el presupuesto."""
+    """Datos de identidad visual que aparecerán en el presupuesto."""
 
     brand: str
     tagline: str | None = None

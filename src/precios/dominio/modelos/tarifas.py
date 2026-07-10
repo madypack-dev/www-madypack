@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 class Tarifas(BaseModel):
     """Conjunto genérico de conceptos de costo indexados por nombre.
 
-    Cada tenant define los conceptos que necesite para calcular precios.
+    Cada sitio define los conceptos que necesite para calcular precios.
     Ejemplos: base, manija_plana, manija_cordon, personalizacion, fijo_matriz.
     """
 

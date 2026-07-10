@@ -75,7 +75,7 @@ def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
 
     # Bind variables de contexto de structlog
     structlog.contextvars.clear_contextvars()
-    structlog.contextvars.bind_contextvars(request_id="test-req-123", tenant="test-tenant")
+    structlog.contextvars.bind_contextvars(request_id="test-req-123")
 
     with caplog.at_level(logging.INFO):
         logger_test.info("Mensaje de prueba", extra_field="value")
@@ -91,7 +91,6 @@ def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
 
     assert log_data["event"] == "Mensaje de prueba"
     assert log_data["request_id"] == "test-req-123"
-    assert log_data["tenant"] == "test-tenant"
     assert log_data["extra_field"] == "value"
     assert log_data["level"] == "info"
     assert "timestamp" in log_data

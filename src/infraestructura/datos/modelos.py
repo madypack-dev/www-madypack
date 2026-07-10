@@ -1,4 +1,4 @@
-"""Modelos Pydantic para la carga y validación de archivos YAML por tenant."""
+"""Modelos Pydantic para la carga y validación de archivos YAML."""
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -7,7 +7,7 @@ from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 
 # Conjunto de nombres de campo HTML permitidos en el formulario de cotización.
 # Estos valores deben coincidir con los nombres que espera el endpoint POST
-# /presupuesto/ en src.infraestructura.rutas.presupuesto. El YAML del tenant
+# /presupuesto/ en src.infraestructura.rutas.presupuesto. El YAML
 # puede configurar labels, orden y visibilidad, pero no puede alterar este
 # contrato técnico.
 QUOTE_FORM_FIELD_NAMES = frozenset({"name", "company", "email", "phone", "message"})
