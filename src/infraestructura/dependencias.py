@@ -11,6 +11,21 @@ from src.infraestructura.config.settings import (
 from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
 
 
+from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
+from src.infraestructura.logging.logger import get_logger
+
+logger = get_logger()
+
+
+def get_repositorio_carrito(request: Request) -> IRepositorioCarrito:
+    """Inyecta el repositorio de carrito basado en cookies."""
+    return RepositorioCarritoCookie(
+        cookies=request.cookies,
+        registrar_error=logger.error,
+    )
+
+
 def get_http_client(request: Request) -> httpx.AsyncClient:
     """Obtiene el cliente HTTP singleton de la aplicación FastAPI."""
     if not hasattr(request.app.state, "http_client"):

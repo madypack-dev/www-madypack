@@ -6,10 +6,10 @@
 
 1. La mutación de `SiteConfig` en `src/infraestructura/rutas/carrito.py:184-185` fue eliminada. El precio estimado formateado ahora viaja como dato de contexto (`estimated_cost_formatted`) y el template `templates/pages/carrito.html:60` lo consume directamente, sin modificar el value object de configuración.
 2. La duplicación de la lógica de cotización y formateo del carrito entre `ver_carrito` y `read_cotizacion` fue resuelta. Se extrajo el caso de uso `CasoUsoObtenerResumenCarrito` en `src/comercio/aplicacion/casos_uso/carrito.py` que recibe el carrito y el cotizador, calcula los subtotales y encapsula el formateo tanto del total de bolsas como del precio estimado. Ambas rutas se refactorizaron para consumirlo.
+3. Se desacopló el context processor `inject_cart_count` en `src/infraestructura/rutas/base.py` de la implementación concreta del repositorio. Para esto, se introdujo una función de factoría `get_repositorio_carrito` en `src/infraestructura/dependencias.py` que inyecta la interfaz `IRepositorioCarrito` a partir de la petición web. El context processor ahora depende únicamente del puerto/interfaz y no del adaptador concreto de cookies.
 
 ## Acoplamiento y fugas de capas
 
-3. El context processor `inject_cart_count` en `src/infraestructura/rutas/base.py` depende directamente del adaptador `RepositorioCarritoCookie`, por lo que la capa de presentación conoce una implementación concreta de infraestructura.
 4. El health check en `src/infraestructura/rutas/infraestructura.py` importa `httpx` dentro de la función y realiza una llamada de red síncrona a un servicio externo, lo que lo convierte en más pesado y acoplado de lo que un health check liviano debería ser.
 
 ## Rendimiento y diseño

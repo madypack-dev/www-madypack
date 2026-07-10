@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from src.infraestructura.logging.logger import get_logger
 from src.infraestructura.datos.cargadores import cargar_site
 from src.infraestructura.datos.modelos import SiteConfig
-from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
+from src.infraestructura.dependencias import get_repositorio_carrito
 
 import subprocess
 
@@ -22,7 +22,7 @@ logger = get_logger()
 def inject_cart_count(request: Request) -> dict:
     """Inyecta el contador de líneas del carrito de compras en el contexto global de Jinja2."""
     try:
-        repositorio = RepositorioCarritoCookie(cookies=request.cookies)
+        repositorio = get_repositorio_carrito(request)
         carrito = repositorio.obtener_carrito()
         return {"cart_count": carrito.total_lineas}
     except Exception:
