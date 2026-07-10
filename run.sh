@@ -1,20 +1,14 @@
 #!/bin/bash
-# Levanta todas las empresas configuradas en paralelo para desarrollo local.
-# Libera los puertos antes de levantar cada instancia.
+# Levanta la aplicación Madypack para desarrollo local.
 #
 # Uso:
-#   ./run-all.sh
+#   ./run.sh [puerto]
 #
-# Para detener todas las instancias, presioná Ctrl+C.
+# Puerto por defecto: 8000
 
 set -e
 
-# Obtener los puertos configurados en settings.py
-PUERTOS=($(
-    ./venv/bin/python -c "from src.infraestructura.config.settings import MAPEO_PUERTOS; print(' '.join(sorted(MAPEO_PUERTOS.keys(), key=int)))"
-))
-
-PIDS=()
+PUERTO="${1:-8000}"
 
 _liberar_puerto() {
     local PUERTO_LIBERAR="$1"
@@ -29,27 +23,8 @@ _liberar_puerto() {
     fi
 }
 
-cleanup() {
-    echo ""
-    echo "Deteniendo servidores..."
-    for PID in "${PIDS[@]}"; do
-        kill "$PID" 2>/dev/null || true
-    done
-    wait 2>/dev/null || true
-}
-trap cleanup INT TERM EXIT
+echo "INFO:     Liberando puerto $PUERTO si está ocupado..."
+_liberar_puerto "$PUERTO"
 
-for PUERTO in "${PUERTOS[@]}"; do
-    echo "Liberando puerto $PUERTO si está ocupado..."
-    _liberar_puerto "$PUERTO"
-done
-
-for PUERTO in "${PUERTOS[@]}"; do
-    echo "Iniciando servidor en puerto $PUERTO..."
-    ./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload &
-    PIDS+=("$!")
-done
-
-echo "Servidores corriendo en puertos: ${PUERTOS[*]}"
-echo "Presioná Ctrl+C para detenerlos."
-wait
+echo "INFO:     Iniciando servidor Madypack en puerto $PUERTO..."
+./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload
