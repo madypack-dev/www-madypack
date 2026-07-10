@@ -62,3 +62,8 @@ main {
     margin-top: var(--space-xl);
     margin-bottom: var(--space-md);
 }
+
+.gtm-noscript-iframe {
+    display: none;
+    visibility: hidden;
+}
