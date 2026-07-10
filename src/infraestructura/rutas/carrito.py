@@ -4,12 +4,11 @@ from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infraestructura.rutas.base import templates, logger
-from src.infraestructura.datos.cargadores import (
-    cargar_site,
-    cargar_productos_tienda,
-    cargar_tarifas,
+from src.infraestructura.datos.cargadores import cargar_site
+from src.infraestructura.datos.proveedores import (
+    obtener_productos_tienda,
+    obtener_tarifas,
 )
-from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
 from src.comercio.aplicacion.casos_uso.carrito import (
     CasoUsoActualizarCarrito,
@@ -19,25 +18,6 @@ from src.comercio.aplicacion.casos_uso.carrito import (
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 
 router = APIRouter()
-
-
-def obtener_productos_tienda() -> list[ArticuloCatalogo]:
-    """Devuelve el catálogo validado o una lista vacía si hay error."""
-    try:
-        return cargar_productos_tienda().articulos
-    except Exception as err:
-        logger.error(f"Error obteniendo catálogo: {err}", exc_info=True)
-        return []
-
-
-def obtener_tarifas() -> dict:
-    """Devuelve las tarifas validadas o un diccionario vacío si hay error."""
-    try:
-        return cargar_tarifas().model_dump()
-    except Exception as err:
-        logger.error(f"Error obteniendo tarifas: {err}", exc_info=True)
-        return {}
-
 
 @router.get("/tienda/", response_class=RedirectResponse, include_in_schema=False)
 @router.get("/tienda", response_class=RedirectResponse, include_in_schema=False)

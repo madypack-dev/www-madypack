@@ -13,12 +13,11 @@ from src.comercio.dominio.modelos.carrito import Carrito
 from src.infraestructura.adaptadores.generador_pdf_reportlab import (
     GeneradorPresupuestoPDFReportLab,
 )
-from src.infraestructura.datos.cargadores import (
-    cargar_productos_tienda,
-    cargar_tarifas,
-)
-from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 from src.infraestructura.datos.modelos import SiteConfig
+from src.infraestructura.datos.proveedores import (
+    obtener_productos_tienda,
+    obtener_tarifas,
+)
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.logging.logger import get_logger
 from src.infraestructura.rutas.base import load_site, templates
@@ -80,24 +79,6 @@ def _str_field_required(value: UploadFile | str | None) -> str:
     return result
 
 
-def _obtener_productos_tienda() -> list[ArticuloCatalogo]:
-    """Devuelve el catálogo validado o una lista vacía si hay error."""
-    try:
-        return cargar_productos_tienda().articulos
-    except Exception as err:
-        logger.error(f"Error obteniendo catálogo: {err}", exc_info=True)
-        return []
-
-
-def _obtener_tarifas() -> dict:
-    """Devuelve las tarifas validadas o un diccionario vacío si hay error."""
-    try:
-        return cargar_tarifas().model_dump()
-    except Exception as err:
-        logger.error(f"Error obteniendo tarifas: {err}", exc_info=True)
-        return {}
-
-
 def _formatear_moneda(valor: float) -> str:
     return f"$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
@@ -119,7 +100,7 @@ async def read_cotizacion(
     carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=_obtener_tarifas,
+        cargar_tarifas_yaml=obtener_tarifas,
         registrar_error=logger.error,
     )
 
@@ -270,7 +251,7 @@ async def descargar_presupuesto(
     carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=_obtener_tarifas,
+        cargar_tarifas_yaml=obtener_tarifas,
         registrar_error=logger.error,
     )
 
