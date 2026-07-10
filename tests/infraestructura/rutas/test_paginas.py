@@ -58,3 +58,31 @@ class TestPaginasEndpoints:
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
         assert '"image":' in response.text
+
+    def test_post_contacto_success(self, client):
+        response = client.post(
+            "/contacto/",
+            data={
+                "wpforms[fields][0]": "Juan Pérez",
+                "wpforms[fields][4]": "+5491112345678",
+                "wpforms[fields][1]": "juan@example.com",
+                "wpforms[fields][2]": "Hola, necesito más información sobre los envíos a Mendoza.",
+            },
+            headers={"host": "localhost:8000"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+        assert response.headers["location"] == "/contacto/?success=contacto"
+
+    def test_post_contacto_missing_data(self, client):
+        response = client.post(
+            "/contacto/",
+            data={
+                "wpforms[fields][0]": "Juan Pérez",
+                # Falta teléfono, email y mensaje
+            },
+            headers={"host": "localhost:8000"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+        assert response.headers["location"] == "/contacto/?error=datos_invalidos"
