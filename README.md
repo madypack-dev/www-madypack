@@ -30,6 +30,7 @@ El proyecto está construido con **FastAPI**, **Jinja2** y configuración de con
 │   ├── lead/                       # Dominio y adaptadores de leads
 │   └── infraestructura/            # Frameworks, rutas, templates y datos
 │       ├── app.py
+│       ├── build/                  # Builders de assets
 │       ├── datos/
 │       ├── rutas/
 │       └── config/
@@ -68,9 +69,10 @@ chmod +x run.sh
 
 El sitio estará disponible en [http://localhost:8000](http://localhost:8000).
 
-O directamente con Uvicorn:
+O directamente con Uvicorn (previo build del CSS):
 
 ```bash
+./venv/bin/python -m src.infraestructura.build.css_bundle
 ./venv/bin/uvicorn src.infraestructura.app:app --reload
 ```
 
@@ -88,5 +90,5 @@ O directamente con Uvicorn:
 ## 🧪 Tests
 
 ```bash
-PYTHONPATH=. ./venv/bin/pytest
+./venv/bin/pytest
 ```
