@@ -10,6 +10,7 @@ from pydantic import EmailStr, ValidationError
 
 from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
 from src.comercio.dominio.modelos.carrito import Carrito
+from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito
 from src.infraestructura.adaptadores.generador_pdf_reportlab import (
     GeneradorPresupuestoPDFReportLab,
 )
@@ -79,14 +80,6 @@ def _str_field_required(value: UploadFile | str | None) -> str:
     return result
 
 
-def _formatear_moneda(valor: float) -> str:
-    return f"$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-
-def _formatear_total_bolsas(carrito: Carrito) -> str:
-    return f"{carrito.total_bolsas:,} unidades".replace(",", ".")
-
-
 @router.get("/cotizacion/", response_class=HTMLResponse)
 async def read_cotizacion(
     request: Request,
@@ -104,26 +97,17 @@ async def read_cotizacion(
         registrar_error=logger.error,
     )
 
-    precio_total = 0.0
-    for articulo in carrito.articulos:
-        try:
-            precio_total += cotizador.calcular_precio_estimado(articulo)
-        except Exception as err:
-            logger.warning(f"No se pudo cotizar artículo {articulo.id}: {err}")
-
-    precio_estimado_formateado = (
-        _formatear_moneda(precio_total) if precio_total > 0 else "A cotizar"
-    )
-    total_bolsas_formateado = _formatear_total_bolsas(carrito)
+    caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=logger.warning)
+    resumen = caso_uso.ejecutar(carrito, cotizador)
 
     return templates.TemplateResponse(
         request=request,
         name="pages/cotizacion.html",
         context={
             "site": site,
-            "cart_items": carrito.articulos,
-            "total_bags_formatted": total_bolsas_formateado,
-            "estimated_cost_formatted": precio_estimado_formateado,
+            "cart_items": resumen.articulos,
+            "total_bags_formatted": resumen.total_bolsas_formateado,
+            "estimated_cost_formatted": resumen.precio_estimado_formateado,
             "success": request.query_params.get("success"),
             "error": request.query_params.get("error"),
             "form_action": "/presupuesto/",

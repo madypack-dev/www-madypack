@@ -90,3 +90,59 @@ def test_eliminar_del_carrito_caso_uso():
     assert "El artículo no está en el carrito." in str(exc_info.value)
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()
+
+
+def test_obtener_resumen_carrito_caso_uso():
+    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    
+    # Mockear cotizador
+    cotizador = MagicMock(spec=ICotizador)
+    cotizador.calcular_precio_estimado.side_effect = lambda art: 1500.0 if art.id == 1 else 2500.0
+    
+    carrito = Carrito()
+    art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
+    art2 = ArticuloCarrito(id=2, nombre="Bolsa B", descripcion="B", cantidad=200, imagen="img.png")
+    carrito.agregar_articulo(art1)
+    carrito.agregar_articulo(art2)
+    
+    caso_uso = CasoUsoObtenerResumenCarrito()
+    resumen = caso_uso.ejecutar(carrito, cotizador)
+    
+    assert resumen.articulos == [art1, art2]
+    assert resumen.total_bolsas_formateado == "300 unidades"
+    assert resumen.precio_estimado_formateado == "$ 4.000,00"
+
+
+def test_obtener_resumen_carrito_vacio():
+    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    
+    cotizador = MagicMock(spec=ICotizador)
+    carrito = Carrito()
+    
+    caso_uso = CasoUsoObtenerResumenCarrito()
+    resumen = caso_uso.ejecutar(carrito, cotizador)
+    
+    assert resumen.articulos == []
+    assert resumen.total_bolsas_formateado == "0 unidades"
+    assert resumen.precio_estimado_formateado == "A cotizar"
+
+
+def test_obtener_resumen_carrito_con_error_cotizador():
+    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    
+    cotizador = MagicMock(spec=ICotizador)
+    cotizador.calcular_precio_estimado.side_effect = Exception("Falla de cotización")
+    
+    carrito = Carrito()
+    art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
+    carrito.agregar_articulo(art1)
+    
+    registrar_error = MagicMock()
+    caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=registrar_error)
+    resumen = caso_uso.ejecutar(carrito, cotizador)
+    
+    assert resumen.articulos == [art1]
+    assert resumen.total_bolsas_formateado == "100 unidades"
+    assert resumen.precio_estimado_formateado == "A cotizar"
+    registrar_error.assert_called_once()
+

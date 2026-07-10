@@ -14,6 +14,7 @@ from src.comercio.aplicacion.casos_uso.carrito import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
+    CasoUsoObtenerResumenCarrito,
 )
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 
@@ -167,28 +168,17 @@ async def ver_carrito(
         registrar_error=logger.error,
     )
 
-    precio_total = 0.0
-    for articulo in carrito.articulos:
-        try:
-            precio_total += cotizador.calcular_precio_estimado(articulo)
-        except Exception as err:
-            logger.warning(f"No se pudo cotizar artículo {articulo.id}: {err}")
-
-    if precio_total > 0:
-        precio_estimado_formateado = f"$ {precio_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    else:
-        precio_estimado_formateado = "A cotizar"
-
-    total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
+    caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=logger.warning)
+    resumen = caso_uso.ejecutar(carrito, cotizador)
 
     return templates.TemplateResponse(
         request=request,
         name="pages/carrito.html",
         context={
             "site": sitio,
-            "cart_items": carrito.articulos,
-            "total_bags_formatted": total_bolsas_formateado,
-            "estimated_cost_formatted": precio_estimado_formateado,
+            "cart_items": resumen.articulos,
+            "total_bags_formatted": resumen.total_bolsas_formateado,
+            "estimated_cost_formatted": resumen.precio_estimado_formateado,
         },
     )
 

@@ -66,3 +66,47 @@ class CasoUsoEliminarDelCarrito:
             raise ValueError("El artículo no está en el carrito.")
 
         self.repositorio.guardar_carrito(carrito)
+
+
+from dataclasses import dataclass
+from typing import Protocol
+from src.comercio.dominio.modelos.carrito import Carrito
+
+
+class ICotizador(Protocol):
+    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
+        ...
+
+
+@dataclass(frozen=True)
+class ResumenCarritoDTO:
+    articulos: list[ArticuloCarrito]
+    total_bolsas_formateado: str
+    precio_estimado_formateado: str
+
+
+class CasoUsoObtenerResumenCarrito:
+    def __init__(self, registrar_error: Callable[[str], None] = lambda _: None):
+        self.registrar_error = registrar_error
+
+    def ejecutar(self, carrito: Carrito, cotizador: ICotizador) -> ResumenCarritoDTO:
+        precio_total = 0.0
+        for articulo in carrito.articulos:
+            try:
+                precio_total += cotizador.calcular_precio_estimado(articulo)
+            except Exception as err:
+                self.registrar_error(f"No se pudo cotizar artículo {articulo.id}: {err}")
+
+        if precio_total > 0:
+            precio_estimado_formateado = f"$ {precio_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        else:
+            precio_estimado_formateado = "A cotizar"
+
+        total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
+
+        return ResumenCarritoDTO(
+            articulos=carrito.articulos,
+            total_bolsas_formateado=total_bolsas_formateado,
+            precio_estimado_formateado=precio_estimado_formateado,
+        )
+
