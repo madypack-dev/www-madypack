@@ -10,7 +10,7 @@
         <h1>{{ site.cart.heading }}</h1>
         
         <div class="cart-grid">
-            <form action="/carrito/actualizar" method="post" class="cart-form" id="cart-update-form">
+            <form action="/cart/actualizar" method="post" class="cart-form" id="cart-update-form">
                 <div class="cart-layout">
                     
                     <!-- Lista de productos -->
@@ -71,7 +71,7 @@
 
             <!-- Formularios de eliminación, fuera del formulario principal para evitar anidación -->
             {% for item in cart_items %}
-            <form action="/carrito/eliminar" method="post" id="cart-remove-form-{{ item.id }}" class="cart-remove-form">
+            <form action="/cart/eliminar" method="post" id="cart-remove-form-{{ item.id }}" class="cart-remove-form">
                 <input type="hidden" name="id_articulo" value="{{ item.id }}">
             </form>
             {% endfor %}

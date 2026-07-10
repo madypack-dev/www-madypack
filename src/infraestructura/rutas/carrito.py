@@ -94,7 +94,7 @@ async def ver_producto(
     )
 
 
-@router.post("/carrito/agregar")
+@router.post("/cart/agregar")
 async def agregar_al_carrito(
     request: Request,
     id_articulo: int = Form(...),
@@ -121,7 +121,7 @@ async def agregar_al_carrito(
         logger.error(f"Error al agregar artículo {id_articulo} al carrito: {err}")
         return RedirectResponse(url="/tienda/?error=cantidad_invalida", status_code=303)
 
-    respuesta = RedirectResponse(url="/carrito/", status_code=303)
+    respuesta = RedirectResponse(url="/cart/", status_code=303)
     if repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",
@@ -132,7 +132,7 @@ async def agregar_al_carrito(
     return respuesta
 
 
-@router.post("/carrito/eliminar")
+@router.post("/cart/eliminar")
 async def eliminar_del_carrito(
     request: Request,
     id_articulo: int = Form(...),
@@ -154,7 +154,7 @@ async def eliminar_del_carrito(
     except ValueError as err:
         logger.error(f"Error al eliminar artículo {id_articulo} del carrito: {err}")
 
-    respuesta = RedirectResponse(url="/carrito/", status_code=303)
+    respuesta = RedirectResponse(url="/cart/", status_code=303)
     if repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",
@@ -167,7 +167,7 @@ async def eliminar_del_carrito(
     return respuesta
 
 
-@router.get("/carrito/", response_class=HTMLResponse)
+@router.get("/cart/", response_class=HTMLResponse)
 async def ver_carrito(
     request: Request,
 ):
@@ -212,7 +212,7 @@ async def ver_carrito(
     )
 
 
-@router.post("/carrito/actualizar")
+@router.post("/cart/actualizar")
 async def actualizar_carrito(
     request: Request,
 ):
@@ -239,7 +239,7 @@ async def actualizar_carrito(
     )
     caso_uso.ejecutar(actualizaciones)
 
-    respuesta = RedirectResponse(url="/carrito/", status_code=303)
+    respuesta = RedirectResponse(url="/cart/", status_code=303)
     if repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",

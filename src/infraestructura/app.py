@@ -249,7 +249,7 @@ async def robots_txt(request: Request):
 
     content = f"""User-agent: *
 Allow: /
-Disallow: /carrito/
+Disallow: /cart/
 Disallow: /presupuesto/
 Disallow: /presupuesto/descargar/
 

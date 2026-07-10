@@ -36,7 +36,7 @@
                     <h3><a href="/tienda/{{ producto.url_slug }}/">{{ producto.nombre }}</a></h3>
                     <p class="description">{{ producto.descripcion }}</p>
                     
-                    <form action="/carrito/agregar" method="post" class="add-to-cart-form">
+                    <form action="/cart/agregar" method="post" class="add-to-cart-form">
                         <input type="hidden" name="id_articulo" value="{{ producto.id }}">
                         <div class="quantity-selector">
                             <label for="cant-{{ producto.id }}">Cantidad:</label>

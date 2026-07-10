@@ -18,7 +18,7 @@ class TestRobotsTxt:
         assert response.headers["content-type"] == "text/plain; charset=utf-8"
         assert "User-agent: *" in response.text
         assert "Allow: /" in response.text
-        assert "Disallow: /carrito/" in response.text
+        assert "Disallow: /cart/" in response.text
         assert "Disallow: /presupuesto/" in response.text
         assert "Disallow: /presupuesto/descargar/" in response.text
         assert "Sitemap: http://localhost:8000/sitemap.xml" in response.text
