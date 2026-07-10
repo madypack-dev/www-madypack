@@ -45,10 +45,13 @@
     "closes": "{{ site.schema_config.opening_hours.closes }}"
   },
   "sameAs": [
+    {% set ns = namespace(first=true) %}
     {% for social in site.socials %}
-    {% if social.url %}
-    "{{ social.url }}"{% if not loop.last %},{% endif %}
-    {% endif %}
+      {% if social.url %}
+        {% if not ns.first %},{% endif %}
+        "{{ social.url }}"
+        {% set ns.first = false %}
+      {% endif %}
     {% endfor %}
   ]
 }

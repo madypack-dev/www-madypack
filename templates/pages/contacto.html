@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}{{ site.home.contact.meta_title }} | {{ site.site.brand }}{% endblock %}
+{% block title %}{{ site.home.contact.meta_title }} – {{ site.site.brand }}{% endblock %}
 {% block meta_description %}{{ site.home.contact.meta_description }}{% endblock %}
 
 {% block content %}
@@ -50,6 +50,5 @@
     </div>
 </section>
 
-{% set is_page = True %}
 {% include "components/sections/contact.html" %}
 {% endblock %}
