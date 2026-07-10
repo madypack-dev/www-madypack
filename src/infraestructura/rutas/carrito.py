@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from src.infraestructura.rutas.base import templates, LoggingRoute, logger
+from src.infraestructura.rutas.base import templates, logger
 from src.infraestructura.datos.cargadores import (
     cargar_site,
     cargar_productos_tienda,
@@ -18,7 +18,7 @@ from src.comercio.aplicacion.casos_uso.carrito import (
 )
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 
-router = APIRouter(route_class=LoggingRoute)
+router = APIRouter()
 
 
 def obtener_productos_tienda() -> list[ArticuloCatalogo]:
@@ -108,7 +108,6 @@ async def agregar_al_carrito(
 ):
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 
@@ -145,7 +144,6 @@ async def eliminar_del_carrito(
 ):
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 
@@ -180,7 +178,6 @@ async def ver_carrito(
     sitio = cargar_site()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
@@ -235,7 +232,6 @@ async def actualizar_carrito(
 
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 

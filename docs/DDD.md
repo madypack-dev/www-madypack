@@ -95,7 +95,7 @@ No importa FastAPI; solo conoce diccionarios de Python.
 
 ### `src/precios/adaptadores/servicios/cotizador.py`
 
-`CotizadorServicio` implementa `IServicioPrecios` y calcula precios estimados a partir de las tarifas de un tenant.
+`CotizadorServicio` calcula precios estimados a partir de las tarifas de un tenant.
 
 ---
 
@@ -132,7 +132,7 @@ Nuevos medios de persistencia (base de datos, Redis) pueden agregarse implementa
 
 ### L – Liskov Substitution Principle
 
-`RepositorioCarritoCookie` y `CotizadorServicio` pueden sustituir a sus respectivas abstracciones (`IRepositorioCarrito`, `IServicioPrecios`) sin alterar el comportamiento esperado.
+`RepositorioCarritoCookie` puede sustituir a su abstracción (`IRepositorioCarrito`) sin alterar el comportamiento esperado.
 
 ### I – Interface Segregation Principle
 

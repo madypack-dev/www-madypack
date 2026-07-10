@@ -104,6 +104,9 @@ Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
 
 ## 🏢 Modelo Multi-Tenant
 
+> **Nota:** el modelo multi-tenant está documentado como diseño futuro pero **no está implementado** en el código actual.
+> La aplicación funciona como single-tenant y carga los datos desde `data/`.
+
 La aplicación resuelve el tenant según el entorno:
 
 | Entorno | Criterio de resolución | Ejemplo |

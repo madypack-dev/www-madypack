@@ -2,18 +2,16 @@ import json
 from typing import Callable
 from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
 from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
-from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
+
 
 class RepositorioCarritoCookie(IRepositorioCarrito):
     def __init__(
-        self, 
-        cookies: dict[str, str], 
-        cargar_productos_tienda: Callable[[], list[ArticuloCatalogo]],
+        self,
+        cookies: dict[str, str],
         nombre_cookie: str = "articulos_carrito",
-        registrar_error: Callable[[str], None] = lambda m: None
+        registrar_error: Callable[[str], None] = lambda m: None,
     ):
         self.cookies = cookies
-        self.cargar_productos_tienda = cargar_productos_tienda
         self.nombre_cookie = nombre_cookie
         self.registrar_error = registrar_error
         self._carrito_serializado: str | None = None

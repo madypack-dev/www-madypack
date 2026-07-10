@@ -1,12 +1,11 @@
 from typing import Callable, Any
 
 from src.comercio.dominio.modelos.carrito import ArticuloCarrito
-from src.comercio.dominio.puertos.servicio_precios import IServicioPrecios
 from src.precios.dominio.modelos.tarifas import ConfiguracionTarifas
 from src.precios.dominio.servicios.calculador import CalculadorPrecio
 
 
-class CotizadorServicio(IServicioPrecios):
+class CotizadorServicio:
     def __init__(
         self,
         cargar_tarifas_yaml: Callable[[], dict[str, Any]],

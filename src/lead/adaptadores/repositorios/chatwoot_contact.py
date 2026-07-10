@@ -59,30 +59,3 @@ class ChatwootContactRepository(ILeadRepository):
             pass
 
         return str(contact_id)
-
-    async def obtener_por_id(self, lead_id: str) -> Lead | None:
-        """Obtiene un contacto de Chatwoot por su ID."""
-        headers = {
-            "api_access_token": self.api_token,
-            "Content-Type": "application/json"
-        }
-        url = f"{self.base_url}/api/v1/accounts/{self.account_id}/contacts/{lead_id}"
-        
-        response = await self.client.get(url, headers=headers, timeout=10.0)
-        if response.status_code == 404:
-            return None
-        response.raise_for_status()
-        
-        data = response.json()
-        # Tolerancia ante respuestas con clave "payload" o directa
-        contact_obj = data.get("payload", {}) if "payload" in data else data
-        
-        custom_attrs = contact_obj.get("custom_attributes", {}) or {}
-        return Lead(
-            id=str(contact_obj.get("id")),
-            codigo_referencia=contact_obj.get("identifier") or custom_attrs.get("codigo_referencia") or f"COT-CHATWOOT-{lead_id}",
-            nombre=contact_obj.get("name", ""),
-            empresa=custom_attrs.get("empresa") or "No especificada",
-            telefono=contact_obj.get("phone_number", ""),
-            email=contact_obj.get("email", "")
-        )

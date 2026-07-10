@@ -5,7 +5,7 @@ from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
 
 def test_repositorio_carrito_cookie_vacio():
     cookies = {}
-    repo = RepositorioCarritoCookie(cookies, lambda: [])
+    repo = RepositorioCarritoCookie(cookies)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 0
 
@@ -14,7 +14,7 @@ def test_repositorio_carrito_cookie_lista():
         {"id": 1, "nombre": "Bolsa A", "descripcion": "Desc A", "cantidad": 200, "imagen": "a.png"}
     ]
     cookies = {"articulos_carrito": json.dumps(datos)}
-    repo = RepositorioCarritoCookie(cookies, lambda: [])
+    repo = RepositorioCarritoCookie(cookies)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 1
     assert carrito.articulos[0].id == 1
@@ -27,7 +27,7 @@ def test_repositorio_carrito_cookie_diccionario():
         ]
     }
     cookies = {"articulos_carrito": json.dumps(datos)}
-    repo = RepositorioCarritoCookie(cookies, lambda: [])
+    repo = RepositorioCarritoCookie(cookies)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 1
     assert carrito.articulos[0].id == 2
@@ -36,20 +36,20 @@ def test_repositorio_carrito_cookie_diccionario():
 def test_repositorio_carrito_cookie_invalido():
     cookies = {"articulos_carrito": "invalid-json"}
     registrar_error = MagicMock()
-    repo = RepositorioCarritoCookie(cookies, lambda: [], registrar_error=registrar_error)
+    repo = RepositorioCarritoCookie(cookies, registrar_error=registrar_error)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 0
     registrar_error.assert_called_once()
 
 def test_repositorio_carrito_cookie_otro_tipo():
     cookies = {"articulos_carrito": json.dumps("no-es-lista-ni-dicc")}
-    repo = RepositorioCarritoCookie(cookies, lambda: [])
+    repo = RepositorioCarritoCookie(cookies)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 0
 
 def test_repositorio_carrito_cookie_guardar():
     cookies = {}
-    repo = RepositorioCarritoCookie(cookies, lambda: [])
+    repo = RepositorioCarritoCookie(cookies)
     carrito = Carrito()
     art = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     carrito.agregar_articulo(art)

@@ -1,5 +1,11 @@
 # Modelo Multi-Tenant
 
+> **Obsoleto / No implementado**
+>
+> Este documento describe un diseño aspiracional que **no está implementado** en el código actual.
+> La aplicación funciona como single-tenant y carga los datos directamente desde `data/`.
+> El multi-tenant fue descartado del alcance como sobreingeniería legacy.
+
 Este documento explica cómo la aplicación sirve a múltiples empresas desde el mismo código, resolviendo el tenant según el entorno.
 
 ---

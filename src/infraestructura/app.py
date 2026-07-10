@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
 from datetime import date
-import mimetypes
 
-from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles

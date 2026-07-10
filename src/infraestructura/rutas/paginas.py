@@ -2,12 +2,12 @@ from typing import Any
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from src.infraestructura.rutas.base import templates, load_site, LoggingRoute, logger
+from src.infraestructura.rutas.base import templates, load_site, logger
 from src.lead.dominio.modelos.lead import Lead
-from src.infraestructura.rutas.presupuesto import get_chatwoot_repo
+from src.infraestructura.dependencias import get_chatwoot_repo
 from src.infraestructura.config.settings import CHATWOOT_INBOX_ID
 
-router = APIRouter(route_class=LoggingRoute)
+router = APIRouter()
 
 
 @router.get("/", response_class=HTMLResponse)

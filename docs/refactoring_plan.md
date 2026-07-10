@@ -1,5 +1,12 @@
 # Plan de Refactorización Refinado: Desacoplamiento de Adaptadores
 
+> **Obsoleto**
+>
+> Este documento describe una propuesta de estructura de carpetas (`src/dominio/`, `src/aplicacion/`, `src/adaptadores/`)
+> que **no fue implementada** tal cual. El código real mantiene los bounded contexts en `src/comercio/`, `src/precios/`,
+> `src/lead/` y `src/presupuesto/`, cada uno con su propia capa de dominio/aplicación/adaptadores.
+> Queda archivado como referencia histórica.
+
 Este plan refina el diseño para asegurar que la capa de **Adaptadores** sea completamente agnóstica a detalles de infraestructura (como el framework FastAPI).
 
 ### Cambios Arquitectónicos Clave:

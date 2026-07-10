@@ -2,10 +2,10 @@
 
 from io import BytesIO
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Request
 from starlette.datastructures import UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
-from pydantic import BaseModel, EmailStr, ValidationError
+from pydantic import EmailStr, ValidationError
 
 from src.comercio.adaptadores.repositorios.cookie import RepositorioCarritoCookie
 from src.comercio.dominio.modelos.carrito import Carrito
@@ -14,78 +14,45 @@ from src.infraestructura.adaptadores.generador_pdf_reportlab import (
 )
 from src.infraestructura.datos.cargadores import (
     cargar_productos_tienda,
-    cargar_site,
     cargar_tarifas,
 )
 from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
 from src.infraestructura.datos.modelos import SiteConfig
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.logging.logger import get_logger
-from src.infraestructura.rutas.base import LoggingRoute, load_site, templates
+from src.infraestructura.rutas.base import load_site, templates
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
     CasoUsoGenerarPresupuestoPDF,
 )
+from src.presupuesto.aplicacion.casos_uso.procesar_solicitud_presupuesto import (
+    ProcesarSolicitudPresupuesto,
+)
+from src.presupuesto.aplicacion.helpers import construir_lineas_presupuesto
 from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
 from src.presupuesto.dominio.modelos.presupuesto import DatosSolicitante
 
-import httpx
-from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
-from src.lead.adaptadores.eventos.noop_publicador import NoOpPublicador
-from src.lead.aplicacion.casos_uso.crear_lead import CrearLeadDesdePresupuesto
-from src.infraestructura.config.settings import (
-    CHATWOOT_URL,
-    CHATWOOT_ACCOUNT_ID,
-    CHATWOOT_INBOX_ID,
-    CHATWOOT_API_TOKEN,
-)
+from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
+from src.infraestructura.config.settings import CHATWOOT_INBOX_ID
+from src.infraestructura.dependencias import get_chatwoot_repo
 
 logger = get_logger()
 
 
-def get_http_client(request: Request) -> httpx.AsyncClient:
-    """Obtiene el cliente HTTP singleton de la aplicación FastAPI."""
-    if not hasattr(request.app.state, "http_client"):
-        request.app.state.http_client = httpx.AsyncClient(timeout=10.0)
-    return request.app.state.http_client
-
-
-def get_chatwoot_repo(http_client: httpx.AsyncClient = Depends(get_http_client)) -> ChatwootContactRepository:
-    """Inyecta el cliente HTTP singleton para construir el repositorio de Chatwoot Contact."""
-    return ChatwootContactRepository(
-        http_client=http_client,
-        base_url=CHATWOOT_URL,
-        account_id=CHATWOOT_ACCOUNT_ID,
-        api_token=CHATWOOT_API_TOKEN,
-    )
-
-
-def get_caso_uso_lead(
-    repo: ChatwootContactRepository = Depends(get_chatwoot_repo),
-    site: SiteConfig = Depends(load_site)
-) -> CrearLeadDesdePresupuesto:
-    """Ensambla el caso de uso de lead inyectando el repositorio."""
-    whatsapp_vendedor = site.whatsapp.phone
-    return CrearLeadDesdePresupuesto(
+def get_caso_uso_presupuesto(
+    repo=Depends(get_chatwoot_repo),
+    site: SiteConfig = Depends(load_site),
+) -> ProcesarSolicitudPresupuesto:
+    """Ensambla el caso de uso de presupuesto inyectando el repositorio."""
+    return ProcesarSolicitudPresupuesto(
         repositorio=repo,
-        publicador_eventos=NoOpPublicador(),
         chatwoot_inbox_id=CHATWOOT_INBOX_ID,
-        whatsapp_phone=whatsapp_vendedor,
+        whatsapp_phone=site.whatsapp.phone,
         registrar_error=logger.error,
     )
 
 
-router = APIRouter(route_class=LoggingRoute)
-
-
-class SolicitudPresupuestoForm(BaseModel):
-    """Validación de los campos del formulario de cotización."""
-
-    name: str | None = None
-    email: EmailStr
-    phone: str
-    company: str | None = None
-    message: str | None = None
+router = APIRouter()
 
 
 def _str_field(value: UploadFile | str | None) -> str | None:
@@ -111,9 +78,7 @@ def _obtener_productos_tienda() -> list[ArticuloCatalogo]:
     try:
         return cargar_productos_tienda().articulos
     except Exception as err:
-        logger.error(
-            f"Error obteniendo catálogo: {err}", exc_info=True
-        )
+        logger.error(f"Error obteniendo catálogo: {err}", exc_info=True)
         return []
 
 
@@ -122,9 +87,7 @@ def _obtener_tarifas() -> dict:
     try:
         return cargar_tarifas().model_dump()
     except Exception as err:
-        logger.error(
-            f"Error obteniendo tarifas: {err}", exc_info=True
-        )
+        logger.error(f"Error obteniendo tarifas: {err}", exc_info=True)
         return {}
 
 
@@ -142,10 +105,8 @@ async def read_cotizacion(
     site: SiteConfig = Depends(load_site),
 ):
     """Muestra el formulario de cotización junto con el resumen del carrito."""
-    productos = _obtener_productos_tienda()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=lambda: productos,
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
@@ -185,16 +146,10 @@ async def read_cotizacion(
 @router.post("/presupuesto/")
 async def generar_presupuesto(
     request: Request,
-    caso_uso_lead: CrearLeadDesdePresupuesto = Depends(get_caso_uso_lead),
+    caso_uso: ProcesarSolicitudPresupuesto = Depends(get_caso_uso_presupuesto),
     site: SiteConfig = Depends(load_site),
-    repo = Depends(get_chatwoot_repo),
 ):
-    """Procesa los datos de contacto del lead, los envía a Chatwoot y retorna la vista de confirmación."""
-    from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest, ConfirmacionPresupuestoResponse
-    from src.lead.dominio.modelos.lead import Lead
-    import uuid
-    import urllib.parse
-
+    """Procesa los datos de contacto y retorna la vista de confirmación."""
     form_data = await request.form()
 
     # Soporte híbrido para wpforms (cotización general/checkout) y campos estándar (landing/tests)
@@ -229,112 +184,13 @@ async def generar_presupuesto(
         )
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
-    whatsapp_vendedor = site.whatsapp.phone
-
-    # Obtener el carrito de compras
-    productos = _obtener_productos_tienda()
     repositorio_carrito = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=lambda: productos,
         registrar_error=logger.error,
     )
     carrito = repositorio_carrito.obtener_carrito()
 
-    # Si el carrito está vacío, se procesa como una cotización general/consulta sin PDF
-    if not carrito.articulos:
-        try:
-            lead = Lead.crear(
-                nombre=datos_form.nombre,
-                empresa=datos_form.empresa,
-                telefono=datos_form.telefono,
-                email=datos_form.email
-            )
-            # Modificamos la referencia de COT a COT-GEN
-            lead.codigo_referencia = lead.codigo_referencia.replace("COT-", "COT-GEN-")
-
-            try:
-                lead_id = await repo.guardar(lead, CHATWOOT_INBOX_ID)
-                lead.id = lead_id
-                logger.info(f"Cotización general de {datos_form.nombre} enviada a Chatwoot: {lead.codigo_referencia}")
-            except Exception as woot_err:
-                logger.error(f"Error enviando cotización general a Chatwoot: {woot_err}")
-                lead.id = f"FALLBACK-GEN-{uuid.uuid4()}"
-
-            # Construir mensaje de WhatsApp precompletado
-            mensaje_cuerpo = (
-                f"Hola, me contacto de parte de la empresa *{lead.empresa}* "
-                f"(mi nombre es {lead.nombre}) por la solicitud de cotización *{lead.codigo_referencia}*.\n\n"
-                f"Consulta: {mensaje or 'Quiero cotizar bolsas de papel.'}"
-            )
-            encoded_message = urllib.parse.quote(mensaje_cuerpo)
-            whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
-
-            response_lead = ConfirmacionPresupuestoResponse(
-                lead_id=lead.id,
-                codigo_referencia=lead.codigo_referencia,
-                whatsapp_url=whatsapp_url,
-                pdf_url=None  # Sin enlace de PDF
-            )
-
-            return templates.TemplateResponse(
-                request=request,
-                name="pages/confirmacion_presupuesto.html",
-                context={"site": site, "response": response_lead},
-            )
-        except Exception as gen_err:
-            logger.error(f"Falla crítica procesando cotización general: {gen_err}", exc_info=True)
-            return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
-
-    # Con carrito cargado: Ejecutar caso de uso estándar de creación de lead y PDF
-    try:
-        response_lead = await caso_uso_lead.ejecutar(datos_form, carrito.total_lineas)
-    except Exception as err:
-        logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
-
-        ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
-
-        try:
-            import json
-            import os
-            from datetime import datetime
-            fallback_data = {
-                "timestamp": datetime.now().isoformat(),
-                "lead_id": f"INFRA-ERR-{uuid.uuid4()}",
-                "codigo_referencia": ref_code,
-                "nombre": datos_form.nombre,
-                "empresa": datos_form.empresa,
-                "email": str(datos_form.email),
-                "telefono": datos_form.telefono,
-                "error": f"Falla crítica de infraestructura: {str(err)}"
-            }
-            os.makedirs("logs", exist_ok=True)
-            with open("logs/failed_leads.log", "a", encoding="utf-8") as f:
-                f.write(json.dumps(fallback_data) + "\n")
-        except Exception as file_err:
-            logger.error(f"No se pudo guardar el lead de emergencia en logs/failed_leads.log: {file_err}")
-
-        # WhatsApp de contingencia
-        encoded_message = urllib.parse.quote(
-            f"Hola, mi nombre es {datos_form.nombre} de la empresa *{datos_form.empresa}*. "
-            f"Ocurrió un inconveniente al generar la cotización online ({ref_code}). "
-            f"Quisiera coordinar la cotización comercial directamente por acá."
-        )
-        whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
-        query_params = urllib.parse.urlencode({
-            "ref": ref_code,
-            "name": datos_form.nombre,
-            "company": datos_form.empresa,
-            "email": str(datos_form.email),
-            "phone": datos_form.telefono
-        })
-        pdf_url = f"/presupuesto/descargar/?{query_params}"
-
-        response_lead = ConfirmacionPresupuestoResponse(
-            lead_id=f"ERR-{uuid.uuid4()}",
-            codigo_referencia=ref_code,
-            whatsapp_url=whatsapp_url,
-            pdf_url=pdf_url
-        )
+    response_lead = await caso_uso.ejecutar(datos_form, carrito, mensaje)
 
     return templates.TemplateResponse(
         request=request,
@@ -379,10 +235,8 @@ async def descargar_presupuesto(
         url=site.schema_config.url,
     )
 
-    productos = _obtener_productos_tienda()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=lambda: productos,
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
@@ -392,26 +246,7 @@ async def descargar_presupuesto(
         registrar_error=logger.error,
     )
 
-    from src.presupuesto.dominio.modelos.presupuesto import LineaPresupuesto
-    lineas = []
-    for articulo in carrito.articulos:
-        try:
-            subtotal = cotizador.calcular_precio_estimado(articulo)
-        except Exception as err:
-            logger.error(f"Error calculando precio para artículo {articulo.id}: {err}")
-            subtotal = 0.0
-
-        precio_unitario = subtotal / articulo.cantidad if articulo.cantidad > 0 else 0.0
-        lineas.append(
-            LineaPresupuesto(
-                id_articulo=articulo.id,
-                nombre=articulo.nombre,
-                descripcion=articulo.descripcion,
-                cantidad=articulo.cantidad,
-                precio_unitario_estimado=precio_unitario,
-                subtotal=subtotal,
-            )
-        )
+    lineas = construir_lineas_presupuesto(carrito, cotizador, logger.error)
 
     generador_pdf = GeneradorPresupuestoPDFReportLab()
     caso_uso = CasoUsoGenerarPresupuestoPDF(
