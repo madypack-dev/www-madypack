@@ -1,6 +1,5 @@
 """Path: src/infraestructura/rutas/presupuesto.py"""
 
-from functools import partial
 from io import BytesIO
 
 from fastapi import APIRouter, Depends, Form, Request
@@ -23,7 +22,6 @@ from src.infraestructura.datos.modelos import SiteConfig
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.logging.logger import get_logger
 from src.infraestructura.rutas.base import LoggingRoute, load_site, templates
-from src.infraestructura.tenant.resolutor import resolutor_tenant
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
     CasoUsoGenerarPresupuestoPDF,
@@ -42,15 +40,15 @@ from src.infraestructura.config.settings import (
     CHATWOOT_API_TOKEN,
 )
 
-def get_http_client(request: Request) -> httpx.AsyncClient:
-    """Obtiene el cliente HTTP singleton de la aplicación FastAPI.
+logger = get_logger()
 
-    Si no se ha inicializado (por ejemplo, en tests de integración que no disparan el lifespan),
-    se inicializa de manera perezosa (lazy load) para evitar excepciones.
-    """
+
+def get_http_client(request: Request) -> httpx.AsyncClient:
+    """Obtiene el cliente HTTP singleton de la aplicación FastAPI."""
     if not hasattr(request.app.state, "http_client"):
         request.app.state.http_client = httpx.AsyncClient(timeout=10.0)
     return request.app.state.http_client
+
 
 def get_chatwoot_repo(http_client: httpx.AsyncClient = Depends(get_http_client)) -> ChatwootContactRepository:
     """Inyecta el cliente HTTP singleton para construir el repositorio de Chatwoot Contact."""
@@ -61,12 +59,12 @@ def get_chatwoot_repo(http_client: httpx.AsyncClient = Depends(get_http_client))
         api_token=CHATWOOT_API_TOKEN,
     )
 
+
 def get_caso_uso_lead(
     repo: ChatwootContactRepository = Depends(get_chatwoot_repo),
-    tenant: str = Depends(resolutor_tenant)
+    site: SiteConfig = Depends(load_site)
 ) -> CrearLeadDesdePresupuesto:
-    """Ensambla el caso de uso de lead inyectando el repositorio y parámetros de tenant."""
-    site = cargar_site(tenant)
+    """Ensambla el caso de uso de lead inyectando el repositorio."""
     whatsapp_vendedor = site.whatsapp.phone
     return CrearLeadDesdePresupuesto(
         repositorio=repo,
@@ -76,8 +74,8 @@ def get_caso_uso_lead(
         registrar_error=logger.error,
     )
 
+
 router = APIRouter(route_class=LoggingRoute)
-logger = get_logger()
 
 
 class SolicitudPresupuestoForm(BaseModel):
@@ -108,24 +106,24 @@ def _str_field_required(value: UploadFile | str | None) -> str:
     return result
 
 
-def _obtener_productos_tienda(tenant: str) -> list[ArticuloCatalogo]:
-    """Devuelve el catálogo validado del tenant o una lista vacía si hay error."""
+def _obtener_productos_tienda() -> list[ArticuloCatalogo]:
+    """Devuelve el catálogo validado o una lista vacía si hay error."""
     try:
-        return cargar_productos_tienda(tenant).articulos
+        return cargar_productos_tienda().articulos
     except Exception as err:
         logger.error(
-            f"Error obteniendo catálogo para tenant '{tenant}': {err}", exc_info=True
+            f"Error obteniendo catálogo: {err}", exc_info=True
         )
         return []
 
 
-def _obtener_tarifas(tenant: str) -> dict:
-    """Devuelve las tarifas validadas del tenant o un diccionario vacío si hay error."""
+def _obtener_tarifas() -> dict:
+    """Devuelve las tarifas validadas o un diccionario vacío si hay error."""
     try:
-        return cargar_tarifas(tenant).model_dump()
+        return cargar_tarifas().model_dump()
     except Exception as err:
         logger.error(
-            f"Error obteniendo tarifas para tenant '{tenant}': {err}", exc_info=True
+            f"Error obteniendo tarifas: {err}", exc_info=True
         )
         return {}
 
@@ -141,11 +139,10 @@ def _formatear_total_bolsas(carrito: Carrito) -> str:
 @router.get("/cotizacion/", response_class=HTMLResponse)
 async def read_cotizacion(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
     site: SiteConfig = Depends(load_site),
 ):
     """Muestra el formulario de cotización junto con el resumen del carrito."""
-    productos = _obtener_productos_tienda(tenant)
+    productos = _obtener_productos_tienda()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
         cargar_productos_tienda=lambda: productos,
@@ -154,7 +151,7 @@ async def read_cotizacion(
     carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=partial(_obtener_tarifas, tenant),
+        cargar_tarifas_yaml=_obtener_tarifas,
         registrar_error=logger.error,
     )
 
@@ -188,16 +185,14 @@ async def read_cotizacion(
 @router.post("/presupuesto/")
 async def generar_presupuesto(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
     caso_uso_lead: CrearLeadDesdePresupuesto = Depends(get_caso_uso_lead),
+    site: SiteConfig = Depends(load_site),
 ):
     """Procesa los datos de contacto del lead, los envía a Chatwoot y retorna la vista de confirmación."""
     from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
 
-    site = cargar_site(tenant)
     form_data = await request.form()
 
-    # Debug: visibilidad de qué campos llegan realmente desde el navegador
     logger.debug(
         "Formulario de presupuesto recibido",
         form_keys=list(form_data.keys()),
@@ -227,7 +222,7 @@ async def generar_presupuesto(
         )
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
-    productos = _obtener_productos_tienda(tenant)
+    productos = _obtener_productos_tienda()
     repositorio_carrito = RepositorioCarritoCookie(
         cookies=request.cookies,
         cargar_productos_tienda=lambda: productos,
@@ -308,11 +303,9 @@ async def descargar_presupuesto(
     company: str,
     email: EmailStr,
     phone: str,
-    tenant: str = Depends(resolutor_tenant),
+    site: SiteConfig = Depends(load_site),
 ):
     """Genera al vuelo el PDF de presupuesto a partir de los datos recibidos (sin persistencia local)."""
-    site = cargar_site(tenant)
-    
     datos_solicitante = DatosSolicitante(
         nombre=name,
         email=str(email),
@@ -323,7 +316,7 @@ async def descargar_presupuesto(
 
     logo_src = site.header.logo.src
     logo_path_obj = (
-        resolver_archivo_estatico(tenant, f"images/{logo_src}") if logo_src else None
+        resolver_archivo_estatico(f"images/{logo_src}") if logo_src else None
     )
     logo_path = str(logo_path_obj) if logo_path_obj else None
 
@@ -338,7 +331,7 @@ async def descargar_presupuesto(
         url=site.schema_config.url,
     )
 
-    productos = _obtener_productos_tienda(tenant)
+    productos = _obtener_productos_tienda()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
         cargar_productos_tienda=lambda: productos,
@@ -347,7 +340,7 @@ async def descargar_presupuesto(
     carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=partial(_obtener_tarifas, tenant),
+        cargar_tarifas_yaml=_obtener_tarifas,
         registrar_error=logger.error,
     )
 

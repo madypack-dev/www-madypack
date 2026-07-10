@@ -2,12 +2,13 @@ from contextlib import asynccontextmanager
 from datetime import date
 import mimetypes
 
-from fastapi import FastAPI, Request, Response, Depends, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.infraestructura.config.settings import APP_TITLE, MAPEO_TENANTS, MAPEO_PUERTOS
+from src.infraestructura.config.settings import APP_TITLE
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.datos.cargadores import (
     cargar_site,
@@ -18,21 +19,15 @@ from src.infraestructura.logging.logger import configurar_logging, get_logger
 from src.infraestructura.rutas.paginas import router as paginas_router
 from src.infraestructura.rutas.carrito import router as carrito_router
 from src.infraestructura.rutas.presupuesto import router as presupuesto_router
-from src.infraestructura.tenant.resolutor import resolutor_tenant
 
 configurar_logging()
 logger = get_logger()
 
 
-def _tenants_conocidos() -> set[str]:
-    return set(MAPEO_TENANTS.values()) | set(MAPEO_PUERTOS.values())
-
-
 def compilar_bundle_css():
     """Une todos los archivos CSS de la aplicación en un único static/css/bundle.css
 
-    para optimizar la entrega reduciendo las peticiones HTTP concurrentes (evitando render-blocking).
-    También compila bundles específicos de tenants que tengan overrides (estilos locales).
+    para optimizar la entrega reduciendo las peticiones HTTP concurrentes.
     """
     try:
         from pathlib import Path
@@ -70,45 +65,21 @@ def compilar_bundle_css():
         bundle_file = css_dir / "bundle.css"
         bundle_file.write_text("\n".join(bundle_content), encoding="utf-8")
         logger.info(f"CSS root bundle compilado con éxito en {bundle_file}")
-
-        # Compilar bundles específicos por tenant
-        tenants_dir = static_dir / "tenants"
-        if tenants_dir.exists():
-            for tenant_path in tenants_dir.iterdir():
-                if tenant_path.is_dir():
-                    tenant_name = tenant_path.name
-                    tenant_css_file = tenant_path / "css" / "styles.css"
-                    if tenant_css_file.exists():
-                        content = tenant_css_file.read_text(encoding="utf-8")
-                        lines = content.splitlines()
-                        # Extraer solo las reglas no importadas (overrides específicos)
-                        overrides = [line for line in lines if not line.strip().startswith("@import")]
-
-                        tenant_bundle_dir = tenant_path / "css"
-                        tenant_bundle_dir.mkdir(parents=True, exist_ok=True)
-                        tenant_bundle_path = tenant_bundle_dir / "bundle.css"
-
-                        tenant_content = bundle_content.copy()
-                        tenant_content.append("/* --- Tenant Overrides --- */")
-                        tenant_content.append("\n".join(overrides))
-
-                        tenant_bundle_path.write_text("\n".join(tenant_content), encoding="utf-8")
-                        logger.info(f"CSS bundle para tenant '{tenant_name}' compilado con éxito en {tenant_bundle_path}")
     except Exception as exc:
         logger.error(f"Error al compilar el bundle de CSS: {exc}", exc_info=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Valida los YAML de todos los tenants conocidos y compila el CSS bundle antes de arrancar."""
+    """Valida los YAML y compila el CSS bundle antes de arrancar."""
     import httpx
     compilar_bundle_css()
-    for tenant in sorted(_tenants_conocidos()):
-        logger.info(f"Validando YAML del tenant '{tenant}'...")
-        cargar_site(tenant)
-        cargar_productos_tienda(tenant)
-        cargar_tarifas(tenant)
-        logger.info(f"Tenant '{tenant}' validado correctamente.")
+    
+    logger.info("Validando archivos YAML...")
+    cargar_site()
+    cargar_productos_tienda()
+    cargar_tarifas()
+    logger.info("Archivos YAML validados correctamente.")
 
     # Inicializar cliente HTTP singleton con límites del pool para reutilizar sockets TCP/TLS
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=50)
@@ -134,13 +105,9 @@ class TrailingSlashMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
 
-        # Solo normalizar trailing slash en GET/HEAD. Los métodos mutantes
-        # (POST, PUT, DELETE, PATCH) no deben ser redirigidos porque un 301
-        # puede cambiar el método a GET y romper formularios (ej: /carrito/agregar).
         if request.method not in {"GET", "HEAD"}:
             return await call_next(request)
 
-        # Excluir rutas específicas que no deben ser normalizadas con /
         exclusiones = {"/health", "/robots.txt", "/sitemap.xml"}
         es_estatico = path.startswith("/static/")
         tiene_extension = "." in path.split("/")[-1]
@@ -167,15 +134,12 @@ async def agregar_request_id_middleware(request: Request, call_next):
     import time
     import structlog
     
-    # 1. Resolver identificadores únicos de petición y tenant
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
-    tenant = resolutor_tenant(request)
 
-    # 2. Asociar variables de contexto para estructurar todas las trazas de este hilo/corrutina
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         request_id=request_id,
-        tenant=tenant,
+        tenant="madypack",
     )
     
     start_time = time.time()
@@ -197,7 +161,6 @@ async def agregar_request_id_middleware(request: Request, call_next):
         return response
     except Exception as err:
         process_time = time.time() - start_time
-        # Los errores en estáticos sí se loguean porque pueden indicar problemas reales
         logger.error(
             "Excepción durante el procesamiento de la petición HTTP",
             http_method=request.method,
@@ -242,7 +205,7 @@ async def chrome_devtools_silent():
 
 @app.get("/health", include_in_schema=False)
 async def health_check():
-    """Endpoint liviano para validar que el ecommerce y sus integraciones básicas responden."""
+    """Endpoint liviano para validar que el ecommerce responde."""
     from fastapi.responses import JSONResponse
     import httpx
     from src.infraestructura.config.settings import CHATWOOT_URL
@@ -257,7 +220,7 @@ async def health_check():
     }
     
     try:
-        cargar_productos_tienda("default")
+        cargar_productos_tienda()
     except Exception as e:
         health_status["status"] = "unhealthy"
         health_status["services"]["catalog"] = f"error: {str(e)}"
@@ -273,25 +236,10 @@ async def health_check():
     return JSONResponse(content=health_status, status_code=status_code)
 
 
-@app.get("/static/{path:path}", name="static")
-async def static_files(path: str, tenant: str = Depends(resolutor_tenant)):
-    """Sirve archivos estáticos resolviendo primero la carpeta del tenant."""
-    file_path = resolver_archivo_estatico(tenant, path)
-    if file_path is None:
-        raise HTTPException(status_code=404, detail="Not found")
-
-    content_type, _ = mimetypes.guess_type(str(file_path))
-    return FileResponse(file_path, media_type=content_type)
-
-
 @app.get("/robots.txt")
-async def robots_txt(request: Request, tenant: str = Depends(resolutor_tenant)):
-    """Sirve robots.txt del tenant si existe; si no, genera uno dinámico.
-
-    La versión dinámica apunta al sitemap del host actual, evitando
-    hardcodear dominios de un tenant particular.
-    """
-    file_path = resolver_archivo_estatico(tenant, "robots.txt", incluir_fallback=False)
+async def robots_txt(request: Request):
+    """Sirve robots.txt si existe; si no, genera uno dinámico."""
+    file_path = resolver_archivo_estatico("robots.txt")
     if file_path is not None:
         return FileResponse(file_path)
 
@@ -311,18 +259,16 @@ Sitemap: {base_url}/sitemap.xml
 
 
 @app.get("/sitemap.xml")
-async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant)):
-    """Genera el sitemap usando el dominio del tenant actual."""
+async def sitemap_xml(request: Request):
+    """Genera el sitemap."""
     today = date.today().isoformat()
 
-    # Respetar el esquema de un posible reverse proxy (X-Forwarded-Proto).
     scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
     host = request.headers.get("host", "localhost")
     base_url = f"{scheme}://{host}".rstrip("/")
 
-    # Cargar los productos del tenant para indexarlos de forma individual
     try:
-        productos = cargar_productos_tienda(tenant).articulos
+        productos = cargar_productos_tienda().articulos
     except Exception:
         productos = []
 
@@ -384,6 +330,9 @@ async def sitemap_xml(request: Request, tenant: str = Depends(resolutor_tenant))
 """
     return Response(content=xml_content, media_type="application/xml")
 
+
+# Servir archivos estáticos directamente desde static/
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(paginas_router)
 app.include_router(carrito_router)

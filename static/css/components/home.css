@@ -1,22 +1,36 @@
-/* --- Hero --- */
 .hero {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background-image: linear-gradient(rgba(15, 14, 23, 0.6), rgba(15, 14, 23, 0.6)), url('/static/images/slide-bolsas-new.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
     color: var(--text-light);
-    padding: 80px 0;
     text-align: center;
 }
 
+.hero .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: clamp(2.2rem, 6vw, 4rem);
     font-weight: 700;
     margin: 0 0 16px;
+    text-shadow: 3px 3px 6px rgba(15, 14, 23, 0.8);
 }
 
 .hero-subtitle {
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    font-weight: 300;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: 500;
     margin: 0;
-    opacity: 0.95;
+    text-shadow: 2px 2px 4px rgba(15, 14, 23, 0.8);
 }
 
 /* --- Sections --- */
@@ -64,8 +78,8 @@
 
 .product-type-card {
     background-color: var(--surface);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
+    border-radius: 30px; /* Rounded corners matching live Stackable blocks */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
     padding: 32px 24px;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -93,12 +107,13 @@
 
 /* --- Quote form --- */
 .quote-section {
-    background-color: var(--surface);
+    background-color: var(--background);
 }
 
 .quote-card {
-    background-color: var(--background);
-    border-radius: var(--radius-xl);
+    background-color: var(--surface);
+    border-radius: 30px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05);
     margin: 0 auto;
     max-width: 800px;
     padding: 40px;
@@ -148,10 +163,10 @@
 .form-field input,
 .form-field textarea {
     border: 2px solid var(--border);
-    border-radius: 8px;
+    border-radius: 30px;
     font-family: inherit;
     font-size: 1rem;
-    padding: 12px 16px;
+    padding: 12px 20px;
     transition: border-color 0.2s ease;
 }
 
@@ -159,6 +174,19 @@
 .form-field textarea:focus {
     border-color: var(--primary);
     outline: none;
+}
+
+.quote-form button.button-primary {
+    border-radius: 30px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.quote-form button.button-primary:hover {
+    background-color: var(--primary-dark);
 }
 
 /* --- About --- */

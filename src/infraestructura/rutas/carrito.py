@@ -1,12 +1,9 @@
 """Rutas de comercio (carrito y tienda) para la capa de infraestructura."""
 
-from functools import partial
-
-from fastapi import APIRouter, Request, Depends, Form, HTTPException
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infraestructura.rutas.base import templates, LoggingRoute, logger
-from src.infraestructura.tenant.resolutor import resolutor_tenant
 from src.infraestructura.datos.cargadores import (
     cargar_site,
     cargar_productos_tienda,
@@ -24,21 +21,21 @@ from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
 router = APIRouter(route_class=LoggingRoute)
 
 
-def obtener_productos_tienda(tenant: str) -> list[ArticuloCatalogo]:
-    """Devuelve el catálogo validado del tenant o una lista vacía si hay error."""
+def obtener_productos_tienda() -> list[ArticuloCatalogo]:
+    """Devuelve el catálogo validado o una lista vacía si hay error."""
     try:
-        return cargar_productos_tienda(tenant).articulos
+        return cargar_productos_tienda().articulos
     except Exception as err:
-        logger.error(f"Error obteniendo catálogo para tenant '{tenant}': {err}", exc_info=True)
+        logger.error(f"Error obteniendo catálogo: {err}", exc_info=True)
         return []
 
 
-def obtener_tarifas(tenant: str) -> dict:
-    """Devuelve las tarifas validadas del tenant o un diccionario vacío si hay error."""
+def obtener_tarifas() -> dict:
+    """Devuelve las tarifas validadas o un diccionario vacío si hay error."""
     try:
-        return cargar_tarifas(tenant).model_dump()
+        return cargar_tarifas().model_dump()
     except Exception as err:
-        logger.error(f"Error obteniendo tarifas para tenant '{tenant}': {err}", exc_info=True)
+        logger.error(f"Error obteniendo tarifas: {err}", exc_info=True)
         return {}
 
 
@@ -46,10 +43,9 @@ def obtener_tarifas(tenant: str) -> dict:
 async def ver_tienda(
     request: Request,
     q: str | None = None,
-    tenant: str = Depends(resolutor_tenant),
 ):
-    sitio = cargar_site(tenant)
-    productos = obtener_productos_tienda(tenant)
+    sitio = cargar_site()
+    productos = obtener_productos_tienda()
 
     query_filtrada = q.strip() if q else ""
     if query_filtrada:
@@ -70,10 +66,9 @@ async def ver_tienda(
 async def ver_producto(
     request: Request,
     producto_slug: str,
-    tenant: str = Depends(resolutor_tenant),
 ):
-    sitio = cargar_site(tenant)
-    productos = obtener_productos_tienda(tenant)
+    sitio = cargar_site()
+    productos = obtener_productos_tienda()
 
     # Buscar el producto por su slug
     producto_encontrado = None
@@ -102,13 +97,12 @@ async def ver_producto(
 @router.post("/carrito/agregar")
 async def agregar_al_carrito(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
     id_articulo: int = Form(...),
     cantidad: int = Form(...),
 ):
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
+        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 
@@ -118,10 +112,10 @@ async def agregar_al_carrito(
     )
 
     try:
-        productos = obtener_productos_tienda(tenant)
+        productos = obtener_productos_tienda()
         caso_uso.ejecutar(id_articulo, cantidad, productos)
         logger.info(
-            f"Tenant '{tenant}' | Artículo {id_articulo} agregado al carrito con cantidad {cantidad}"
+            f"Artículo {id_articulo} agregado al carrito con cantidad {cantidad}"
         )
     except ValueError as err:
         logger.error(f"Error al agregar artículo {id_articulo} al carrito: {err}")
@@ -141,12 +135,11 @@ async def agregar_al_carrito(
 @router.post("/carrito/eliminar")
 async def eliminar_del_carrito(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
     id_articulo: int = Form(...),
 ):
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
+        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 
@@ -157,7 +150,7 @@ async def eliminar_del_carrito(
 
     try:
         caso_uso.ejecutar(id_articulo)
-        logger.info(f"Tenant '{tenant}' | Artículo {id_articulo} eliminado del carrito")
+        logger.info(f"Artículo {id_articulo} eliminado del carrito")
     except ValueError as err:
         logger.error(f"Error al eliminar artículo {id_articulo} del carrito: {err}")
 
@@ -177,18 +170,17 @@ async def eliminar_del_carrito(
 @router.get("/carrito/", response_class=HTMLResponse)
 async def ver_carrito(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
 ):
-    sitio = cargar_site(tenant)
+    sitio = cargar_site()
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
+        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
 
     cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=partial(obtener_tarifas, tenant),
+        cargar_tarifas_yaml=obtener_tarifas,
         registrar_error=logger.error,
     )
 
@@ -223,7 +215,6 @@ async def ver_carrito(
 @router.post("/carrito/actualizar")
 async def actualizar_carrito(
     request: Request,
-    tenant: str = Depends(resolutor_tenant),
 ):
     datos_formulario = await request.form()
 
@@ -238,7 +229,7 @@ async def actualizar_carrito(
 
     repositorio = RepositorioCarritoCookie(
         cookies=request.cookies,
-        cargar_productos_tienda=partial(obtener_productos_tienda, tenant),
+        cargar_productos_tienda=obtener_productos_tienda,
         registrar_error=logger.error,
     )
 

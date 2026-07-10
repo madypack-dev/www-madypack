@@ -13,12 +13,12 @@ def client():
 
 class TestProductosEndpoints:
     def test_get_producto_existente_retorna_200_con_schema(self, client):
-        response = client.get("/tienda/producto-a-personalizado/", headers={"host": "localhost:8000"})
+        response = client.get("/tienda/bolsas-de-papel-kraft-personalizadas/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         
         # Verificar que se renderiza la información del producto
-        assert "Producto A Personalizado" in response.text
-        assert "Descripción del producto A" in response.text
+        assert "Bolsas de Papel Kraft Personalizadas" in response.text
+        assert "Impresión Flexográfica | Manijas planas" in response.text
         
         # Verificar que contiene las breadcrumbs
         assert "Inicio" in response.text
@@ -27,8 +27,7 @@ class TestProductosEndpoints:
         # Verificar marcado estructurado de tipo Product
         assert 'application/ld+json' in response.text
         assert '"@type": "Product"' in response.text
-        assert '"name": "Producto A Personalizado"' in response.text
-        assert '"priceCurrency": "ARS"' in response.text
+        assert '"name": "Bolsas de Papel Kraft Personalizadas"' in response.text
 
     def test_get_producto_inexistente_retorna_404(self, client):
         response = client.get("/tienda/producto-inexistente/", headers={"host": "localhost:8000"})
@@ -40,29 +39,29 @@ class TestProductosEndpoints:
         assert "application/xml" in response.headers["content-type"]
         
         # Debe contener las URLs dinámicas de los productos de la base de datos YAML
-        assert "<loc>http://localhost:8000/tienda/producto-a-personalizado/</loc>" in response.text
-        assert "<loc>http://localhost:8000/tienda/producto-b-estandar/</loc>" in response.text
-        assert "<loc>http://localhost:8000/tienda/producto-c-basico/</loc>" in response.text
+        assert "<loc>http://localhost:8000/tienda/bolsas-de-papel-kraft-personalizadas/</loc>" in response.text
+        assert "<loc>http://localhost:8000/tienda/bolsas-kraft-con-manija-cordon/</loc>" in response.text
+        assert "<loc>http://localhost:8000/tienda/bolsas-kraft-sin-manija-sos/</loc>" in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia
-        response = client.get("/tienda/?q=Personalizado", headers={"host": "localhost:8000"})
+        response = client.get("/tienda/?q=Personalizadas", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Producto A Personalizado" in response.text
-        assert "Producto B Estándar" not in response.text
+        assert "Bolsas de Papel Kraft Personalizadas" in response.text
+        assert "Bolsas Kraft con Manija Cordón" not in response.text
 
         # Debe incluir la directiva noindex, nofollow para SEO
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
 
         # El canonical URL debe seguir apuntando a la tienda limpia sin parámetros de query
-        assert '<link rel="canonical" href="https://www.tuempresa.com/tienda/">' in response.text
+        assert '<link rel="canonical" href="https://www.madypack.com.ar/tienda/">' in response.text
 
     def test_search_productos_no_query_does_not_contain_noindex(self, client):
         # Búsqueda vacía / sin parámetro de query
         response = client.get("/tienda/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Producto A Personalizado" in response.text
-        assert "Producto B Estándar" in response.text
+        assert "Bolsas de Papel Kraft Personalizadas" in response.text
+        assert "Bolsas Kraft con Manija Cordón" in response.text
 
         # NO debe incluir noindex, nofollow sino indexar por defecto
         assert '<meta name="robots" content="noindex, nofollow">' not in response.text

@@ -55,19 +55,11 @@ def test_response_compression(client):
     assert response_home.status_code == 200
     assert response_home.headers["content-encoding"] == "gzip"
 
-def test_tenant_css_bundle_isolation(client):
-    # 1. Solicitar bundle con host por defecto (eitec)
-    response_default = client.get("/static/css/bundle.css", headers={"host": "localhost:8000"})
-    assert response_default.status_code == 200
-    assert "--primary: #2853A1;" in response_default.text
-    assert "--background: #EFF4FF;" not in response_default.text
-
-    # 2. Solicitar bundle con host de madypack
-    response_madypack = client.get("/static/css/bundle.css", headers={"host": "madypack.com.ar"})
-    assert response_madypack.status_code == 200
-    assert "--primary: #2853A1;" in response_madypack.text
-    assert "--primary-dark: #1d3f7a;" in response_madypack.text
-    assert "--background: #EFF4FF;" in response_madypack.text
+def test_css_bundle_is_compiled_and_served(client):
+    response = client.get("/static/css/bundle.css")
+    assert response.status_code == 200
+    assert "--primary: #2853A1;" in response.text
+    assert "--background: #EFF4FF;" in response.text
 
 def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
     import json
