@@ -10,6 +10,112 @@
 
 /* Overrides específicos del tenant madypack */
 :root {
-    --primary: #c12a2a;
-    --primary-dark: #8f1f1f;
+    --primary: #2853A1;
+    --primary-dark: #1d3f7a;
+    --dark: #342D3F;
+    --background: #EFF4FF; /* Light blue-gray matching live theme */
+    --background-soft: #fbfbfb;
 }
+
+/* --- Hero Replica --- */
+.hero {
+    background-image: linear-gradient(rgba(15, 14, 23, 0.6), rgba(15, 14, 23, 0.6)), url('/static/images/slide-bolsas-new.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.hero .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 700;
+    margin: 0 0 16px;
+    text-shadow: 3px 3px 6px rgba(15, 14, 23, 0.8);
+}
+
+.hero-subtitle {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: 500;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(15, 14, 23, 0.8);
+}
+
+/* --- Sections & Cards styling --- */
+.product-types {
+    background-color: var(--background); /* Light background */
+}
+
+.product-type-card {
+    border-radius: 30px; /* Rounded corners matching live Stackable blocks */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.about-section {
+    background-color: var(--surface);
+}
+
+.quote-section {
+    background-color: var(--background);
+}
+
+.quote-card {
+    background-color: var(--surface);
+    border-radius: 30px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05);
+}
+
+.newsletter-section {
+    background-color: var(--dark);
+}
+
+.newsletter-fields input {
+    border-radius: 30px;
+}
+
+.newsletter-fields .button {
+    border-radius: 30px;
+}
+
+/* --- Form inputs & button styling --- */
+.quote-form input,
+.quote-form textarea {
+    border-radius: 30px;
+    border: 2px solid var(--border);
+    padding: 12px 20px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.quote-form input:focus,
+.quote-form textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.quote-form button.button-primary {
+    border-radius: 30px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.quote-form button.button-primary:hover {
+    background-color: var(--primary-dark);
+}
+
