@@ -1,5 +1,6 @@
 """Path: src/infraestructura/rutas/presupuesto.py"""
 
+import uuid
 from io import BytesIO
 
 from fastapi import APIRouter, Depends, Request
@@ -21,7 +22,15 @@ from src.infraestructura.datos.modelos import SiteConfig
 from src.infraestructura.estaticos import resolver_archivo_estatico
 from src.infraestructura.logging.logger import get_logger
 from src.infraestructura.rutas.base import load_site, templates
+from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
+from src.lead.dominio.modelos.lead import Lead
 from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
+from src.presupuesto.adaptadores.presentadores.confirmacion import (
+    PresentadorConfirmacionPresupuesto,
+)
+from src.presupuesto.adaptadores.repositorios.fallback_archivo import (
+    RegistroFallbackArchivo,
+)
 from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
     CasoUsoGenerarPresupuestoPDF,
 )
@@ -32,7 +41,6 @@ from src.presupuesto.aplicacion.helpers import construir_lineas_presupuesto
 from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
 from src.presupuesto.dominio.modelos.presupuesto import DatosSolicitante
 
-from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
 from src.infraestructura.config.settings import CHATWOOT_INBOX_ID
 from src.infraestructura.dependencias import get_chatwoot_repo
 
@@ -41,13 +49,12 @@ logger = get_logger()
 
 def get_caso_uso_presupuesto(
     repo=Depends(get_chatwoot_repo),
-    site: SiteConfig = Depends(load_site),
 ) -> ProcesarSolicitudPresupuesto:
     """Ensambla el caso de uso de presupuesto inyectando el repositorio."""
     return ProcesarSolicitudPresupuesto(
         repositorio=repo,
         chatwoot_inbox_id=CHATWOOT_INBOX_ID,
-        whatsapp_phone=site.whatsapp.phone,
+        registro_fallback=RegistroFallbackArchivo(),
         registrar_error=logger.error,
     )
 
@@ -190,12 +197,33 @@ async def generar_presupuesto(
     )
     carrito = repositorio_carrito.obtener_carrito()
 
-    response_lead = await caso_uso.ejecutar(datos_form, carrito, mensaje)
+    presentador = PresentadorConfirmacionPresupuesto(
+        whatsapp_phone=site.whatsapp.phone,
+    )
+
+    try:
+        lead = await caso_uso.ejecutar(datos_form, carrito)
+        response = presentador.presentar(lead, carrito, mensaje)
+    except Exception as err:
+        ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
+        logger.exception(
+            "Error procesando solicitud de presupuesto",
+            error=str(err),
+            ref_code=ref_code,
+        )
+        lead_emergencia = Lead.crear_emergencia(
+            nombre=datos_form.nombre,
+            empresa=datos_form.empresa,
+            telefono=datos_form.telefono,
+            email=datos_form.email,
+        )
+        lead_emergencia.id = f"ERR-{uuid.uuid4()}"
+        response = presentador.presentar_emergencia(lead_emergencia, ref_code)
 
     return templates.TemplateResponse(
         request=request,
         name="pages/confirmacion_presupuesto.html",
-        context={"site": site, "response": response_lead},
+        context={"site": site, "response": response},
     )
 
 

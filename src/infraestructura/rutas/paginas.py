@@ -65,14 +65,12 @@ async def post_contacto(
         return RedirectResponse(url="/contacto/?error=datos_invalidos", status_code=303)
 
     try:
-        lead = Lead.crear(
+        lead = Lead.crear_contacto(
             nombre=str(nombre),
             empresa="Contacto Web",
             telefono=str(telefono),
             email=str(email)  # type: ignore
         )
-        # Reemplazamos COT por CON para denotar Contacto
-        lead.codigo_referencia = lead.codigo_referencia.replace("COT-", "CON-")
 
         try:
             await repo.guardar(lead, CHATWOOT_INBOX_ID)

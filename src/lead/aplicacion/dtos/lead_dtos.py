@@ -29,9 +29,3 @@ class CrearLeadRequest(BaseModel):
                     clean = "+549" + clean
         return clean
 
-class ConfirmacionPresupuestoResponse(BaseModel):
-    """Respuesta estructurada para renderizar en la vista de confirmación."""
-    lead_id: str
-    codigo_referencia: str
-    whatsapp_url: str
-    pdf_url: str | None = None
