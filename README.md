@@ -32,6 +32,8 @@ El proyecto está construido con **FastAPI**, **Jinja2** y configuración de con
 │       ├── app.py
 │       ├── build/                  # Builders de assets
 │       ├── datos/
+│       ├── errores/                # Handlers globales
+│       ├── middleware/             # Middlewares HTTP
 │       ├── rutas/
 │       └── config/
 ├── static/                         # CSS, imágenes y JS
