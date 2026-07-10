@@ -181,9 +181,6 @@ async def ver_carrito(
 
     total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
 
-    if sitio.cart and sitio.cart.summary:
-        sitio.cart.summary.estimated_cost_value = precio_estimado_formateado
-
     return templates.TemplateResponse(
         request=request,
         name="pages/carrito.html",
@@ -191,6 +188,7 @@ async def ver_carrito(
             "site": sitio,
             "cart_items": carrito.articulos,
             "total_bags_formatted": total_bolsas_formateado,
+            "estimated_cost_formatted": precio_estimado_formateado,
         },
     )
 
