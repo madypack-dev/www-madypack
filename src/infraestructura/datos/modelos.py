@@ -193,6 +193,7 @@ class AboutConfig(BaseModel):
     button_url: str
     image: str
     details: list[AboutDetailConfig]
+    paragraphs: list[str] | None = None
 
 
 # ---------- home.newsletter ----------

@@ -6,13 +6,4 @@
 {% block content %}
 {% set is_page = True %}
 {% include "components/sections/about.html" %}
-
-<section class="section who-we-are-details page-details">
-    <div class="container">
-        {% for detail in site.home.about.details %}
-        <h2>{{ detail.title }}</h2>
-        <p>{{ detail.text | safe }}</p>
-        {% endfor %}
-    </div>
-</section>
 {% endblock %}

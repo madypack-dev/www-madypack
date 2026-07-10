@@ -301,6 +301,26 @@
     width: 100%;
 }
 
+.button-whatsapp {
+    background-color: #25D366;
+    border-color: #25D366;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-whatsapp:hover {
+    background-color: #20ba5a;
+    border-color: #20ba5a;
+    color: #ffffff;
+}
+
+.whatsapp-icon {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
 /* --- Newsletter --- */
 .newsletter-section {
     background-color: var(--dark);

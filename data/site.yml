@@ -146,13 +146,17 @@ home:
         full_width: true
 
   about:
-    title: "Quiénes somos"
-    meta_title: "Quiénes somos"
+    title: "Madypack"
+    meta_title: "Quiénes somos – Madypack"
     meta_description: "Conocé Madypack, fábrica de bolsas de papel sustentables gestionada por sus trabajadores de Madygraf Garín."
-    text: "Nos dedicamos a la fabricación y confección de bolsas de papel, lisas y personalizadas. Todo para su negocio, respetando valores sociales sobre el cuidado del medio ambiente."
+    text: "En Madypack nos dedicamos a fabricar bolsas de papel kraft y packaging sustentable. Producimos con energía solar y materiales ecológicos, buscando siempre ofrecer productos resistentes, de calidad y respetuosos con el ambiente."
     button_text: "Conocenos"
     button_url: "/quienes-somos/"
-    image: "quienes-somos-home.jpg"
+    image: "quienes-somos-home-edited.jpg"
+    paragraphs:
+      - "En Madypack nos dedicamos a fabricar bolsas de papel kraft y packaging sustentable. Producimos con energía solar y materiales ecológicos, buscando siempre ofrecer productos resistentes, de calidad y respetuosos con el ambiente."
+      - "Formamos parte de Madygraf, una cooperativa de trabajadores con más de 30 años de experiencia en la industria gráfica. Somos más de 100 personas que compartimos un mismo objetivo: trabajar con compromiso, cuidar cada detalle y generar un impacto positivo en nuestra comunidad."
+      - "En cada bolsa que producimos hay mano de obra nacional, esfuerzo colectivo y compromiso con la comunidad. Nos gusta construir relaciones duraderas con nuestros clientes y crecer juntos, cuidando el entorno y promoviendo una producción responsable."
     details:
       - title: "Nuestros Valores y Compromiso Social"
         text: "Como parte de la cooperativa gráfica <strong>Madygraf</strong> (ex-Donnelley), ubicada en Garín, Provincia de Buenos Aires, en <strong>Madypack</strong> no solo fabricamos envases y bolsas de papel sustentables, sino que defendemos la gestión obrera y el trabajo digno. Toda nuestra producción se organiza bajo principios de solidaridad, igualdad y democracia interna."
