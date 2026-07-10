@@ -17,11 +17,11 @@
         <p class="subtitle">Seleccioná los modelos y la cantidad necesaria para solicitar tu cotización formal.</p>
         
         <div class="search-bar-container">
-            <form action="/tienda/" method="get" class="search-form-shop">
+            <form action="/productos/" method="get" class="search-form-shop">
                 <input type="text" name="q" value="{{ q }}" placeholder="Buscar productos..." class="search-input-shop" aria-label="Buscar productos">
                 <button type="submit" class="button button-primary btn-search-shop">Buscar</button>
                 {% if q %}
-                <a href="/tienda/" class="button button-secondary btn-clear-search">Limpiar</a>
+                <a href="/productos/" class="button button-secondary btn-clear-search">Limpiar</a>
                 {% endif %}
             </form>
         </div>
@@ -33,7 +33,7 @@
                     <img src="{{ url_for('static', path='images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                 </div>
                 <div class="product-info">
-                    <h3><a href="/tienda/{{ producto.url_slug }}/">{{ producto.nombre }}</a></h3>
+                    <h3><a href="/productos/{{ producto.url_slug }}/">{{ producto.nombre }}</a></h3>
                     <p class="description">{{ producto.descripcion }}</p>
                     
                     <form action="/cart/agregar" method="post" class="add-to-cart-form">

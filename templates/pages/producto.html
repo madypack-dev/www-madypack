@@ -9,7 +9,7 @@
         <nav class="breadcrumbs" aria-label="Breadcrumbs">
             <ol>
                 <li><a href="/">Inicio</a></li>
-                <li><a href="/tienda/">Tienda</a></li>
+                <li><a href="/productos/">Productos</a></li>
                 <li aria-current="page">{{ producto.nombre }}</li>
             </ol>
         </nav>
@@ -79,9 +79,9 @@
                         <img src="{{ url_for('static', path='images/' ~ rel.imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                     </div>
                     <div class="product-info">
-                        <h3><a href="/tienda/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
+                        <h3><a href="/productos/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
                         <p class="description">{{ rel.descripcion }}</p>
-                        <a href="/tienda/{{ rel.url_slug }}/" class="button button-secondary button-small">Ver especificaciones</a>
+                        <a href="/productos/{{ rel.url_slug }}/" class="button button-secondary button-small">Ver especificaciones</a>
                     </div>
                 </div>
                 {% endfor %}

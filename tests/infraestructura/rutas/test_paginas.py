@@ -47,8 +47,8 @@ class TestPaginasEndpoints:
         response = client.get("/politica-de-privacidad/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
-    def test_get_tienda_renders_schema(self, client):
-        response = client.get("/tienda/", headers={"host": "localhost:8000"})
+    def test_get_productos_renders_schema(self, client):
+        response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         # Verificar contenido general
         assert "Catálogo de" in response.text
@@ -58,6 +58,11 @@ class TestPaginasEndpoints:
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
         assert '"image":' in response.text
+
+    def test_get_tienda_redirects_to_productos(self, client):
+        response = client.get("/tienda/", headers={"host": "localhost:8000"}, follow_redirects=False)
+        assert response.status_code == 301
+        assert response.headers["location"] == "/productos/"
 
     def test_post_contacto_success(self, client):
         response = client.post(

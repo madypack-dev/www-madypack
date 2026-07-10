@@ -39,7 +39,13 @@ def obtener_tarifas() -> dict:
         return {}
 
 
-@router.get("/tienda/", response_class=HTMLResponse)
+@router.get("/tienda/", response_class=RedirectResponse, include_in_schema=False)
+@router.get("/tienda", response_class=RedirectResponse, include_in_schema=False)
+async def redirigir_tienda():
+    return RedirectResponse(url="/productos/", status_code=301)
+
+
+@router.get("/productos/", response_class=HTMLResponse)
 async def ver_tienda(
     request: Request,
     q: str | None = None,
@@ -62,7 +68,7 @@ async def ver_tienda(
     )
 
 
-@router.get("/tienda/{producto_slug}/", response_class=HTMLResponse)
+@router.get("/productos/{producto_slug}/", response_class=HTMLResponse)
 async def ver_producto(
     request: Request,
     producto_slug: str,
@@ -119,7 +125,7 @@ async def agregar_al_carrito(
         )
     except ValueError as err:
         logger.error(f"Error al agregar artículo {id_articulo} al carrito: {err}")
-        return RedirectResponse(url="/tienda/?error=cantidad_invalida", status_code=303)
+        return RedirectResponse(url="/productos/?error=cantidad_invalida", status_code=303)
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)
     if repositorio.carrito_serializado:

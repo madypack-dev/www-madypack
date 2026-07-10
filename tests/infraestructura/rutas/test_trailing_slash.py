@@ -14,12 +14,12 @@ def client():
 
 class TestTrailingSlashMiddleware:
     def test_redirects_without_trailing_slash_to_trailing_slash(self, client):
-        response = client.get("/tienda", headers={"host": "localhost:8000"})
+        response = client.get("/productos", headers={"host": "localhost:8000"})
         assert response.status_code == 301
-        assert response.headers["location"] == "/tienda/"
+        assert response.headers["location"] == "/productos/"
 
     def test_does_not_redirect_if_already_has_trailing_slash(self, client):
-        response = client.get("/tienda/", headers={"host": "localhost:8000"})
+        response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
     def test_redirects_inner_pages_without_trailing_slash(self, client):
@@ -28,9 +28,9 @@ class TestTrailingSlashMiddleware:
         assert response.headers["location"] == "/quienes-somos/"
 
     def test_preserves_query_parameters_on_redirect(self, client):
-        response = client.get("/tienda?success=1&cat=industrial", headers={"host": "localhost:8000"})
+        response = client.get("/productos?success=1&cat=industrial", headers={"host": "localhost:8000"})
         assert response.status_code == 301
-        assert response.headers["location"] == "/tienda/?success=1&cat=industrial"
+        assert response.headers["location"] == "/productos/?success=1&cat=industrial"
 
     def test_does_not_redirect_root_path(self, client):
         response = client.get("/", headers={"host": "localhost:8000"})

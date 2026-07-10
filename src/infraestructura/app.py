@@ -275,7 +275,7 @@ async def sitemap_xml(request: Request):
     product_urls = ""
     for producto in productos:
         product_urls += f"""  <url>
-    <loc>{base_url}/tienda/{producto.url_slug}/</loc>
+    <loc>{base_url}/productos/{producto.url_slug}/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -291,7 +291,7 @@ async def sitemap_xml(request: Request):
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>{base_url}/tienda/</loc>
+    <loc>{base_url}/productos/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
