@@ -128,6 +128,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
 
         x_logo = x + 4 * mm
         y_logo = y - 4 * mm
+        x_texto = x_logo
         if identidad.logo_path and Path(identidad.logo_path).is_file():
             try:
                 drawing = svg2rlg(identidad.logo_path)
@@ -135,15 +136,13 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
                     max_ancho = 45 * mm
                     max_alto = 14 * mm
                     escala = min(max_ancho / drawing.width, max_alto / drawing.height)
-                    drawing.width *= escala
-                    drawing.height *= escala
-                    drawing.scale(escala, escala)
+                    drawing.width = int(drawing.width * escala)
+                    drawing.height = int(drawing.height * escala)
+                    drawing.scale(escala, escala)  # type: ignore[arg-type]
                     renderPDF.draw(drawing, c, x_logo, y_logo - drawing.height)
                     x_texto = x_logo + drawing.width + 6 * mm
             except Exception:
-                x_texto = x_logo
-        else:
-            x_texto = x_logo
+                pass
 
         c.setFont("Helvetica-Bold", 14)
         c.setFillColor(self.COLOR_PRINCIPAL)

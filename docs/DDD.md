@@ -107,19 +107,11 @@ Contiene todo lo relacionado con frameworks y detalles técnicos.
 
 * `base.py`: configuración de templates, logging y `load_site`.
 * `paginas.py`: rutas estáticas de páginas institucionales.
-* `carrito.py`: rutas de tienda y carrito. Recibe el tenant resuelto, carga los YAML correspondientes y traduce HTTP a llamadas de casos de uso.
-
-### `src/infraestructura/tenant/resolutor.py`
-
-Resuelve el tenant según el entorno:
-
-* **Desarrollo:** por puerto (`8000` → `default`, `8001` → `empresa-1`).
-* **Staging:** por subdominio (`empresa-1.datamaq.com.ar`).
-* **Producción:** por dominio propio (`empresa-1.com.ar`).
+* `carrito.py`: rutas de tienda y `/cart/`. Recibe peticiones, carga los YAML correspondientes y traduce HTTP a llamadas de casos de uso.
 
 ### `src/infraestructura/datos/cargadores.py`
 
-Carga los archivos YAML de cada tenant desde `data/<tenant>/`, con fallback a `data/default/` si un archivo no existe.
+Carga los archivos YAML de configuración directamente desde la raíz de `data/` (por ejemplo, `data/site.yml`).
 
 ---
 
@@ -152,16 +144,24 @@ Los casos de uso dependen de abstracciones (`IRepositorioCarrito`), no de implem
 
 ---
 
-## 7. Multi-Tenant
+## 7. Convención de Idiomas y Lenguaje Ubicuo (DDD)
 
-La arquitectura multi-tenant se implementa en infraestructura. El dominio y los casos de uso no conocen el concepto de tenant; solo reciben los datos que la infraestructura les proporciona.
+Para garantizar consistencia y facilitar el mantenimiento a largo plazo, se ha documentado formalmente la siguiente convención de idiomas en la base de código:
 
-Ver [docs/multi-tenant.md](docs/multi-tenant.md) para más detalles.
+### 7.1. Español para el Dominio (Lenguaje Ubicuo)
+De acuerdo a las prácticas de **Domain-Driven Design (DDD)**, la capa de dominio y de aplicación debe respetar el **Lenguaje Ubicuo** de la fábrica gráfica de Madypack en Argentina.
+* Se usan términos en español para clases, entidades y lógica de negocio (ej. `ArticuloCatalogo`, `CotizadorServicio`, `Presupuesto`, `TasaAdicional`, `BolsaKraft`).
+* Esto evita errores de semántica y malas interpretaciones al traducir terminología industrial local (ej. "flexografía" o "bolsa SOS con fuelle").
+
+### 7.2. Inglés para la Infraestructura y Componentes Técnicos
+* Toda la infraestructura (FastAPI, enrutamientos, configuraciones de settings, Uvicorn, logs y bases de datos técnicas) se escribe en inglés.
+* Se prefiere el inglés para campos técnicos y propiedades de auditoría (ej. `id`, `created_at`, `status_code`, `is_active`).
+* Las rutas transaccionales visibles al usuario que corresponden a convenciones globales de comercio electrónico utilizan el inglés por compatibilidad (ej. `/cart/` en lugar de `/carrito/`), mientras que las páginas de contenido institucional utilizan el español (`/quienes-somos/`).
 
 ---
 
 ## 8. Próximas Mejoras
 
-* Agregar tests unitarios para dominio y casos de uso.
+* Agregar más tests unitarios para dominio y casos de uso.
 * Evaluar el uso de un contenedor de dependencias o inyección más explícita.
 * Considerar cachear los YAML en memoria para reducir lecturas de disco.
