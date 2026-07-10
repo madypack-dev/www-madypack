@@ -9,7 +9,7 @@ class CotizadorServicio:
     def __init__(
         self,
         cargar_tarifas_yaml: Callable[[], dict[str, Any]],
-        registrar_error: Callable[[str], None] = lambda m: None,
+        registrar_error: Callable[[str], None] = lambda _: None,
     ):
         self.cargar_tarifas_yaml = cargar_tarifas_yaml
         self.registrar_error = registrar_error

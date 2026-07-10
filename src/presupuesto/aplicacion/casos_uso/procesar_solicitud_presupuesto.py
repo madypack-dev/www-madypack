@@ -18,7 +18,7 @@ class ProcesarSolicitudPresupuesto:
         repositorio: ILeadRepository,
         chatwoot_inbox_id: int,
         registro_fallback: IRegistroFallbackLead,
-        registrar_error: Callable[[str], None] = lambda m: None,
+        registrar_error: Callable[[str], None] = lambda _: None,
     ):
         self.repositorio = repositorio
         self.chatwoot_inbox_id = chatwoot_inbox_id

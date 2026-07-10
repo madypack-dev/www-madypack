@@ -75,7 +75,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         # --- Título y metadatos ---
         y -= 8 * mm
         titulo = Paragraph("PRESUPUESTO", estilo_titulo)
-        w, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 30 * mm)
+        _, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 30 * mm)
         titulo.drawOn(c, x, y - h)
         y -= h + 4 * mm
 
@@ -88,7 +88,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
             f"<b>Válido hasta:</b> {fecha_vencimiento} ({presupuesto.validez_dias} días)"
         )
         meta = Paragraph(meta_texto, estilo_normal)
-        w, h = meta.wrapOn(c, ancho - 2 * self.MARGEN, 20 * mm)
+        _, h = meta.wrapOn(c, ancho - 2 * self.MARGEN, 20 * mm)
         meta.drawOn(c, x, y - h)
         y -= h + 6 * mm
 
@@ -165,7 +165,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         estilo_normal: ParagraphStyle,
     ) -> float:
         titulo = Paragraph("Datos del solicitante", estilo_subtitulo)
-        w, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
+        _, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
         titulo.drawOn(c, x, y - h)
         y -= h + 2 * mm
 
@@ -182,7 +182,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         texto = "<br/>".join(lineas)
         parrafo = Paragraph(texto, estilo_normal)
         ancho_caja = ancho - 2 * self.MARGEN
-        w, h = parrafo.wrapOn(c, ancho_caja, 60 * mm)
+        _, h = parrafo.wrapOn(c, ancho_caja, 60 * mm)
 
         c.setStrokeColor(colors.lightgrey)
         c.setLineWidth(self.ANCHO_LINEA)
@@ -202,7 +202,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         estilo_subtitulo: ParagraphStyle,
     ) -> float:
         titulo = Paragraph("Detalle de la cotización", estilo_subtitulo)
-        w, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
+        _, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
         titulo.drawOn(c, x, y - h)
         y -= h + 2 * mm
 
@@ -247,7 +247,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
             ])
         )
 
-        w, h = tabla.wrapOn(c, ancho_tabla, 200 * mm)
+        _, h = tabla.wrapOn(c, ancho_tabla, 200 * mm)
         tabla.drawOn(c, x, y - h)
         return y - h
 
@@ -262,14 +262,14 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         estilo_normal: ParagraphStyle,
     ) -> float:
         titulo = Paragraph("Condiciones comerciales", estilo_subtitulo)
-        w, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
+        _, h = titulo.wrapOn(c, ancho - 2 * self.MARGEN, 10 * mm)
         titulo.drawOn(c, x, y - h)
         y -= h + 2 * mm
 
         items = [f"• {condicion}" for condicion in condiciones]
         texto = "<br/>".join(items)
         parrafo = Paragraph(texto, estilo_normal)
-        w, h = parrafo.wrapOn(c, ancho - 2 * self.MARGEN, 80 * mm)
+        _, h = parrafo.wrapOn(c, ancho - 2 * self.MARGEN, 80 * mm)
         parrafo.drawOn(c, x, y - h)
         return y - h
 
@@ -296,7 +296,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
 
         texto = " | ".join(partes)
         parrafo = Paragraph(texto, estilo_pequeno)
-        w, h = parrafo.wrapOn(c, ancho - 2 * self.MARGEN, 15 * mm)
+        _, h = parrafo.wrapOn(c, ancho - 2 * self.MARGEN, 15 * mm)
         parrafo.drawOn(c, x, y_pie)
 
     def _formatear_moneda(self, valor: float) -> str:

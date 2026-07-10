@@ -10,7 +10,7 @@ from src.presupuesto.dominio.modelos.presupuesto import LineaPresupuesto
 def construir_lineas_presupuesto(
     carrito: Carrito,
     cotizador: CotizadorServicio,
-    registrar_error: Callable[[str], None] = lambda m: None,
+    registrar_error: Callable[[str], None] = lambda _: None,
 ) -> list[LineaPresupuesto]:
     """Construye las líneas de presupuesto a partir de los artículos del carrito."""
     lineas: list[LineaPresupuesto] = []

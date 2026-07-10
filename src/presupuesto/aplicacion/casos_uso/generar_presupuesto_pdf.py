@@ -18,7 +18,7 @@ class CasoUsoGenerarPresupuestoPDF:
     def __init__(
         self,
         generador_pdf: IGeneradorDocumentoPresupuesto,
-        registrar_error: Callable[[str], None] = lambda m: None,
+        registrar_error: Callable[[str], None] = lambda _: None,
     ):
         self.generador_pdf = generador_pdf
         self.registrar_error = registrar_error

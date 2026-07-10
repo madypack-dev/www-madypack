@@ -6,7 +6,7 @@ from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
 
 
 class CasoUsoActualizarCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):
+    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
         self.repositorio = repositorio
         self.registrar_error = registrar_error
 
@@ -25,7 +25,7 @@ class CasoUsoActualizarCarrito:
 
 
 class CasoUsoAgregarAlCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):
+    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
         self.repositorio = repositorio
         self.registrar_error = registrar_error
 
@@ -54,7 +54,7 @@ class CasoUsoAgregarAlCarrito:
 
 
 class CasoUsoEliminarDelCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda m: None):
+    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
         self.repositorio = repositorio
         self.registrar_error = registrar_error
 

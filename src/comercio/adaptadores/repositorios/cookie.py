@@ -9,7 +9,7 @@ class RepositorioCarritoCookie(IRepositorioCarrito):
         self,
         cookies: dict[str, str],
         nombre_cookie: str = "articulos_carrito",
-        registrar_error: Callable[[str], None] = lambda m: None,
+        registrar_error: Callable[[str], None] = lambda _: None,
     ):
         self.cookies = cookies
         self.nombre_cookie = nombre_cookie

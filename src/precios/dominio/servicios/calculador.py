@@ -1,11 +1,6 @@
 """Motor genérico de cálculo de precios a partir de conceptos de tarifa."""
 
-from collections.abc import Callable
-
 from src.comercio.dominio.modelos.carrito import CalculoArticulo
-
-
-EstrategiaCalculo = Callable[[CalculoArticulo, dict[str, float], int], float]
 
 
 def _estrategia_suma_por_unidad(
@@ -21,24 +16,17 @@ def _estrategia_suma_por_unidad_mas_fijo(
 ) -> float:
     """Suma los conceptos indicados, multiplica por cantidad y suma un costo fijo."""
     unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
-    fijo = 0.0
-    if calculo.concepto_fijo:
-        fijo = conceptos.get(calculo.concepto_fijo, 0.0)
+    fijo = conceptos.get(calculo.concepto_fijo, 0.0) if calculo.concepto_fijo else 0.0
     return (unitario * cantidad) + fijo
 
 
 class CalculadorPrecio:
-    """Calcula precios estimados usando estrategias registradas."""
+    """Calcula precios estimados usando estrategias predefinidas."""
 
-    _estrategias: dict[str, EstrategiaCalculo] = {
+    _estrategias = {
         "suma_por_unidad": _estrategia_suma_por_unidad,
         "suma_por_unidad_mas_fijo": _estrategia_suma_por_unidad_mas_fijo,
     }
-
-    @classmethod
-    def registrar_estrategia(cls, tipo: str, estrategia: EstrategiaCalculo) -> None:
-        """Permite registrar nuevas estrategias de cálculo sin modificar esta clase."""
-        cls._estrategias[tipo] = estrategia
 
     def calcular(
         self, calculo: CalculoArticulo | None, conceptos: dict[str, float], cantidad: int
