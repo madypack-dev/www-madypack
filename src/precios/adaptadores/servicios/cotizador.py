@@ -14,19 +14,21 @@ class CotizadorServicio:
         self.cargar_tarifas_yaml = cargar_tarifas_yaml
         self.registrar_error = registrar_error
         self._calculador = CalculadorPrecio()
+        self._conceptos_cache: dict[str, float] | None = None
 
     def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
-        try:
-            datos_yaml = self.cargar_tarifas_yaml()
-            config = ConfiguracionTarifas(**datos_yaml)
-            conceptos = config.tarifas.conceptos
-        except Exception as err:
-            self.registrar_error(f"Error cargando tarifas en cotizador: {err}")
-            raise ValueError(f"No se pudieron obtener las tarifas de cotización: {err}")
+        if self._conceptos_cache is None:
+            try:
+                datos_yaml = self.cargar_tarifas_yaml()
+                config = ConfiguracionTarifas(**datos_yaml)
+                self._conceptos_cache = config.tarifas.conceptos
+            except Exception as err:
+                self.registrar_error(f"Error cargando tarifas en cotizador: {err}")
+                raise ValueError(f"No se pudieron obtener las tarifas de cotización: {err}")
 
         try:
             return self._calculador.calcular(
-                articulo.calculo, conceptos, articulo.cantidad
+                articulo.calculo, self._conceptos_cache, articulo.cantidad
             )
         except Exception as err:
             self.registrar_error(f"Error calculando precio para artículo {articulo.id}: {err}")
