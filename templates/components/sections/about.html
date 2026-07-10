@@ -11,12 +11,12 @@
                 <h2>{{ site.home.about.title }}</h2>
                 {% endif %}
 
-                {% if site.home.about.paragraphs %}
+                {% if is_page %}
                     {% for paragraph in site.home.about.paragraphs %}
                     <p>{{ paragraph | safe }}</p>
                     {% endfor %}
                 {% else %}
-                    <p>{{ site.home.about.text }}</p>
+                    <p>{{ site.home.about.text | safe }}</p>
                 {% endif %}
 
                 {% if not is_page %}
