@@ -436,3 +436,15 @@
         text-align: center;
     }
 }
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+.no-results p {
+    font-size: 1.2rem;
+    font-weight: 500;
+}

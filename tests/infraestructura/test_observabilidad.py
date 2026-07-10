@@ -99,3 +99,11 @@ def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
     # Restaurar formateador por defecto para no interferir con otros tests
     monkeypatch.delenv("LOG_FORMAT", raising=False)
     configurar_logging()
+
+
+def test_static_assets_contain_cache_busting_version(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "bundle.css?v=" in response.text
+    assert "app.js?v=" in response.text
+

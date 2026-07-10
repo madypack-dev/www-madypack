@@ -3,6 +3,7 @@ import { GoogleTagManagerTracker, GoogleAnalyticsTracker } from './src/adapters/
 import { ConsentService } from './src/application/ConsentService.js';
 import { CookieBanner } from './src/ui/CookieBanner.js';
 import { MobileMenu } from './src/ui/MobileMenu.js';
+import { HeroCarousel } from './src/ui/HeroCarousel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Obtener configuración de infraestructura desde el DOM
@@ -30,4 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mobileMenu = new MobileMenu();
     mobileMenu.initialize();
+
+    const heroCarousel = new HeroCarousel();
+    heroCarousel.initialize();
 });

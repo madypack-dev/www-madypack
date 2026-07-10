@@ -227,3 +227,14 @@
         grid-template-columns: 1fr;
     }
 }
+
+.empty-cart-message {
+    color: #666;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.empty-cart-message a {
+    color: var(--primary);
+    font-weight: 700;
+}
