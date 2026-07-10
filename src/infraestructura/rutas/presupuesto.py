@@ -187,41 +187,51 @@ async def generar_presupuesto(
     request: Request,
     caso_uso_lead: CrearLeadDesdePresupuesto = Depends(get_caso_uso_lead),
     site: SiteConfig = Depends(load_site),
+    repo = Depends(get_chatwoot_repo),
 ):
     """Procesa los datos de contacto del lead, los envía a Chatwoot y retorna la vista de confirmación."""
-    from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest
+    from src.lead.aplicacion.dtos.lead_dtos import CrearLeadRequest, ConfirmacionPresupuestoResponse
+    from src.lead.dominio.modelos.lead import Lead
+    import uuid
+    import urllib.parse
 
     form_data = await request.form()
 
+    # Soporte híbrido para wpforms (cotización general/checkout) y campos estándar (landing/tests)
+    nombre = _str_field(form_data.get("wpforms[fields][3]")) or _str_field(form_data.get("name"))
+    email = _str_field(form_data.get("wpforms[fields][11]")) or _str_field(form_data.get("email"))
+    telefono = _str_field(form_data.get("wpforms[fields][10]")) or _str_field(form_data.get("phone"))
+    empresa = _str_field(form_data.get("wpforms[fields][12]")) or _str_field(form_data.get("company"))
+    mensaje = _str_field(form_data.get("wpforms[fields][2]")) or _str_field(form_data.get("message"))
+
     logger.debug(
-        "Formulario de presupuesto recibido",
+        "Formulario de cotización recibido",
         form_keys=list(form_data.keys()),
-        phone_present="phone" in form_data,
-        phone_type=type(form_data.get("phone")).__name__ if "phone" in form_data else None,
-        email_present="email" in form_data,
+        nombre=nombre,
+        email=email,
+        telefono=telefono,
+        empresa=empresa,
     )
 
     try:
         datos_form = CrearLeadRequest(
-            nombre=_str_field_required(form_data.get("name")),
-            empresa=_str_field_required(form_data.get("company")),
-            telefono=_str_field_required(form_data.get("phone")),
-            email=_str_field_required(form_data.get("email")),
+            nombre=_str_field_required(nombre),
+            empresa=_str_field_required(empresa) if empresa else "Particular",
+            telefono=_str_field_required(telefono),
+            email=_str_field_required(email),
         )
     except (ValidationError, ValueError) as err:
-        campos_faltantes = [
-            campo for campo in ("name", "company", "phone", "email")
-            if not _str_field(form_data.get(campo))
-        ]
         logger.warning(
             "Datos de contacto inválidos",
             error=str(err),
-            campos_faltantes=campos_faltantes,
-            phone_present="phone" in form_data,
-            phone_value_len=len(_str_field(form_data.get("phone")) or ""),
+            nombre=nombre,
+            email=email,
         )
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
+    whatsapp_vendedor = site.whatsapp.phone
+
+    # Obtener el carrito de compras
     productos = _obtener_productos_tienda()
     repositorio_carrito = RepositorioCarritoCookie(
         cookies=request.cookies,
@@ -229,22 +239,60 @@ async def generar_presupuesto(
         registrar_error=logger.error,
     )
     carrito = repositorio_carrito.obtener_carrito()
+
+    # Si el carrito está vacío, se procesa como una cotización general/consulta sin PDF
     if not carrito.articulos:
-        return RedirectResponse(url="/cotizacion/?error=carrito_vacio", status_code=303)
+        try:
+            lead = Lead.crear(
+                nombre=datos_form.nombre,
+                empresa=datos_form.empresa,
+                telefono=datos_form.telefono,
+                email=datos_form.email
+            )
+            # Modificamos la referencia de COT a COT-GEN
+            lead.codigo_referencia = lead.codigo_referencia.replace("COT-", "COT-GEN-")
 
-    whatsapp_vendedor = site.whatsapp.phone
+            try:
+                lead_id = await repo.guardar(lead, CHATWOOT_INBOX_ID)
+                lead.id = lead_id
+                logger.info(f"Cotización general de {datos_form.nombre} enviada a Chatwoot: {lead.codigo_referencia}")
+            except Exception as woot_err:
+                logger.error(f"Error enviando cotización general a Chatwoot: {woot_err}")
+                lead.id = f"FALLBACK-GEN-{uuid.uuid4()}"
 
+            # Construir mensaje de WhatsApp precompletado
+            mensaje_cuerpo = (
+                f"Hola, me contacto de parte de la empresa *{lead.empresa}* "
+                f"(mi nombre es {lead.nombre}) por la solicitud de cotización *{lead.codigo_referencia}*.\n\n"
+                f"Consulta: {mensaje or 'Quiero cotizar bolsas de papel.'}"
+            )
+            encoded_message = urllib.parse.quote(mensaje_cuerpo)
+            whatsapp_url = f"https://wa.me/{whatsapp_vendedor}?text={encoded_message}"
+
+            response_lead = ConfirmacionPresupuestoResponse(
+                lead_id=lead.id,
+                codigo_referencia=lead.codigo_referencia,
+                whatsapp_url=whatsapp_url,
+                pdf_url=None  # Sin enlace de PDF
+            )
+
+            return templates.TemplateResponse(
+                request=request,
+                name="pages/confirmacion_presupuesto.html",
+                context={"site": site, "response": response_lead},
+            )
+        except Exception as gen_err:
+            logger.error(f"Falla crítica procesando cotización general: {gen_err}", exc_info=True)
+            return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
+
+    # Con carrito cargado: Ejecutar caso de uso estándar de creación de lead y PDF
     try:
         response_lead = await caso_uso_lead.ejecutar(datos_form, carrito.total_lineas)
     except Exception as err:
         logger.error(f"Falla crítica inesperada en el caso de uso de lead: {err}", exc_info=True)
-        import uuid
-        import urllib.parse
-        from src.lead.aplicacion.dtos.lead_dtos import ConfirmacionPresupuestoResponse
 
         ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
 
-        # Intentar registrar localmente el lead de contingencia
         try:
             import json
             import os
@@ -265,7 +313,7 @@ async def generar_presupuesto(
         except Exception as file_err:
             logger.error(f"No se pudo guardar el lead de emergencia en logs/failed_leads.log: {file_err}")
 
-        # Construir respuesta mockeada segura para evitar 500 y permitir la continuidad comercial
+        # WhatsApp de contingencia
         encoded_message = urllib.parse.quote(
             f"Hola, mi nombre es {datos_form.nombre} de la empresa *{datos_form.empresa}*. "
             f"Ocurrió un inconveniente al generar la cotización online ({ref_code}). "

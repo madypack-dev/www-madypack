@@ -6,45 +6,104 @@
 {% block content %}
 {% set is_page = True %}
 
-<section class="section quote-cart-summary">
+<header class="quote-page-header">
     <div class="container">
-        <h2>Resumen de tu carrito de cotización</h2>
-        {% if cart_items %}
-        <div class="quote-summary-card">
-            <table class="quote-summary-table">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th class="text-right">Cantidad</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in cart_items %}
-                    <tr>
-                        <td>
-                            <strong>{{ item.nombre }}</strong><br>
-                            <small>{{ item.descripcion }}</small>
-                        </td>
-                        <td class="text-right">{{ item.cantidad }} u.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td><strong>Total estimado</strong></td>
-                        <td class="text-right"><strong>{{ estimated_cost_formatted }}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
-            <p class="quote-summary-note">Total de bolsas: {{ total_bags_formatted }}</p>
+        <h1>Cotización</h1>
+    </div>
+</header>
+
+<section class="section quote-content-section">
+    <div class="container">
+        <div class="quote-grid">
+            
+            <!-- Columna del Carrito (si hay items) -->
+            {% if cart_items %}
+            <div class="quote-cart-summary">
+                <h2>Resumen de tu carrito de cotización</h2>
+                <div class="quote-summary-card">
+                    <table class="quote-summary-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-right">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.nombre }}</strong><br>
+                                    <small>{{ item.descripcion }}</small>
+                                </td>
+                                <td class="text-right">{{ item.cantidad }} u.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><strong>Total estimado</strong></td>
+                                <td class="text-right"><strong>{{ estimated_cost_formatted }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <p class="quote-summary-note">Total de bolsas: {{ total_bags_formatted }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Columna del Formulario -->
+            <div class="quote-form-container">
+                {% if not cart_items %}
+                <p class="quote-intro-text">
+                    Completá el formulario para solicitar una cotización general de bolsas a medida.
+                </p>
+                {% endif %}
+
+                {% if error == "datos_invalidos" %}
+                <div class="contact-message-alert error">
+                    <strong>Error:</strong> Por favor, completá todos los campos obligatorios del formulario.
+                </div>
+                {% endif %}
+
+                <form action="/presupuesto/" method="post" class="contact-form quote-form">
+                    <div class="form-field">
+                        <label for="wpforms-632-field_3">Nombre y Apellido <span class="required-star">*</span></label>
+                        <input type="text" id="wpforms-632-field_3" name="wpforms[fields][3]" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="wpforms-632-field_11">Email <span class="required-star">*</span></label>
+                        <input type="email" id="wpforms-632-field_11" name="wpforms[fields][11]" required>
+                    </div>
+
+                    <!-- Honeypot anti-spam (oculto) -->
+                    <div class="form-field ugb-hidden-field" style="position: absolute !important; overflow: hidden !important; height: 1px !important; width: 1px !important; z-index: -1000 !important; padding: 0 !important;">
+                        <label for="wpforms-632-field_1">¿Que Email Celular</label>
+                        <input type="text" id="wpforms-632-field_1" name="wpforms[fields][1]" tabindex="-1">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="wpforms-632-field_10">Celular <span class="required-star">*</span></label>
+                        <input type="text" id="wpforms-632-field_10" name="wpforms[fields][10]" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="wpforms-632-field_12">Empresa</label>
+                        <input type="text" id="wpforms-632-field_12" name="wpforms[fields][12]">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="wpforms-632-field_2">¿Qué tipo de bolsa necesitas?</label>
+                        <textarea id="wpforms-632-field_2" name="wpforms[fields][2]" rows="5" placeholder="Medidas, manija, impresión, cantidad estimada..."></textarea>
+                    </div>
+
+                    <button type="submit" class="button button-primary">Solicitar cotización</button>
+                </form>
+            </div>
+
         </div>
-        {% else %}
-        <p>Tu carrito está vacío. <a href="/tienda/">Agregá productos</a> para solicitar un presupuesto.</p>
-        {% endif %}
     </div>
 </section>
-
-{% include "components/sections/quote_form.html" %}
 
 <section class="section quote-details page-details">
     <div class="container">

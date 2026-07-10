@@ -34,4 +34,4 @@ class ConfirmacionPresupuestoResponse(BaseModel):
     lead_id: str
     codigo_referencia: str
     whatsapp_url: str
-    pdf_url: str
+    pdf_url: str | None = None

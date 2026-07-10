@@ -17,7 +17,7 @@ class TestPresupuestoEndpoints:
     def test_get_cotizacion_muestra_formulario(self, client):
         response = client.get("/cotizacion/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Pedido de cotización" in response.text
+        assert "Cotización" in response.text
 
     def test_post_presupuesto_genera_lead_y_confirmacion(self, client):
         carrito = [
@@ -85,19 +85,23 @@ class TestPresupuestoEndpoints:
         assert response.content.startswith(b"%PDF")
         assert "presupuesto-COT-20260704-TEST.pdf" in response.headers["content-disposition"]
 
-    def test_post_presupuesto_sin_carrito_redirige(self, client):
+    def test_post_presupuesto_sin_carrito_procesa_cotizacion_general(self, client):
         response = client.post(
             "/presupuesto/",
             data={
                 "name": "Juan Pérez",
                 "email": "juan@example.com",
-                "phone": "5491112345678",
+                "phone": "+5491112345678",
+                "company": "Particular",
+                "message": "Quiero bolsas personalizadas",
             },
             headers={"host": "localhost:8000"},
             follow_redirects=False,
         )
-        assert response.status_code == 303
-        assert "/cotizacion/?error=" in response.headers["location"]
+        assert response.status_code == 200
+        assert "¡Presupuesto Generado!" in response.text
+        assert "Descargar Presupuesto PDF" not in response.text
+        assert "Cerrar Compra por WhatsApp" in response.text
 
     def test_post_presupuesto_datos_invalidos_redirige(self, client):
         carrito = [

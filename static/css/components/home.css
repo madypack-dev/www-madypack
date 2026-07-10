@@ -650,3 +650,50 @@
 .required-star {
     color: #c5221f;
 }
+
+/* Quote Page Specific Styles */
+.quote-page-header {
+    text-align: center;
+    padding: 60px 0 20px;
+    background-color: var(--background-soft);
+}
+
+.quote-page-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-heading);
+    margin: 0;
+    font-weight: 800;
+}
+
+.quote-content-section {
+    background-color: var(--surface);
+    padding: 40px 0 80px;
+}
+
+.quote-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media only screen and (min-width: 800px) {
+    .quote-grid:has(.quote-cart-summary) {
+        grid-template-columns: 1fr 1fr;
+        max-width: 1000px;
+    }
+}
+
+.quote-form-container {
+    max-width: 650px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.quote-intro-text {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    text-align: center;
+}
