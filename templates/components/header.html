@@ -84,22 +84,46 @@
     </div>
 
     <!-- Modal de Cuenta Comercial (Pure CSS) -->
-    <div id="account-modal" class="modal-overlay">
-        <div class="modal-content">
-            <a href="#" class="modal-close" aria-label="{{ site.header.account_modal.close_label }}">&times;</a>
-            <h2 class="modal-title">{{ site.header.account_modal.title }}</h2>
+    <div id="account-modal" class="modal-overlay" role="dialog" aria-label="Account modal">
+        <div class="modal-content ct-account-modal">
+            <a href="#" class="modal-close" aria-label="Close account modal">
+                <svg class="ct-icon" width="12" height="12" viewBox="0 0 15 15">
+                    <path d="M1 15a1 1 0 01-.71-.29 1 1 0 010-1.41l5.8-5.8-5.8-5.8A1 1 0 011.7.29l5.8 5.8 5.8-5.8a1 1 0 011.41 1.41l-5.8 5.8 5.8 5.8a1 1 0 01-1.41 1.41l-5.8-5.8-5.8 5.8A1 1 0 011 15z"/>
+                </svg>
+            </a>
             
-            <form action="#" method="post" class="modal-form">
-                <label class="modal-label">
-                    {{ site.header.account_modal.email_label }}
-                    <input type="email" placeholder="{{ site.header.account_modal.email_placeholder }}" required class="modal-input" autocomplete="username">
-                </label>
-                <label class="modal-label">
-                    {{ site.header.account_modal.password_label }}
-                    <input type="password" placeholder="{{ site.header.account_modal.password_placeholder }}" required class="modal-input" autocomplete="current-password">
-                </label>
-                <button type="submit" class="button button-primary modal-submit">{{ site.header.account_modal.submit_button }}</button>
-            </form>
+            <div class="ct-account-forms">
+                <div class="ct-login-form active">
+                    <h2 class="modal-title">{{ site.header.account_modal.title }}</h2>
+                    
+                    <form name="loginform" id="loginform" class="login modal-form" action="#" method="post">
+                        <p class="form-field">
+                            <label for="user_login">{{ site.header.account_modal.email_label }}</label>
+                            <input type="email" name="log" id="user_login" class="input modal-input" placeholder="{{ site.header.account_modal.email_placeholder }}" autocomplete="username" required>
+                        </p>
+
+                        <p class="form-field">
+                            <label for="user_pass">{{ site.header.account_modal.password_label }}</label>
+                            <input type="password" name="pwd" id="user_pass" class="input modal-input" placeholder="{{ site.header.account_modal.password_placeholder }}" autocomplete="current-password" required>
+                        </p>
+
+                        <p class="login-remember flex-row">
+                            <span class="remember-me-checkbox">
+                                <input name="rememberme" type="checkbox" id="rememberme" class="ct-checkbox" value="forever">
+                                <label for="rememberme">Recordarme</label>
+                            </span>
+                            <a href="#" class="ct-forgot-password">¿Olvidaste tu contraseña?</a>
+                        </p>
+
+                        <p class="login-submit">
+                            <button class="button button-primary modal-submit" name="wp-submit">
+                                {{ site.header.account_modal.submit_button }}
+							</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+            
             <div class="modal-footer">
                 {{ site.header.account_modal.no_account_text }} <a href="{{ site.header.account_modal.contact_url }}" class="modal-link">{{ site.header.account_modal.contact_link_text }}</a>
             </div>
