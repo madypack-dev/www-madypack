@@ -2,13 +2,15 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Request
+import httpx
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse, Response
 
 from src.infrastructure.config.settings import CHATWOOT_URL
 from src.infrastructure.pyyaml.loaders import cargar_productos_tienda
 from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger
+from src.infrastructure.fastapi.dependencies import get_http_client
 
 logger = get_logger()
 router = APIRouter()
@@ -21,9 +23,11 @@ async def chrome_devtools_silent():
 
 
 @router.get("/health", include_in_schema=False)
-async def health_check():
+async def health_check(
+    request: Request,
+    http_client: httpx.AsyncClient = Depends(get_http_client),
+):
     """Endpoint liviano para validar que el ecommerce responde."""
-    import httpx
 
     health_status = {
         "status": "healthy",
@@ -41,11 +45,10 @@ async def health_check():
         health_status["services"]["catalog"] = f"error: {str(e)}"
 
     try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.head(CHATWOOT_URL, timeout=1.0)
-            health_status["services"]["chatwoot"] = (
-                "ok" if resp.status_code < 500 else f"status_{resp.status_code}"
-            )
+        resp = await http_client.head(CHATWOOT_URL, timeout=1.0)
+        health_status["services"]["chatwoot"] = (
+            "ok" if resp.status_code < 500 else f"status_{resp.status_code}"
+        )
     except Exception as e:
         health_status["services"]["chatwoot"] = f"error: {str(e)}"
 

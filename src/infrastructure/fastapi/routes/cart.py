@@ -5,6 +5,7 @@ from src.infrastructure.fastapi.routes.base import templates, logger
 from src.infrastructure.pyyaml.loaders import cargar_site
 from src.infrastructure.pyyaml.providers import obtener_productos_tienda
 from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.application.commerce.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
@@ -105,7 +106,7 @@ async def agregar_al_carrito(
         return RedirectResponse(url="/productos/?error=cantidad_invalida", status_code=303)
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)
-    if repositorio.carrito_serializado:
+    if isinstance(repositorio, RepositorioCarritoCookie) and repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",
             value=repositorio.carrito_serializado,
@@ -129,7 +130,7 @@ async def eliminar_del_carrito(
         logger.error(f"Error al eliminar artículo {id_articulo} del carrito: {err}")
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)
-    if repositorio.carrito_serializado:
+    if isinstance(repositorio, RepositorioCarritoCookie) and repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",
             value=repositorio.carrito_serializado,
@@ -184,7 +185,7 @@ async def actualizar_carrito(
     caso_uso.ejecutar(actualizaciones)
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)
-    if repositorio.carrito_serializado:
+    if isinstance(repositorio, RepositorioCarritoCookie) and repositorio.carrito_serializado:
         respuesta.set_cookie(
             key="articulos_carrito",
             value=repositorio.carrito_serializado,

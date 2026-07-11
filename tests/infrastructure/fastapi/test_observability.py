@@ -16,14 +16,28 @@ def test_chrome_devtools_silent_route(client):
     assert response.status_code == 200
     assert response.json() == {}
 
+from unittest.mock import AsyncMock
+from src.infrastructure.fastapi.dependencies import get_http_client
+
 def test_health_check_endpoint(client):
-    response = client.get("/health", headers={"host": "localhost:8000"})
-    assert response.status_code in (200, 503)
-    data = response.json()
-    assert "status" in data
-    assert "services" in data
-    assert "catalog" in data["services"]
-    assert "chatwoot" in data["services"]
+    mock_client = AsyncMock()
+    mock_response = AsyncMock()
+    mock_response.status_code = 200
+    mock_client.head.return_value = mock_response
+
+    app.dependency_overrides[get_http_client] = lambda: mock_client
+
+    try:
+        response = client.get("/health", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        data = response.json()
+        assert "status" in data
+        assert data["status"] == "healthy"
+        assert "services" in data
+        assert data["services"]["catalog"] == "ok"
+        assert data["services"]["chatwoot"] == "ok"
+    finally:
+        app.dependency_overrides.clear()
 
 def test_global_exception_handler():
     # Instanciamos TestClient con raise_server_exceptions=False para verificar el exception handler de FastAPI

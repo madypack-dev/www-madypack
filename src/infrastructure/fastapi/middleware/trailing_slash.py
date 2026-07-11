@@ -6,11 +6,6 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class TrailingSlashMiddleware(BaseHTTPMiddleware):
-    """Redirige permanentemente (301) a trailing slash las URLs que no lo tengan.
-
-    Evita redirigir archivos estáticos, rutas del sistema y URLs con extensión.
-    """
-
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
 
