@@ -3,6 +3,7 @@ from typing import Callable
 from src.domain.commerce.cart import ArticuloCarrito
 from src.domain.commerce.catalog import ArticuloCatalogo
 from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.domain.commerce.catalog_repository import ICatalogRepository
 
 
 class CasoUsoActualizarCarrito:
@@ -25,12 +26,18 @@ class CasoUsoActualizarCarrito:
 
 
 class CasoUsoAgregarAlCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
+    def __init__(
+        self,
+        repositorio: IRepositorioCarrito,
+        repositorio_catalogo: ICatalogRepository,
+        registrar_error: Callable[[str], None] = lambda _: None,
+    ):
         self.repositorio = repositorio
+        self.repositorio_catalogo = repositorio_catalogo
         self.registrar_error = registrar_error
 
-    def ejecutar(self, id_articulo: int, cantidad: int, catalogo: list[ArticuloCatalogo]) -> None:
-        datos_producto = next((p for p in catalogo if p.id == id_articulo), None)
+    def ejecutar(self, id_articulo: int, cantidad: int) -> None:
+        datos_producto = self.repositorio_catalogo.obtener_por_id(id_articulo)
         if not datos_producto:
             self.registrar_error(f"Intento de agregar artículo inexistente del catálogo: {id_articulo}")
             raise ValueError("El artículo no existe en el catálogo.")

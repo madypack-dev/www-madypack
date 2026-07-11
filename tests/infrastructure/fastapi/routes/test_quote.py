@@ -68,22 +68,37 @@ class TestPresupuestoEndpoints:
                 },
             }
         ]
-        response = client.get(
-            "/presupuesto/descargar/",
-            params={
-                "ref": "COT-20260704-TEST",
+        # 1. Crear el presupuesto vía POST
+        post_response = client.post(
+            "/presupuesto/",
+            data={
                 "name": "Juan Pérez",
-                "company": "ACME",
                 "email": "juan@example.com",
                 "phone": "+5491112345678",
+                "company": "ACME",
+                "message": "Necesito presupuesto",
             },
             cookies={"articulos_carrito": json.dumps(carrito)},
+            headers={"host": "localhost:8000"},
+        )
+        assert post_response.status_code == 200
+
+        # Extraer el código de referencia generado de la URL del PDF
+        import re
+        match = re.search(r'/presupuesto/descargar/\?ref=([^"]+)', post_response.text)
+        assert match is not None
+        ref_code = match.group(1)
+
+        # 2. Descargar el PDF usando únicamente el ref
+        response = client.get(
+            "/presupuesto/descargar/",
+            params={"ref": ref_code},
             headers={"host": "localhost:8000"},
         )
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"
         assert response.content.startswith(b"%PDF")
-        assert "presupuesto-COT-20260704-TEST.pdf" in response.headers["content-disposition"]
+        assert f"presupuesto-{ref_code}.pdf" in response.headers["content-disposition"]
 
     def test_post_presupuesto_sin_carrito_procesa_cotizacion_general(self, client):
         response = client.post(

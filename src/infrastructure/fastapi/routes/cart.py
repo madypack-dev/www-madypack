@@ -3,8 +3,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infrastructure.fastapi.routes.base import templates, logger
 from src.infrastructure.pyyaml.loaders import cargar_site
-from src.infrastructure.pyyaml.providers import obtener_productos_tienda
 from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.domain.commerce.catalog_repository import ICatalogRepository
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.application.commerce.cart_use_cases import (
     CasoUsoActualizarCarrito,
@@ -16,6 +16,7 @@ from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 from src.infrastructure.fastapi.dependencies import (
     get_repositorio_carrito,
+    get_repositorio_catalogo,
     get_cotizador,
     get_caso_uso_agregar_carrito,
     get_caso_uso_eliminar_carrito,
@@ -36,17 +37,11 @@ async def redirigir_tienda():
 async def ver_tienda(
     request: Request,
     q: str | None = None,
+    repositorio_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ):
     sitio = cargar_site()
-    productos = obtener_productos_tienda()
-
     query_filtrada = q.strip() if q else ""
-    if query_filtrada:
-        query_lower = query_filtrada.lower()
-        productos = [
-            p for p in productos
-            if query_lower in p.nombre.lower() or query_lower in p.descripcion.lower()
-        ]
+    productos = repositorio_catalogo.buscar(query_filtrada)
 
     return templates.TemplateResponse(
         request=request,
@@ -59,21 +54,16 @@ async def ver_tienda(
 async def ver_producto(
     request: Request,
     producto_slug: str,
+    repositorio_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ):
     sitio = cargar_site()
-    productos = obtener_productos_tienda()
-
-    # Buscar el producto por su slug
-    producto_encontrado = None
-    for p in productos:
-        if p.url_slug == producto_slug:
-            producto_encontrado = p
-            break
+    producto_encontrado = repositorio_catalogo.obtener_por_slug(producto_slug)
 
     if producto_encontrado is None:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
     # Obtener hasta 3 productos relacionados
+    productos = repositorio_catalogo.obtener_todos()
     relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
 
     return templates.TemplateResponse(
@@ -96,8 +86,7 @@ async def agregar_al_carrito(
     caso_uso: CasoUsoAgregarAlCarrito = Depends(get_caso_uso_agregar_carrito),
 ):
     try:
-        productos = obtener_productos_tienda()
-        caso_uso.ejecutar(id_articulo, cantidad, productos)
+        caso_uso.ejecutar(id_articulo, cantidad)
         logger.info(
             f"Artículo {id_articulo} agregado al carrito con cantidad {cantidad}"
         )

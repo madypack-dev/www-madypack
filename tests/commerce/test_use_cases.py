@@ -8,6 +8,7 @@ from src.application.commerce.cart_use_cases import (
 from src.domain.commerce.cart import Carrito, ArticuloCarrito
 from src.domain.commerce.catalog import ArticuloCatalogo
 from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.domain.commerce.catalog_repository import ICatalogRepository
 
 def test_actualizar_carrito_caso_uso():
     repo = MagicMock(spec=IRepositorioCarrito)
@@ -27,8 +28,6 @@ def test_actualizar_carrito_caso_uso():
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
     caso_uso_con_error = CasoUsoActualizarCarrito(repo, registrar_error)
-    # Mockear actualizar_cantidad para lanzar ValueError (bypasseando setattr de Pydantic)
-    object.__setattr__(carrito, "actualizar_cantidad", MagicMock(side_effect=ValueError("La cantidad debe ser múltiplo de 100.")))
     caso_uso_con_error.ejecutar({1: 150})
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()
@@ -42,10 +41,13 @@ def test_agregar_al_carrito_caso_uso():
         ArticuloCatalogo(id=1, nombre="Bolsa A", descripcion="A", cantidad_por_defecto=100, imagen="img.png"),
     ]
     
-    caso_uso = CasoUsoAgregarAlCarrito(repo)
+    mock_catalog = MagicMock(spec=ICatalogRepository)
+    mock_catalog.obtener_por_id.side_effect = lambda i: catalogo[0] if i == 1 else None
+    
+    caso_uso = CasoUsoAgregarAlCarrito(repo, mock_catalog)
     
     # Agregar artículo válido
-    caso_uso.ejecutar(id_articulo=1, cantidad=200, catalogo=catalogo)
+    caso_uso.ejecutar(id_articulo=1, cantidad=200)
     assert len(carrito.articulos) == 1
     assert carrito.articulos[0].id == 1
     assert carrito.articulos[0].cantidad == 200
@@ -54,9 +56,9 @@ def test_agregar_al_carrito_caso_uso():
     # Agregar artículo inexistente en catálogo
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
-    caso_uso_con_error = CasoUsoAgregarAlCarrito(repo, registrar_error)
+    caso_uso_con_error = CasoUsoAgregarAlCarrito(repo, mock_catalog, registrar_error)
     with pytest.raises(ValueError) as exc_info:
-        caso_uso_con_error.ejecutar(id_articulo=99, cantidad=200, catalogo=catalogo)
+        caso_uso_con_error.ejecutar(id_articulo=99, cantidad=200)
     assert "El artículo no existe en el catálogo." in str(exc_info.value)
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()
@@ -64,7 +66,7 @@ def test_agregar_al_carrito_caso_uso():
     # Agregar cantidad inválida
     registrar_error.reset_mock()
     with pytest.raises(ValueError):
-        caso_uso_con_error.ejecutar(id_articulo=1, cantidad=150, catalogo=catalogo)
+        caso_uso_con_error.ejecutar(id_articulo=1, cantidad=150)
     registrar_error.assert_called_once()
 
 def test_eliminar_del_carrito_caso_uso():

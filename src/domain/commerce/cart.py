@@ -17,6 +17,8 @@ class CalculoArticulo(BaseModel):
 
 
 class ArticuloCarrito(BaseModel):
+    model_config = {"validate_assignment": True}
+
     id: int
     nombre: str
     descripcion: str

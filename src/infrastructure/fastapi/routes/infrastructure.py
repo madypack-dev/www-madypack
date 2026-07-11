@@ -6,11 +6,11 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse, Response
 
 from src.infrastructure.config.settings import CHATWOOT_URL
-from src.infrastructure.pyyaml.loaders import cargar_productos_tienda
+from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.infrastructure.fastapi.dependencies import get_http_client_adapter, get_repositorio_catalogo
 from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger
 from src.domain.lead.http_client import IHttpClient
-from src.infrastructure.fastapi.dependencies import get_http_client_adapter
 
 logger = get_logger()
 router = APIRouter()
@@ -26,6 +26,7 @@ async def chrome_devtools_silent():
 async def health_check(
     request: Request,
     http_client: IHttpClient = Depends(get_http_client_adapter),
+    repositorio_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ):
     """Endpoint liviano para validar que el ecommerce responde."""
 
@@ -39,7 +40,7 @@ async def health_check(
     }
 
     try:
-        cargar_productos_tienda()
+        repositorio_catalogo.obtener_todos()
     except Exception as e:
         health_status["status"] = "unhealthy"
         health_status["services"]["catalog"] = f"error: {str(e)}"
@@ -79,7 +80,10 @@ Sitemap: {base_url}/sitemap.xml
 
 
 @router.get("/sitemap.xml")
-async def sitemap_xml(request: Request):
+async def sitemap_xml(
+    request: Request,
+    repositorio_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
+):
     """Genera el sitemap."""
     today = date.today().isoformat()
 
@@ -88,7 +92,7 @@ async def sitemap_xml(request: Request):
     base_url = f"{scheme}://{host}".rstrip("/")
 
     try:
-        productos = cargar_productos_tienda().articulos
+        productos = repositorio_catalogo.obtener_todos()
     except Exception:
         productos = []
 

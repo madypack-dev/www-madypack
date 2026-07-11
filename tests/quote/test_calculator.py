@@ -43,3 +43,15 @@ class TestCalculadorPrecio:
         calculo = CalculoArticulo(tipo="desconocido", conceptos=["base"])
         with pytest.raises(ValueError, match="Tipo de cálculo desconocido"):
             CalculadorPrecio().calcular(calculo, {"base": 1.0}, 100)
+
+    def test_registrar_estrategia_personalizada(self):
+        class EstrategiaDescuentoMitad:
+            def calcular(self, calculo, conceptos, cantidad):
+                return (conceptos.get("base", 0.0) * cantidad) / 2.0
+
+        CalculadorPrecio.registrar_estrategia("mitad_precio", EstrategiaDescuentoMitad())
+
+        calculo = CalculoArticulo(tipo="mitad_precio", conceptos=["base"])
+        conceptos = {"base": 10.0}
+        resultado = CalculadorPrecio().calcular(calculo, conceptos, 100)
+        assert resultado == 500.0

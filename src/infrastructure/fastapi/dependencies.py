@@ -15,7 +15,12 @@ from src.domain.lead.http_client import IHttpClient
 
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
+from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.adapters.gateways.pyyaml_catalog_repository import YamlCatalogRepository
+from src.infrastructure.pyyaml.loaders import cargar_productos_tienda
 from src.infrastructure.structlog.logger import get_logger
+from src.domain.quote.quote_repository import IQuoteRepository
+from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
 
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.infrastructure.pyyaml.providers import obtener_tarifas
@@ -89,12 +94,21 @@ def get_caso_uso_generar_pdf(
     )
 
 
+def get_repositorio_catalogo() -> ICatalogRepository:
+    """Inyecta el repositorio de catálogo usando YAML."""
+    return YamlCatalogRepository(
+        cargar_catalogo_yaml=cargar_productos_tienda
+    )
+
+
 def get_caso_uso_agregar_carrito(
     repo: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    repositorio_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ) -> CasoUsoAgregarAlCarrito:
     """Inyecta el caso de uso para agregar artículos al carrito."""
     return CasoUsoAgregarAlCarrito(
         repositorio=repo,
+        repositorio_catalogo=repositorio_catalogo,
         registrar_error=logger.error,
     )
 
@@ -131,3 +145,8 @@ def get_http_client_adapter(
 ) -> IHttpClient:
     """Inyecta el adaptador HttpxClientAdapter como la interfaz IHttpClient."""
     return HttpxClientAdapter(client)
+
+
+def get_quote_repo() -> IQuoteRepository:
+    """Inyecta el repositorio de presupuestos (JSON local)."""
+    return JsonQuoteRepository()

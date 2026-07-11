@@ -3,3 +3,4 @@ __pycache__/
 .coverage
 logs/failed_leads.log
 *bundle.css
+data/presupuestos/*.json

@@ -90,10 +90,6 @@ class PresentadorConfirmacionPresupuesto:
         query_params = urllib.parse.urlencode(
             {
                 "ref": lead.codigo_referencia,
-                "name": lead.nombre,
-                "company": lead.empresa,
-                "email": str(lead.email),
-                "phone": lead.telefono,
             }
         )
         return f"/presupuesto/descargar/?{query_params}"

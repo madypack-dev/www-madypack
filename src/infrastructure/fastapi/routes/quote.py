@@ -28,6 +28,7 @@ from src.application.quote.process_quote_request import ProcesarSolicitudPresupu
 from src.application.quote.quote_helpers import construir_lineas_presupuesto
 from src.domain.quote.visual_identity import IdentidadVisual
 from src.domain.quote.quote import DatosSolicitante
+from src.domain.quote.quote_repository import IQuoteRepository
 
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
 from src.infrastructure.fastapi.dependencies import (
@@ -35,6 +36,7 @@ from src.infrastructure.fastapi.dependencies import (
     get_cotizador,
     get_registro_fallback,
     get_caso_uso_generar_pdf,
+    get_quote_repo,
 )
 
 logger = get_logger()
@@ -43,12 +45,16 @@ logger = get_logger()
 def get_caso_uso_presupuesto(
     repo=Depends(get_chatwoot_repo),
     registro_fallback=Depends(get_registro_fallback),
+    quote_repo: IQuoteRepository = Depends(get_quote_repo),
+    cotizador: CotizadorServicio = Depends(get_cotizador),
 ) -> ProcesarSolicitudPresupuesto:
     """Ensambla el caso de uso de presupuesto inyectando el repositorio."""
     return ProcesarSolicitudPresupuesto(
         repositorio=repo,
         chatwoot_inbox_id=CHATWOOT_INBOX_ID,
         registro_fallback=registro_fallback,
+        quote_repository=quote_repo,
+        cotizador=cotizador,
         registrar_error=logger.error,
     )
 
@@ -157,7 +163,12 @@ async def generar_presupuesto(
     )
 
     try:
-        lead = await caso_uso.ejecutar(datos_form, carrito)
+        lead = await caso_uso.ejecutar(
+            datos_form,
+            carrito,
+            validez_dias=site.presupuesto.validez_dias,
+            condiciones_comerciales=site.presupuesto.condiciones_comerciales,
+        )
         response = presentador.presentar(lead, carrito, mensaje)
     except Exception as err:
         ref_code = f"COT-ERR-{str(uuid.uuid4())[:8].upper()}"
@@ -186,22 +197,15 @@ async def generar_presupuesto(
 async def descargar_presupuesto(
     request: Request,
     ref: str,
-    name: str,
-    company: str,
-    email: EmailStr,
-    phone: str,
     site: SiteConfig = Depends(load_site),
-    cotizador: CotizadorServicio = Depends(get_cotizador),
+    quote_repo: IQuoteRepository = Depends(get_quote_repo),
     caso_uso_pdf: CasoUsoGenerarPresupuestoPDF = Depends(get_caso_uso_generar_pdf),
 ):
-    """Genera al vuelo el PDF de presupuesto a partir de los datos recibidos (sin persistencia local)."""
-    datos_solicitante = DatosSolicitante(
-        nombre=name,
-        email=str(email),
-        telefono=phone,
-        empresa=company,
-        mensaje=f"Presupuesto de referencia {ref}",
-    )
+    """Genera al vuelo el PDF de presupuesto a partir de los datos persistidos localmente."""
+    presupuesto = quote_repo.obtener_por_referencia(ref)
+    if not presupuesto:
+        logger.warning(f"Presupuesto {ref} no encontrado para descarga.")
+        return RedirectResponse(url=f"/cotizacion/?error=Presupuesto {ref} no encontrado", status_code=303)
 
     logo_src = site.header.logo.src
     logo_path_obj = (
@@ -220,25 +224,14 @@ async def descargar_presupuesto(
         url=site.schema_config.url,
     )
 
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
-    carrito = repositorio.obtener_carrito()
-
-    lineas = construir_lineas_presupuesto(carrito, cotizador, logger.error)
-
     try:
         pdf_bytes = caso_uso_pdf.ejecutar(
-            datos_solicitante=datos_solicitante,
-            lineas=lineas,
+            datos_solicitante=presupuesto.datos_solicitante,
+            lineas=presupuesto.lineas,
             identidad_visual=identidad_visual,
-            validez_dias=site.presupuesto.validez_dias,
-            condiciones_comerciales=site.presupuesto.condiciones_comerciales,
+            validez_dias=presupuesto.validez_dias,
+            condiciones_comerciales=presupuesto.condiciones_comerciales,
         )
-    except ValueError as err:
-        logger.warning(f"No se pudo generar presupuesto: {err}")
-        return RedirectResponse(url=f"/cotizacion/?error={err}", status_code=303)
     except Exception as err:
         logger.error(f"Error generando PDF de presupuesto: {err}", exc_info=True)
         return RedirectResponse(url="/cotizacion/?error=pdf_error", status_code=303)

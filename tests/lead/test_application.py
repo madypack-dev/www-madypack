@@ -9,6 +9,8 @@ from src.application.quote.process_quote_request import (
     ProcesarSolicitudPresupuesto,
 )
 from src.domain.quote.fallback_registry import IRegistroFallbackLead
+from src.domain.quote.quote_repository import IQuoteRepository
+from src.application.quote.quote_helpers import ICotizador
 
 
 def test_crear_lead_request_telefono_normalization():
@@ -33,6 +35,10 @@ async def test_procesar_solicitud_presupuesto_con_carrito_success():
     repo = AsyncMock(spec=ILeadRepository)
     repo.guardar.return_value = "chatwoot-contact-123"
     registro_fallback = MagicMock(spec=IRegistroFallbackLead)
+    
+    mock_quote_repo = MagicMock(spec=IQuoteRepository)
+    mock_cotizador = MagicMock(spec=ICotizador)
+    mock_cotizador.calcular_precio_estimado.return_value = 500.0
 
     request = CrearLeadRequest(
         nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com"
@@ -46,6 +52,8 @@ async def test_procesar_solicitud_presupuesto_con_carrito_success():
         repositorio=repo,
         chatwoot_inbox_id=10,
         registro_fallback=registro_fallback,
+        quote_repository=mock_quote_repo,
+        cotizador=mock_cotizador,
     )
 
     lead = await caso_uso.ejecutar(request, carrito=carrito)
@@ -55,6 +63,7 @@ async def test_procesar_solicitud_presupuesto_con_carrito_success():
     assert "COT-GEN-" not in lead.codigo_referencia
     repo.guardar.assert_called_once()
     registro_fallback.guardar.assert_not_called()
+    mock_quote_repo.guardar.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -63,6 +72,9 @@ async def test_procesar_solicitud_presupuesto_fallback():
     repo.guardar.side_effect = Exception("Chatwoot is down")
     registrar_error = MagicMock()
     registro_fallback = MagicMock(spec=IRegistroFallbackLead)
+
+    mock_quote_repo = MagicMock(spec=IQuoteRepository)
+    mock_cotizador = MagicMock(spec=ICotizador)
 
     request = CrearLeadRequest(
         nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com"
@@ -73,6 +85,8 @@ async def test_procesar_solicitud_presupuesto_fallback():
         repositorio=repo,
         chatwoot_inbox_id=10,
         registro_fallback=registro_fallback,
+        quote_repository=mock_quote_repo,
+        cotizador=mock_cotizador,
         registrar_error=registrar_error,
     )
 
@@ -90,6 +104,9 @@ async def test_procesar_solicitud_presupuesto_sin_carrito():
     repo.guardar.return_value = "chatwoot-contact-456"
     registro_fallback = MagicMock(spec=IRegistroFallbackLead)
 
+    mock_quote_repo = MagicMock(spec=IQuoteRepository)
+    mock_cotizador = MagicMock(spec=ICotizador)
+
     request = CrearLeadRequest(
         nombre="Jane", empresa="Particular", telefono="+5491125794649", email="jane@example.com"
     )
@@ -99,6 +116,8 @@ async def test_procesar_solicitud_presupuesto_sin_carrito():
         repositorio=repo,
         chatwoot_inbox_id=10,
         registro_fallback=registro_fallback,
+        quote_repository=mock_quote_repo,
+        cotizador=mock_cotizador,
     )
 
     lead = await caso_uso.ejecutar(request, carrito=carrito)
@@ -106,5 +125,3 @@ async def test_procesar_solicitud_presupuesto_sin_carrito():
     assert lead.id == "chatwoot-contact-456"
     assert lead.codigo_referencia.startswith("COT-GEN-")
     repo.guardar.assert_called_once()
-
-

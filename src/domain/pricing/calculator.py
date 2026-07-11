@@ -15,30 +15,57 @@ class IConfiguracionCalculo(Protocol):
     concepto_fijo: str | None
 
 
-def _estrategia_suma_por_unidad(
-    calculo: IConfiguracionCalculo, conceptos: dict[str, float], cantidad: int
-) -> float:
+class IEstrategiaCalculoPrecio(Protocol):
+    """Interfaz para las estrategias de cálculo de precios (Strategy Pattern)."""
+
+    def calcular(
+        self,
+        calculo: IConfiguracionCalculo,
+        conceptos: dict[str, float],
+        cantidad: int,
+    ) -> float:
+        ...
+
+
+class EstrategiaSumaPorUnidad:
     """Suma los conceptos indicados y multiplica por la cantidad."""
-    unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
-    return unitario * cantidad
+
+    def calcular(
+        self,
+        calculo: IConfiguracionCalculo,
+        conceptos: dict[str, float],
+        cantidad: int,
+    ) -> float:
+        unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
+        return unitario * cantidad
 
 
-def _estrategia_suma_por_unidad_mas_fijo(
-    calculo: IConfiguracionCalculo, conceptos: dict[str, float], cantidad: int
-) -> float:
+class EstrategiaSumaPorUnidadMasFijo:
     """Suma los conceptos indicados, multiplica por cantidad y suma un costo fijo."""
-    unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
-    fijo = conceptos.get(calculo.concepto_fijo, 0.0) if calculo.concepto_fijo else 0.0
-    return (unitario * cantidad) + fijo
+
+    def calcular(
+        self,
+        calculo: IConfiguracionCalculo,
+        conceptos: dict[str, float],
+        cantidad: int,
+    ) -> float:
+        unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
+        fijo = conceptos.get(calculo.concepto_fijo, 0.0) if calculo.concepto_fijo else 0.0
+        return (unitario * cantidad) + fijo
 
 
 class CalculadorPrecio:
-    """Calcula precios estimados usando estrategias predefinidas."""
+    """Calcula precios estimados usando estrategias predefinidas o registradas dinámicamente."""
 
-    _estrategias = {
-        "suma_por_unidad": _estrategia_suma_por_unidad,
-        "suma_por_unidad_mas_fijo": _estrategia_suma_por_unidad_mas_fijo,
+    _estrategias: dict[str, IEstrategiaCalculoPrecio] = {
+        "suma_por_unidad": EstrategiaSumaPorUnidad(),
+        "suma_por_unidad_mas_fijo": EstrategiaSumaPorUnidadMasFijo(),
     }
+
+    @classmethod
+    def registrar_estrategia(cls, nombre: str, estrategia: IEstrategiaCalculoPrecio) -> None:
+        """Registra una nueva estrategia de cálculo de precios."""
+        cls._estrategias[nombre] = estrategia
 
     def calcular(
         self,
@@ -54,6 +81,4 @@ class CalculadorPrecio:
         if estrategia is None:
             raise ValueError(f"Tipo de cálculo desconocido: {calculo.tipo}")
 
-        return estrategia(calculo, conceptos, cantidad)
-
-
+        return estrategia.calcular(calculo, conceptos, cantidad)
