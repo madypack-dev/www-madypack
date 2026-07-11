@@ -7,14 +7,33 @@ from src.domain.commerce.catalog_repository import ICatalogRepository
 
 
 class CasoUsoActualizarCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
+    def __init__(
+        self,
+        repositorio: IRepositorioCarrito,
+        repositorio_catalogo: ICatalogRepository,
+        registrar_error: Callable[[str], None] = lambda _: None,
+    ):
         self.repositorio = repositorio
+        self.repositorio_catalogo = repositorio_catalogo
         self.registrar_error = registrar_error
 
     def ejecutar(self, actualizaciones: dict[int, int]) -> None:
         carrito = self.repositorio.obtener_carrito()
         modificado = False
         for id_articulo, nueva_cantidad in actualizaciones.items():
+            res = self.repositorio_catalogo.obtener_variacion_por_id(id_articulo)
+            if not res:
+                self.registrar_error(f"Variación inexistente {id_articulo} en actualización.")
+                continue
+            _, datos_variacion = res
+            
+            # Enforzar MOQ dinámico
+            if nueva_cantidad < datos_variacion.cantidad_por_defecto:
+                self.registrar_error(
+                    f"Cantidad {nueva_cantidad} inferior al MOQ ({datos_variacion.cantidad_por_defecto}) para variante {id_articulo}"
+                )
+                nueva_cantidad = datos_variacion.cantidad_por_defecto
+
             try:
                 if carrito.actualizar_cantidad(id_articulo, nueva_cantidad):
                     modificado = True
@@ -43,6 +62,14 @@ class CasoUsoAgregarAlCarrito:
             raise ValueError("El artículo no existe en el catálogo.")
 
         datos_producto, datos_variacion = res
+
+        # Validar MOQ dinámico
+        if cantidad < datos_variacion.cantidad_por_defecto:
+            self.registrar_error(
+                f"Intento de agregar cantidad {cantidad} inferior al MOQ ({datos_variacion.cantidad_por_defecto}) para variante {id_articulo}"
+            )
+            raise ValueError(f"La cantidad mínima para este producto es de {datos_variacion.cantidad_por_defecto} unidades.")
+
         carrito = self.repositorio.obtener_carrito()
 
         try:

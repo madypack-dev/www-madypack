@@ -8,7 +8,7 @@ def test_hardcoded_catalog_repository_operations():
     productos = repo.obtener_todos()
     assert len(productos) == 1
     assert productos[0].nombre == "Bolsa de Papel"
-    assert len(productos[0].variaciones) == 4
+    assert len(productos[0].variaciones) == 12
 
     # Obtener por id
     assert repo.obtener_por_id(1).nombre == "Bolsa de Papel"
@@ -28,7 +28,7 @@ def test_hardcoded_catalog_repository_operations():
     assert res is not None
     prod, var = res
     assert prod.nombre == "Bolsa de Papel"
-    assert var.sku == "B-SOS-M"
-    assert var.atributos == {"color": "Marrón", "manija": "Sin Manija"}
+    assert var.sku == "B-SOS-M-L"
+    assert var.atributos == {"color": "Marrón", "manija": "Sin Manija", "impresion": "Lisa (sin impresión)"}
 
     assert repo.obtener_variacion_por_id(99) is None

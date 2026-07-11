@@ -71,10 +71,14 @@ class PresentadorConfirmacionPresupuesto:
         mensaje: str | None,
     ) -> str:
         if carrito.articulos:
+            detalles = []
+            for art in carrito.articulos:
+                detalles.append(f"- {art.cantidad:,} u. de {art.nombre} ({art.descripcion})")
+            detalles_str = "\n".join(detalles)
             return (
                 f"Hola, me contacto de parte de la empresa *{lead.empresa}* "
                 f"(mi nombre es {lead.nombre}) referente a la cotización *{lead.codigo_referencia}*.\n\n"
-                f"Tengo un total de *{carrito.total_lineas}* producto(s) en mi lista de cotización.\n\n"
+                f"Detalle de mi solicitud:\n{detalles_str}\n\n"
                 f"Quisiera coordinar el presupuesto formal y los detalles de entrega."
             )
         return (

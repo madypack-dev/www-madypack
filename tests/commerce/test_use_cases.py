@@ -19,8 +19,29 @@ def test_actualizar_carrito_caso_uso():
 
     repo.obtener_carrito.return_value = carrito
 
+    # Mockear catalogo para devolver variación válida con MOQ de 100
+    mock_catalog = MagicMock(spec=ICatalogRepository)
+    prod = ProductoVariable(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        slug="bolsa-a",
+        atributos_posibles={"color": ["Marrón"]},
+        variaciones=[
+            VariacionProducto(
+                id=1,
+                sku="B-SOS-M",
+                atributos={"color": "Marrón"},
+                imagen="img.png",
+                cantidad_por_defecto=100,
+                calculo=None,
+            )
+        ]
+    )
+    mock_catalog.obtener_variacion_por_id.return_value = (prod, prod.variaciones[0])
+
     # Caso 1: actualización válida
-    caso_uso = CasoUsoActualizarCarrito(repo)
+    caso_uso = CasoUsoActualizarCarrito(repo, mock_catalog)
     caso_uso.ejecutar({1: 300})
     assert art1.cantidad == 300
     repo.guardar_carrito.assert_called_once_with(carrito)
@@ -28,7 +49,7 @@ def test_actualizar_carrito_caso_uso():
     # Caso 2: error de validación en la actualización (cantidad inválida)
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
-    caso_uso_con_error = CasoUsoActualizarCarrito(repo, registrar_error)
+    caso_uso_con_error = CasoUsoActualizarCarrito(repo, mock_catalog, registrar_error)
     caso_uso_con_error.ejecutar({1: 150})
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()

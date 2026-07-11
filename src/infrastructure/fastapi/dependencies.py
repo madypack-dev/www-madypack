@@ -120,10 +120,12 @@ def get_caso_uso_eliminar_carrito(
 
 def get_caso_uso_actualizar_carrito(
     repo: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    repo_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ) -> CasoUsoActualizarCarrito:
     """Inyecta el caso de uso para actualizar el carrito."""
     return CasoUsoActualizarCarrito(
         repositorio=repo,
+        repositorio_catalogo=repo_catalogo,
         registrar_error=logger.error,
     )
 
