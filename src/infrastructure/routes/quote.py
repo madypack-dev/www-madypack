@@ -11,9 +11,6 @@ from pydantic import EmailStr, ValidationError
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.domain.commerce.cart import Carrito
 from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito
-from src.adapters.gateways.quote_pdf_generator import (
-    GeneradorPresupuestoPDFReportLab,
-)
 from src.infrastructure.data.models import SiteConfig
 from src.infrastructure.data.providers import (
     obtener_productos_tienda,
@@ -44,19 +41,25 @@ from src.domain.quote.visual_identity import IdentidadVisual
 from src.domain.quote.quote import DatosSolicitante
 
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
-from src.infrastructure.dependencies import get_chatwoot_repo
+from src.infrastructure.dependencies import (
+    get_chatwoot_repo,
+    get_cotizador,
+    get_registro_fallback,
+    get_caso_uso_generar_pdf,
+)
 
 logger = get_logger()
 
 
 def get_caso_uso_presupuesto(
     repo=Depends(get_chatwoot_repo),
+    registro_fallback=Depends(get_registro_fallback),
 ) -> ProcesarSolicitudPresupuesto:
     """Ensambla el caso de uso de presupuesto inyectando el repositorio."""
     return ProcesarSolicitudPresupuesto(
         repositorio=repo,
         chatwoot_inbox_id=CHATWOOT_INBOX_ID,
-        registro_fallback=RegistroFallbackArchivo(),
+        registro_fallback=registro_fallback,
         registrar_error=logger.error,
     )
 
@@ -86,6 +89,7 @@ def _str_field_required(value: UploadFile | str | None) -> str:
 async def read_cotizacion(
     request: Request,
     site: SiteConfig = Depends(load_site),
+    cotizador: CotizadorServicio = Depends(get_cotizador),
 ):
     """Muestra el formulario de cotización junto con el resumen del carrito."""
     repositorio = RepositorioCarritoCookie(
@@ -93,11 +97,6 @@ async def read_cotizacion(
         registrar_error=logger.error,
     )
     carrito = repositorio.obtener_carrito()
-
-    cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=obtener_tarifas,
-        registrar_error=logger.error,
-    )
 
     caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=logger.warning)
     resumen = caso_uso.ejecutar(carrito, cotizador)
@@ -203,6 +202,8 @@ async def descargar_presupuesto(
     email: EmailStr,
     phone: str,
     site: SiteConfig = Depends(load_site),
+    cotizador: CotizadorServicio = Depends(get_cotizador),
+    caso_uso_pdf: CasoUsoGenerarPresupuestoPDF = Depends(get_caso_uso_generar_pdf),
 ):
     """Genera al vuelo el PDF de presupuesto a partir de los datos recibidos (sin persistencia local)."""
     datos_solicitante = DatosSolicitante(
@@ -236,21 +237,10 @@ async def descargar_presupuesto(
     )
     carrito = repositorio.obtener_carrito()
 
-    cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=obtener_tarifas,
-        registrar_error=logger.error,
-    )
-
     lineas = construir_lineas_presupuesto(carrito, cotizador, logger.error)
 
-    generador_pdf = GeneradorPresupuestoPDFReportLab()
-    caso_uso = CasoUsoGenerarPresupuestoPDF(
-        generador_pdf=generador_pdf,
-        registrar_error=logger.error,
-    )
-
     try:
-        pdf_bytes = caso_uso.ejecutar(
+        pdf_bytes = caso_uso_pdf.ejecutar(
             datos_solicitante=datos_solicitante,
             lineas=lineas,
             identidad_visual=identidad_visual,

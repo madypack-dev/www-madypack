@@ -16,6 +16,20 @@ from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.infrastructure.logging.logger import get_logger
 
+from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.infrastructure.data.providers import obtener_tarifas
+from src.infrastructure.pdf_generator import GeneradorPresupuestoPDFReportLab
+from src.domain.quote.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.adapters.gateways.quote_fallback_repository import RegistroFallbackArchivo
+from src.domain.quote.fallback_registry import IRegistroFallbackLead
+from src.application.quote.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
+from src.application.commerce.cart_use_cases import (
+    CasoUsoActualizarCarrito,
+    CasoUsoAgregarAlCarrito,
+    CasoUsoEliminarDelCarrito,
+    CasoUsoObtenerResumenCarrito,
+)
+
 logger = get_logger()
 
 
@@ -43,4 +57,69 @@ def get_chatwoot_repo(
         base_url=CHATWOOT_URL,
         account_id=CHATWOOT_ACCOUNT_ID,
         api_token=CHATWOOT_API_TOKEN,
+    )
+
+
+def get_cotizador() -> CotizadorServicio:
+    """Inyecta el servicio cotizador."""
+    return CotizadorServicio(
+        cargar_tarifas_yaml=obtener_tarifas,
+        registrar_error=logger.error,
+    )
+
+
+def get_generador_pdf() -> IGeneradorDocumentoPresupuesto:
+    """Inyecta el generador de PDF concreto."""
+    return GeneradorPresupuestoPDFReportLab()
+
+
+def get_registro_fallback() -> IRegistroFallbackLead:
+    """Inyecta el registro de contingencia (fallback)."""
+    return RegistroFallbackArchivo()
+
+
+def get_caso_uso_generar_pdf(
+    generador_pdf: IGeneradorDocumentoPresupuesto = Depends(get_generador_pdf)
+) -> CasoUsoGenerarPresupuestoPDF:
+    """Inyecta el caso de uso para generar PDF de presupuestos."""
+    return CasoUsoGenerarPresupuestoPDF(
+        generador_pdf=generador_pdf,
+        registrar_error=logger.error,
+    )
+
+
+def get_caso_uso_agregar_carrito(
+    repo: IRepositorioCarrito = Depends(get_repositorio_carrito),
+) -> CasoUsoAgregarAlCarrito:
+    """Inyecta el caso de uso para agregar artículos al carrito."""
+    return CasoUsoAgregarAlCarrito(
+        repositorio=repo,
+        registrar_error=logger.error,
+    )
+
+
+def get_caso_uso_eliminar_carrito(
+    repo: IRepositorioCarrito = Depends(get_repositorio_carrito),
+) -> CasoUsoEliminarDelCarrito:
+    """Inyecta el caso de uso para eliminar artículos del carrito."""
+    return CasoUsoEliminarDelCarrito(
+        repositorio=repo,
+        registrar_error=logger.error,
+    )
+
+
+def get_caso_uso_actualizar_carrito(
+    repo: IRepositorioCarrito = Depends(get_repositorio_carrito),
+) -> CasoUsoActualizarCarrito:
+    """Inyecta el caso de uso para actualizar el carrito."""
+    return CasoUsoActualizarCarrito(
+        repositorio=repo,
+        registrar_error=logger.error,
+    )
+
+
+def get_caso_uso_obtener_resumen_carrito() -> CasoUsoObtenerResumenCarrito:
+    """Inyecta el caso de uso para obtener el resumen de bolsas y costo estimado."""
+    return CasoUsoObtenerResumenCarrito(
+        registrar_error=logger.warning,
     )

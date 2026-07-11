@@ -5,7 +5,7 @@ from datetime import date
 import pytest
 
 from src.domain.commerce.cart import CalculoArticulo
-from src.adapters.gateways.quote_pdf_generator import (
+from src.infrastructure.pdf_generator import (
     GeneradorPresupuestoPDFReportLab,
 )
 from src.domain.quote.visual_identity import IdentidadVisual

@@ -1,15 +1,10 @@
-"""Rutas de comercio (carrito y tienda) para la capa de infraestructura."""
-
-from fastapi import APIRouter, Request, Form, HTTPException
+from fastapi import APIRouter, Request, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infrastructure.routes.base import templates, logger
 from src.infrastructure.data.loaders import cargar_site
-from src.infrastructure.data.providers import (
-    obtener_productos_tienda,
-    obtener_tarifas,
-)
-from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
+from src.infrastructure.data.providers import obtener_productos_tienda
+from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.application.commerce.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
@@ -18,6 +13,14 @@ from src.application.commerce.cart_use_cases import (
 )
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.infrastructure.routes.presentation_helpers import formatear_precio, formatear_unidades
+from src.infrastructure.dependencies import (
+    get_repositorio_carrito,
+    get_cotizador,
+    get_caso_uso_agregar_carrito,
+    get_caso_uso_eliminar_carrito,
+    get_caso_uso_actualizar_carrito,
+    get_caso_uso_obtener_resumen_carrito,
+)
 
 
 router = APIRouter()
@@ -88,17 +91,9 @@ async def agregar_al_carrito(
     request: Request,
     id_articulo: int = Form(...),
     cantidad: int = Form(...),
+    repositorio: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    caso_uso: CasoUsoAgregarAlCarrito = Depends(get_caso_uso_agregar_carrito),
 ):
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
-
-    caso_uso = CasoUsoAgregarAlCarrito(
-        repositorio=repositorio,
-        registrar_error=logger.error,
-    )
-
     try:
         productos = obtener_productos_tienda()
         caso_uso.ejecutar(id_articulo, cantidad, productos)
@@ -124,17 +119,9 @@ async def agregar_al_carrito(
 async def eliminar_del_carrito(
     request: Request,
     id_articulo: int = Form(...),
+    repositorio: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    caso_uso: CasoUsoEliminarDelCarrito = Depends(get_caso_uso_eliminar_carrito),
 ):
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
-
-    caso_uso = CasoUsoEliminarDelCarrito(
-        repositorio=repositorio,
-        registrar_error=logger.error,
-    )
-
     try:
         caso_uso.ejecutar(id_articulo)
         logger.info(f"Artículo {id_articulo} eliminado del carrito")
@@ -157,20 +144,12 @@ async def eliminar_del_carrito(
 @router.get("/cart/", response_class=HTMLResponse)
 async def ver_carrito(
     request: Request,
+    repositorio: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    cotizador: CotizadorServicio = Depends(get_cotizador),
+    caso_uso: CasoUsoObtenerResumenCarrito = Depends(get_caso_uso_obtener_resumen_carrito),
 ):
     sitio = cargar_site()
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
     carrito = repositorio.obtener_carrito()
-
-    cotizador = CotizadorServicio(
-        cargar_tarifas_yaml=obtener_tarifas,
-        registrar_error=logger.error,
-    )
-
-    caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=logger.warning)
     resumen = caso_uso.ejecutar(carrito, cotizador)
 
     return templates.TemplateResponse(
@@ -188,6 +167,8 @@ async def ver_carrito(
 @router.post("/cart/actualizar")
 async def actualizar_carrito(
     request: Request,
+    repositorio: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    caso_uso: CasoUsoActualizarCarrito = Depends(get_caso_uso_actualizar_carrito),
 ):
     datos_formulario = await request.form()
 
@@ -200,15 +181,6 @@ async def actualizar_carrito(
             except ValueError:
                 continue
 
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
-
-    caso_uso = CasoUsoActualizarCarrito(
-        repositorio=repositorio,
-        registrar_error=logger.error,
-    )
     caso_uso.ejecutar(actualizaciones)
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)
