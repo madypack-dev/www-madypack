@@ -8,10 +8,10 @@ from starlette.datastructures import UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from pydantic import EmailStr, ValidationError
 
-from src.adapters.commerce.cookie_repository import RepositorioCarritoCookie
+from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.domain.commerce.cart import Carrito
 from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito
-from src.adapters.quote.reportlab_generator import (
+from src.adapters.gateways.quote_pdf_generator import (
     GeneradorPresupuestoPDFReportLab,
 )
 from src.infrastructure.data.models import SiteConfig
@@ -26,11 +26,11 @@ from src.application.lead.lead_dtos import CrearLeadRequest
 from src.infrastructure.routes.presentation_helpers import formatear_precio, formatear_unidades
 
 from src.domain.lead.lead import Lead
-from src.adapters.pricing.pricing_service import CotizadorServicio
-from src.adapters.quote.confirmation_presenter import (
+from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.adapters.presenters.quote_confirmation_presenter import (
     PresentadorConfirmacionPresupuesto,
 )
-from src.adapters.quote.file_fallback_repository import (
+from src.adapters.gateways.quote_fallback_repository import (
     RegistroFallbackArchivo,
 )
 from src.application.quote.generate_quote_pdf import (

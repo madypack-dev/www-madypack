@@ -8,12 +8,12 @@ from src.infrastructure.config.settings import (
     CHATWOOT_API_TOKEN,
     CHATWOOT_URL,
 )
-from src.adapters.lead.chatwoot_repository import ChatwootContactRepository
+from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
 from src.infrastructure.http_client import HttpxClientAdapter
 
 
 from src.domain.commerce.cart_repository import IRepositorioCarrito
-from src.adapters.commerce.cookie_repository import RepositorioCarritoCookie
+from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.infrastructure.logging.logger import get_logger
 
 logger = get_logger()

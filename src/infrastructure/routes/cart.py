@@ -9,14 +9,14 @@ from src.infrastructure.data.providers import (
     obtener_productos_tienda,
     obtener_tarifas,
 )
-from src.adapters.commerce.cookie_repository import RepositorioCarritoCookie
+from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.application.commerce.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
     CasoUsoObtenerResumenCarrito,
 )
-from src.adapters.pricing.pricing_service import CotizadorServicio
+from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.infrastructure.routes.presentation_helpers import formatear_precio, formatear_unidades
 
 

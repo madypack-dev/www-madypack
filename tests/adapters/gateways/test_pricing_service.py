@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 
 from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
-from src.adapters.pricing.pricing_service import CotizadorServicio
+from src.adapters.gateways.pricing_service import CotizadorServicio
 
 
 def test_cotizador_servicio_exito_y_cache():

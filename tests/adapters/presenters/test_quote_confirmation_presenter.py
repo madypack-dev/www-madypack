@@ -4,7 +4,7 @@ import pytest
 
 from src.domain.commerce.cart import Carrito, ArticuloCarrito
 from src.domain.lead.lead import Lead
-from src.adapters.quote.confirmation_presenter import (
+from src.adapters.presenters.quote_confirmation_presenter import (
     PresentadorConfirmacionPresupuesto,
 )
 

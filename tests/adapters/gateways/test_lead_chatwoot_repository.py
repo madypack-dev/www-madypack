@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 import httpx
-from src.adapters.lead.chatwoot_repository import ChatwootContactRepository
+from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
 from src.domain.lead.lead import Lead
 from src.infrastructure.http_client import HttpxClientAdapter
 
