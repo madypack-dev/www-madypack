@@ -32,6 +32,8 @@ class TestProductosEndpoints:
     def test_get_producto_inexistente_retorna_404(self, client):
         response = client.get("/productos/producto-inexistente/", headers={"host": "localhost:8000"})
         assert response.status_code == 404
+        assert "¿Buscabas una bolsa de papel?" in response.text
+        assert "catálogo de productos" in response.text
 
     def test_sitemap_xml_incluye_urls_de_productos(self, client):
         response = client.get("/sitemap.xml", headers={"host": "localhost:8000"})

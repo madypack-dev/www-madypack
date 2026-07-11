@@ -56,6 +56,6 @@ class TestTrailingSlashMiddleware:
 
     def test_does_not_redirect_files_with_extension(self, client):
         # Cualquier ruta que parezca un archivo (tenga un punto en la última parte del path) no debe redirigirse a /
-        response = client.get("/favicon.ico", headers={"host": "localhost:8000"})
+        response = client.get("/nonexistent_file.png", headers={"host": "localhost:8000"})
         # Retorna 404 porque el archivo no existe, pero no debería redirigir con 301
         assert response.status_code == 404

@@ -6,7 +6,8 @@ from fastapi.staticfiles import StaticFiles
 
 from src.infrastructure.config.settings import APP_TITLE
 from src.infrastructure.pyyaml.loaders import cargar_site
-from src.infrastructure.fastapi.errors.handlers import global_exception_handler
+from fastapi.exceptions import HTTPException
+from src.infrastructure.fastapi.errors.handlers import global_exception_handler, http_exception_handler
 from src.infrastructure.structlog.logger import configurar_logging, get_logger
 from src.infrastructure.fastapi.middleware.request_id import request_id_middleware
 from src.infrastructure.fastapi.middleware.trailing_slash import TrailingSlashMiddleware
@@ -43,6 +44,7 @@ app = FastAPI(title=APP_TITLE, lifespan=lifespan, redirect_slashes=False)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(TrailingSlashMiddleware)
 app.middleware("http")(request_id_middleware)
+app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Servir archivos estáticos directamente desde static/
