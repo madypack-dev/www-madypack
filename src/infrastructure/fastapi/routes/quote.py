@@ -20,7 +20,7 @@ from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger
 from src.infrastructure.fastapi.routes.base import load_site, templates
 from src.application.lead.lead_dtos import CrearLeadRequest
-from src.infrastructure.fastapi.routes.presentation_helpers import formatear_precio, formatear_unidades
+from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 
 from src.domain.lead.lead import Lead
 from src.adapters.gateways.pricing_service import CotizadorServicio

@@ -13,7 +13,7 @@ from src.application.commerce.cart_use_cases import (
     CasoUsoObtenerResumenCarrito,
 )
 from src.adapters.gateways.pricing_service import CotizadorServicio
-from src.infrastructure.fastapi.routes.presentation_helpers import formatear_precio, formatear_unidades
+from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 from src.infrastructure.fastapi.dependencies import (
     get_repositorio_carrito,
     get_cotizador,
