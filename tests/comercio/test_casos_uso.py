@@ -109,8 +109,8 @@ def test_obtener_resumen_carrito_caso_uso():
     resumen = caso_uso.ejecutar(carrito, cotizador)
     
     assert resumen.articulos == [art1, art2]
-    assert resumen.total_bolsas_formateado == "300 unidades"
-    assert resumen.precio_estimado_formateado == "$ 4.000,00"
+    assert resumen.total_bolsas == 300
+    assert resumen.precio_total == 4000.0
 
 
 def test_obtener_resumen_carrito_vacio():
@@ -123,8 +123,8 @@ def test_obtener_resumen_carrito_vacio():
     resumen = caso_uso.ejecutar(carrito, cotizador)
     
     assert resumen.articulos == []
-    assert resumen.total_bolsas_formateado == "0 unidades"
-    assert resumen.precio_estimado_formateado == "A cotizar"
+    assert resumen.total_bolsas == 0
+    assert resumen.precio_total == 0.0
 
 
 def test_obtener_resumen_carrito_con_error_cotizador():
@@ -142,7 +142,6 @@ def test_obtener_resumen_carrito_con_error_cotizador():
     resumen = caso_uso.ejecutar(carrito, cotizador)
     
     assert resumen.articulos == [art1]
-    assert resumen.total_bolsas_formateado == "100 unidades"
-    assert resumen.precio_estimado_formateado == "A cotizar"
+    assert resumen.total_bolsas == 100
+    assert resumen.precio_total == 0.0
     registrar_error.assert_called_once()
-

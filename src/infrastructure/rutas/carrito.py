@@ -17,6 +17,8 @@ from src.application.comercio.casos_uso.carrito import (
     CasoUsoObtenerResumenCarrito,
 )
 from src.adapters.precios.servicios.cotizador import CotizadorServicio
+from src.infrastructure.rutas.helpers_presentacion import formatear_precio, formatear_unidades
+
 
 router = APIRouter()
 
@@ -177,8 +179,8 @@ async def ver_carrito(
         context={
             "site": sitio,
             "cart_items": resumen.articulos,
-            "total_bags_formatted": resumen.total_bolsas_formateado,
-            "estimated_cost_formatted": resumen.precio_estimado_formateado,
+            "total_bags_formatted": formatear_unidades(resumen.total_bolsas),
+            "estimated_cost_formatted": formatear_precio(resumen.precio_total),
         },
     )
 

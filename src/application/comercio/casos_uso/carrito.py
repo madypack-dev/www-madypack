@@ -81,8 +81,8 @@ class ICotizador(Protocol):
 @dataclass(frozen=True)
 class ResumenCarritoDTO:
     articulos: list[ArticuloCarrito]
-    total_bolsas_formateado: str
-    precio_estimado_formateado: str
+    total_bolsas: int
+    precio_total: float
 
 
 class CasoUsoObtenerResumenCarrito:
@@ -97,16 +97,8 @@ class CasoUsoObtenerResumenCarrito:
             except Exception as err:
                 self.registrar_error(f"No se pudo cotizar artículo {articulo.id}: {err}")
 
-        if precio_total > 0:
-            precio_estimado_formateado = f"$ {precio_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        else:
-            precio_estimado_formateado = "A cotizar"
-
-        total_bolsas_formateado = f"{carrito.total_bolsas:,} unidades".replace(",", ".")
-
         return ResumenCarritoDTO(
             articulos=carrito.articulos,
-            total_bolsas_formateado=total_bolsas_formateado,
-            precio_estimado_formateado=precio_estimado_formateado,
+            total_bolsas=carrito.total_bolsas,
+            precio_total=precio_total,
         )
-

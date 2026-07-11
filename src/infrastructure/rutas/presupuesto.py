@@ -23,6 +23,8 @@ from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.logging.logger import get_logger
 from src.infrastructure.rutas.base import load_site, templates
 from src.application.lead.dtos.lead_dtos import CrearLeadRequest
+from src.infrastructure.rutas.helpers_presentacion import formatear_precio, formatear_unidades
+
 from src.domain.lead.modelos.lead import Lead
 from src.adapters.precios.servicios.cotizador import CotizadorServicio
 from src.adapters.presupuesto.presentadores.confirmacion import (
@@ -106,8 +108,8 @@ async def read_cotizacion(
         context={
             "site": site,
             "cart_items": resumen.articulos,
-            "total_bags_formatted": resumen.total_bolsas_formateado,
-            "estimated_cost_formatted": resumen.precio_estimado_formateado,
+            "total_bags_formatted": formatear_unidades(resumen.total_bolsas),
+            "estimated_cost_formatted": formatear_precio(resumen.precio_total),
             "success": request.query_params.get("success"),
             "error": request.query_params.get("error"),
             "form_action": "/presupuesto/",
