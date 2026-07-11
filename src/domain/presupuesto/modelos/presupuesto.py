@@ -8,6 +8,8 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 class DatosSolicitante(BaseModel):
     """Value object con los datos del solicitante capturados en el formulario."""
 
+    model_config = {"frozen": True}
+
     nombre: str | None = None
     email: EmailStr
     telefono: str
@@ -18,12 +20,15 @@ class DatosSolicitante(BaseModel):
 class LineaPresupuesto(BaseModel):
     """Value object que representa una línea del presupuesto."""
 
+    model_config = {"frozen": True}
+
     id_articulo: int
     nombre: str
     descripcion: str
     cantidad: int = Field(..., ge=100)
     precio_unitario_estimado: float = Field(..., ge=0)
     subtotal: float = Field(..., ge=0)
+
 
     @field_validator("cantidad")
     @classmethod

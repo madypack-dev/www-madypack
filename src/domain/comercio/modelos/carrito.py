@@ -8,9 +8,12 @@ class CalculoArticulo(BaseModel):
     estrategia se calcula el precio estimado.
     """
 
+    model_config = {"frozen": True}
+
     tipo: str
     conceptos: list[str]
     concepto_fijo: str | None = None
+
 
 
 class ArticuloCarrito(BaseModel):

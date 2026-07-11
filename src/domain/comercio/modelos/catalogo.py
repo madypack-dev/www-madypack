@@ -10,6 +10,8 @@ from src.domain.comercio.modelos.carrito import CalculoArticulo
 class ArticuloCatalogo(BaseModel):
     """Representa un artículo disponible en el catálogo."""
 
+    model_config = {"frozen": True}
+
     id: int
     nombre: str
     descripcion: str
@@ -17,6 +19,7 @@ class ArticuloCatalogo(BaseModel):
     imagen: str
     calculo: CalculoArticulo | None = None
     slug: str | None = None
+
 
     @property
     def url_slug(self) -> str:
