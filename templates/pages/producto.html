@@ -22,7 +22,7 @@
             <!-- Columna Izquierda: Imagen y Ficha Técnica -->
             <div class="product-visuals-details">
                 <div class="product-detail-image-box">
-                    <img src="{{ url_for('static', path='images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
+                    <img src="{{ url_for('static', path='images/' ~ producto.variaciones[0].imagen) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
                 </div>
                 
                 <div class="product-technical-info">
@@ -32,9 +32,10 @@
                     <div class="technical-tabs">
                         <h2 class="tab-title">Especificaciones Técnicas</h2>
                         <ul class="specs-list">
-                            <li><strong>Código de Componente:</strong> B2B-00{{ producto.id }}</li>
+                            <li><strong>SKU Variante:</strong> <span id="product-sku">{{ producto.variaciones[0].sku }}</span></li>
+                            <li><strong>Gramaje del Papel:</strong> <span id="product-gramaje">80 gr/m²</span></li>
                             <li><strong>Disponibilidad:</strong> Producción bajo demanda y stock comercial.</li>
-                            <li><strong>Pedido Mínimo Sugerido:</strong> {{ producto.cantidad_por_defecto }} unidades.</li>
+                            <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">{{ producto.variaciones[0].cantidad_por_defecto }} unidades.</span></li>
                             <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones IGA vigentes para el mercado argentino.</li>
                         </ul>
                     </div>
@@ -45,14 +46,26 @@
             <div class="product-actions-card">
                 <div class="quote-action-box">
                     <h2>Cotizar Lote Mayorista</h2>
-                    <p class="quote-action-sub">Seleccioná la cantidad y agregalo a tu lista de cotización comercial para recibir un presupuesto formal.</p>
+                    <p class="quote-action-sub">Seleccioná las opciones y la cantidad para agregar a tu lista de cotización comercial.</p>
                     
                     <form action="/cart/agregar" method="post" class="add-to-cart-form-detail">
-                        <input type="hidden" name="id_articulo" value="{{ producto.id }}">
+                        <input type="hidden" name="id_articulo" value="{{ producto.variaciones[0].id }}">
+                        
+                        <!-- Selectores de Opciones de Variación -->
+                        {% for attr_name, attr_values in producto.atributos_posibles.items() %}
+                        <div class="form-field">
+                            <label for="attr-{{ attr_name }}"><strong>{{ attr_name | capitalize }}:</strong></label>
+                            <select id="attr-{{ attr_name }}" class="variation-selector" data-attribute="{{ attr_name }}">
+                                {% for val in attr_values %}
+                                <option value="{{ val }}">{{ val }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endfor %}
                         
                         <div class="form-field">
-                            <label for="cant-detail-{{ producto.id }}">Cantidad del Lote:</label>
-                            <input type="number" id="cant-detail-{{ producto.id }}" name="cantidad" value="{{ producto.cantidad_por_defecto }}" min="100" step="100" required>
+                            <label for="cant-detail"><strong>Cantidad del Lote:</strong></label>
+                            <input type="number" id="cant-detail" name="cantidad" value="{{ producto.variaciones[0].cantidad_por_defecto }}" min="100" step="100" required>
                             <span class="field-hint">Múltiplos de 100 unidades (Pedido mínimo B2B de 100).</span>
                         </div>
                         
@@ -61,7 +74,7 @@
                     
                     <div class="lead-support-info">
                         <p><strong>¿Necesitás asesoría técnica inmediata?</strong></p>
-                        <p>Plazos de entrega y matriz de matrices comerciales a medida en menos de 24 hs.</p>
+                        <p>Plazos de entrega y matrices comerciales a medida en menos de 24 hs.</p>
                         <a href="/contacto/" class="button button-secondary button-small btn-block">Contactar un Especialista</a>
                     </div>
                 </div>
@@ -76,7 +89,7 @@
                 {% for rel in relacionados %}
                 <div class="product-card">
                     <div class="product-image-container">
-                        <img src="{{ url_for('static', path='images/' ~ rel.imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
+                        <img src="{{ url_for('static', path='images/' ~ rel.variaciones[0].imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                     </div>
                     <div class="product-info">
                         <h3><a href="/productos/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
@@ -91,6 +104,65 @@
     </div>
 </section>
 
+<!-- Script para actualizar dinámicamente la variación seleccionada -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const variations = {{ variaciones_json | safe }};
+    const selectors = document.querySelectorAll(".variation-selector");
+    const inputArticulo = document.querySelector('input[name="id_articulo"]');
+    const productImage = document.querySelector(".product-detail-image-box img");
+    const productSku = document.getElementById("product-sku");
+    const productGramaje = document.getElementById("product-gramaje");
+    const productMinQty = document.getElementById("product-min-qty");
+    const inputCantidad = document.getElementById("cant-detail");
+
+    function updateVariation() {
+        // Construir diccionario de atributos seleccionados
+        const selected = {};
+        selectors.forEach(select => {
+            selected[select.getAttribute("data-attribute")] = select.value;
+        });
+
+        // Buscar la variante que coincide con la combinación de atributos
+        const variation = variations.find(v => {
+            return Object.keys(v.atributos).every(key => v.atributos[key] === selected[key]);
+        });
+
+        if (variation) {
+            inputArticulo.value = variation.id;
+            
+            // Actualizar imagen
+            productImage.src = "/static/images/" + variation.imagen;
+            
+            // Actualizar SKU
+            if (productSku) {
+                productSku.textContent = variation.sku;
+            }
+            
+            // Actualizar gramaje
+            if (productGramaje) {
+                const esSinManija = selected["manija"] === "Sin Manija";
+                productGramaje.textContent = esSinManija ? "80 gr/m²" : "100 gr/m²";
+            }
+            
+            // Actualizar pedido mínimo
+            if (productMinQty) {
+                productMinQty.textContent = variation.cantidad_por_defecto + " unidades.";
+            }
+            
+            inputCantidad.value = variation.cantidad_por_defecto;
+        }
+    }
+
+    selectors.forEach(select => {
+        select.addEventListener("change", updateVariation);
+    });
+
+    // Ejecutar al cargar la página
+    updateVariation();
+});
+</script>
+
 <!-- Marcado Estructurado JSON-LD del Producto -->
 <script type="application/ld+json">
 {
@@ -98,7 +170,7 @@
   "@type": "Product",
   "name": "{{ producto.nombre }}",
   "description": "{{ producto.descripcion }}",
-  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.imagen) }}",
+  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.variaciones[0].imagen) }}",
   "brand": {
     "@type": "Brand",
     "name": "{{ site.site.brand }}"

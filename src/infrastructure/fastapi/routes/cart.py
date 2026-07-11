@@ -66,6 +66,18 @@ async def ver_producto(
     productos = repositorio_catalogo.obtener_todos()
     relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
 
+    import json
+    variaciones_list = [
+        {
+            "id": v.id,
+            "sku": v.sku,
+            "atributos": v.atributos,
+            "imagen": v.imagen,
+            "cantidad_por_defecto": v.cantidad_por_defecto
+        }
+        for v in producto_encontrado.variaciones
+    ]
+
     return templates.TemplateResponse(
         request=request,
         name="pages/producto.html",
@@ -73,6 +85,7 @@ async def ver_producto(
             "site": sitio,
             "producto": producto_encontrado,
             "relacionados": relacionados,
+            "variaciones_json": json.dumps(variaciones_list),
         },
     )
 

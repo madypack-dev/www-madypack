@@ -1,7 +1,7 @@
 from typing import Callable
 
 from src.domain.commerce.cart import ArticuloCarrito
-from src.domain.commerce.catalog import ArticuloCatalogo
+from src.domain.commerce.catalog import ProductoVariable, VariacionProducto
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.domain.commerce.catalog_repository import ICatalogRepository
 
@@ -37,21 +37,30 @@ class CasoUsoAgregarAlCarrito:
         self.registrar_error = registrar_error
 
     def ejecutar(self, id_articulo: int, cantidad: int) -> None:
-        datos_producto = self.repositorio_catalogo.obtener_por_id(id_articulo)
-        if not datos_producto:
-            self.registrar_error(f"Intento de agregar artículo inexistente del catálogo: {id_articulo}")
+        res = self.repositorio_catalogo.obtener_variacion_por_id(id_articulo)
+        if not res:
+            self.registrar_error(f"Intento de agregar variación inexistente del catálogo: {id_articulo}")
             raise ValueError("El artículo no existe en el catálogo.")
 
+        datos_producto, datos_variacion = res
         carrito = self.repositorio.obtener_carrito()
 
         try:
+            # Construir un nombre descriptivo combinando atributos
+            atributos_str = " | ".join(f"{k.capitalize()}: {v}" for k, v in datos_variacion.atributos.items())
+            nombre = f"{datos_producto.nombre} - {atributos_str}"
+            
+            # El gramaje varía según el tipo de manija
+            gramaje = "80 gr/m²" if "Sin Manija" in datos_variacion.atributos.values() else "100 gr/m²"
+            descripcion = f"Gramaje: {gramaje} | SKU: {datos_variacion.sku}"
+
             articulo = ArticuloCarrito(
-                id=datos_producto.id,
-                nombre=datos_producto.nombre,
-                descripcion=datos_producto.descripcion,
+                id=datos_variacion.id,
+                nombre=nombre,
+                descripcion=descripcion,
                 cantidad=cantidad,
-                imagen=datos_producto.imagen,
-                calculo=datos_producto.calculo,
+                imagen=datos_variacion.imagen,
+                calculo=datos_variacion.calculo,
             )
             carrito.agregar_articulo(articulo)
             self.repositorio.guardar_carrito(carrito)

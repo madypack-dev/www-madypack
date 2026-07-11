@@ -6,18 +6,19 @@ from src.application.commerce.cart_use_cases import (
     CasoUsoEliminarDelCarrito,
 )
 from src.domain.commerce.cart import Carrito, ArticuloCarrito
-from src.domain.commerce.catalog import ArticuloCatalogo
+from src.domain.commerce.catalog import ProductoVariable, VariacionProducto
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.domain.commerce.catalog_repository import ICatalogRepository
+
 
 def test_actualizar_carrito_caso_uso():
     repo = MagicMock(spec=IRepositorioCarrito)
     carrito = Carrito()
     art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     carrito.agregar_articulo(art1)
-    
+
     repo.obtener_carrito.return_value = carrito
-    
+
     # Caso 1: actualización válida
     caso_uso = CasoUsoActualizarCarrito(repo)
     caso_uso.ejecutar({1: 300})
@@ -32,27 +33,42 @@ def test_actualizar_carrito_caso_uso():
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()
 
+
 def test_agregar_al_carrito_caso_uso():
     repo = MagicMock(spec=IRepositorioCarrito)
     carrito = Carrito()
     repo.obtener_carrito.return_value = carrito
-    
-    catalogo = [
-        ArticuloCatalogo(id=1, nombre="Bolsa A", descripcion="A", cantidad_por_defecto=100, imagen="img.png"),
-    ]
-    
+
+    prod = ProductoVariable(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        slug="bolsa-a",
+        atributos_posibles={"color": ["Marrón"]},
+        variaciones=[
+            VariacionProducto(
+                id=1,
+                sku="B-SOS-M",
+                atributos={"color": "Marrón"},
+                imagen="img.png",
+                cantidad_por_defecto=100,
+                calculo=None,
+            )
+        ]
+    )
+
     mock_catalog = MagicMock(spec=ICatalogRepository)
-    mock_catalog.obtener_por_id.side_effect = lambda i: catalogo[0] if i == 1 else None
-    
+    mock_catalog.obtener_variacion_por_id.side_effect = lambda i: (prod, prod.variaciones[0]) if i == 1 else None
+
     caso_uso = CasoUsoAgregarAlCarrito(repo, mock_catalog)
-    
+
     # Agregar artículo válido
     caso_uso.ejecutar(id_articulo=1, cantidad=200)
     assert len(carrito.articulos) == 1
     assert carrito.articulos[0].id == 1
     assert carrito.articulos[0].cantidad == 200
     repo.guardar_carrito.assert_called_once_with(carrito)
-    
+
     # Agregar artículo inexistente en catálogo
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
@@ -69,20 +85,21 @@ def test_agregar_al_carrito_caso_uso():
         caso_uso_con_error.ejecutar(id_articulo=1, cantidad=150)
     registrar_error.assert_called_once()
 
+
 def test_eliminar_del_carrito_caso_uso():
     repo = MagicMock(spec=IRepositorioCarrito)
     carrito = Carrito()
     art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     carrito.agregar_articulo(art1)
     repo.obtener_carrito.return_value = carrito
-    
+
     caso_uso = CasoUsoEliminarDelCarrito(repo)
-    
+
     # Eliminar artículo existente
     caso_uso.ejecutar(id_articulo=1)
     assert len(carrito.articulos) == 0
     repo.guardar_carrito.assert_called_once_with(carrito)
-    
+
     # Eliminar artículo inexistente
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
@@ -96,20 +113,20 @@ def test_eliminar_del_carrito_caso_uso():
 
 def test_obtener_resumen_carrito_caso_uso():
     from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito, ICotizador
-    
+
     # Mockear cotizador
     cotizador = MagicMock(spec=ICotizador)
     cotizador.calcular_precio_estimado.side_effect = lambda art: 1500.0 if art.id == 1 else 2500.0
-    
+
     carrito = Carrito()
     art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     art2 = ArticuloCarrito(id=2, nombre="Bolsa B", descripcion="B", cantidad=200, imagen="img.png")
     carrito.agregar_articulo(art1)
     carrito.agregar_articulo(art2)
-    
+
     caso_uso = CasoUsoObtenerResumenCarrito()
     resumen = caso_uso.ejecutar(carrito, cotizador)
-    
+
     assert resumen.articulos == [art1, art2]
     assert resumen.total_bolsas == 300
     assert resumen.precio_total == 4000.0
@@ -117,13 +134,13 @@ def test_obtener_resumen_carrito_caso_uso():
 
 def test_obtener_resumen_carrito_vacio():
     from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito, ICotizador
-    
+
     cotizador = MagicMock(spec=ICotizador)
     carrito = Carrito()
-    
+
     caso_uso = CasoUsoObtenerResumenCarrito()
     resumen = caso_uso.ejecutar(carrito, cotizador)
-    
+
     assert resumen.articulos == []
     assert resumen.total_bolsas == 0
     assert resumen.precio_total == 0.0
@@ -131,18 +148,18 @@ def test_obtener_resumen_carrito_vacio():
 
 def test_obtener_resumen_carrito_con_error_cotizador():
     from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito, ICotizador
-    
+
     cotizador = MagicMock(spec=ICotizador)
     cotizador.calcular_precio_estimado.side_effect = Exception("Falla de cotización")
-    
+
     carrito = Carrito()
     art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     carrito.agregar_articulo(art1)
-    
+
     registrar_error = MagicMock()
     caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=registrar_error)
     resumen = caso_uso.ejecutar(carrito, cotizador)
-    
+
     assert resumen.articulos == [art1]
     assert resumen.total_bolsas == 100
     assert resumen.precio_total == 0.0
