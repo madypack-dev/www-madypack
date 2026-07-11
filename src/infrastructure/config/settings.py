@@ -1,17 +1,9 @@
-"""Configuración centralizada de la aplicación Madypack.
-
-Las variables sensibles o específicas del entorno se leen desde variables de
-entorno. Los valores por defecto corresponden al entorno de desarrollo local.
-"""
-
 import os
 
 from pydantic import BaseModel, Field
 
 
 class Settings(BaseModel):
-    """Configuración validada con Pydantic."""
-
     APP_TITLE: str = Field(default_factory=lambda: os.getenv("APP_TITLE", "Madypack"))
     LOG_LEVEL: str = Field(default_factory=lambda: os.getenv("LOG_LEVEL", "INFO"))
     CHATWOOT_URL: str = Field(default_factory=lambda: os.getenv("CHATWOOT_URL", "http://localhost:3000"))

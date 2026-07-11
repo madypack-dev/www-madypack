@@ -1,5 +1,3 @@
-"""Middleware que asigna un request id único y loguea cada petición."""
-
 import time
 import uuid
 
@@ -12,7 +10,6 @@ logger = get_logger()
 
 
 async def request_id_middleware(request: Request, call_next):
-    """Asigna un X-Request-ID, bindea contexto de structlog y loguea la petición."""
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
 
     structlog.contextvars.clear_contextvars()
