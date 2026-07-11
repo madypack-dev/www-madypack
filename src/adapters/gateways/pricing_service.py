@@ -1,34 +1,32 @@
-from typing import Callable, Any
-
+from typing import Callable
 from src.domain.commerce.cart import ArticuloCarrito
-from src.domain.pricing.rates import ConfiguracionTarifas
 from src.domain.pricing.calculator import CalculadorPrecio
+
+# Conceptos de costo estáticos (tarifas) en pesos
+TARIFAS = {
+    "base": 0.15,
+    "manija_plana": 0.35,
+    "manija_cordon": 0.65,
+    "personalizacion": 0.20,
+    "fijo_matriz": 1500.00,
+}
 
 
 class CotizadorServicio:
+    """Servicio que calcula los precios estimados utilizando tarifas estáticas en código."""
+
     def __init__(
         self,
-        cargar_tarifas_yaml: Callable[[], dict[str, Any]],
         registrar_error: Callable[[str], None] = lambda _: None,
     ):
-        self.cargar_tarifas_yaml = cargar_tarifas_yaml
         self.registrar_error = registrar_error
         self._calculador = CalculadorPrecio()
-        self._conceptos_cache: dict[str, float] | None = None
+        self._conceptos = TARIFAS
 
     def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
-        if self._conceptos_cache is None:
-            try:
-                datos_yaml = self.cargar_tarifas_yaml()
-                config = ConfiguracionTarifas(**datos_yaml)
-                self._conceptos_cache = config.tarifas.conceptos
-            except Exception as err:
-                self.registrar_error(f"Error cargando tarifas en cotizador: {err}")
-                raise ValueError(f"No se pudieron obtener las tarifas de cotización: {err}")
-
         try:
             return self._calculador.calcular(
-                articulo.calculo, self._conceptos_cache, articulo.cantidad
+                articulo.calculo, self._conceptos, articulo.cantidad
             )
         except Exception as err:
             self.registrar_error(f"Error calculando precio para artículo {articulo.id}: {err}")

@@ -16,14 +16,12 @@ from src.domain.lead.http_client import IHttpClient
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.domain.commerce.catalog_repository import ICatalogRepository
-from src.adapters.gateways.pyyaml_catalog_repository import YamlCatalogRepository
-from src.infrastructure.pyyaml.loaders import cargar_productos_tienda
+from src.adapters.gateways.hardcoded_catalog_repository import HardcodedCatalogRepository
 from src.infrastructure.structlog.logger import get_logger
 from src.domain.quote.quote_repository import IQuoteRepository
 from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
 
 from src.adapters.gateways.pricing_service import CotizadorServicio
-from src.infrastructure.pyyaml.providers import obtener_tarifas
 from src.infrastructure.reportlab.pdf_generator import GeneradorPresupuestoPDFReportLab
 from src.domain.quote.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.adapters.gateways.quote_fallback_repository import RegistroFallbackArchivo
@@ -69,7 +67,6 @@ def get_chatwoot_repo(
 def get_cotizador() -> CotizadorServicio:
     """Inyecta el servicio cotizador."""
     return CotizadorServicio(
-        cargar_tarifas_yaml=obtener_tarifas,
         registrar_error=logger.error,
     )
 
@@ -95,10 +92,8 @@ def get_caso_uso_generar_pdf(
 
 
 def get_repositorio_catalogo() -> ICatalogRepository:
-    """Inyecta el repositorio de catálogo usando YAML."""
-    return YamlCatalogRepository(
-        cargar_catalogo_yaml=cargar_productos_tienda
-    )
+    """Inyecta el repositorio de catálogo hardcodeado."""
+    return HardcodedCatalogRepository()
 
 
 def get_caso_uso_agregar_carrito(

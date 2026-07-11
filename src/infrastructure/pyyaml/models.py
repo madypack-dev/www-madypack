@@ -2,8 +2,6 @@
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from src.domain.commerce.catalog import ArticuloCatalogo
-
 
 # Conjunto de nombres de campo HTML permitidos en el formulario de cotización.
 # Estos valores deben coincidir con los nombres que espera el endpoint POST
@@ -326,6 +324,4 @@ class SiteConfig(BaseModel):
     schema_config: SchemaConfig = Field(alias="schema")
 
 
-# ---------- productos_tienda.yml ----------
-class CatalogoConfig(BaseModel):
-    articulos: list[ArticuloCatalogo]
+

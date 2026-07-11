@@ -8,9 +8,8 @@ from pathlib import Path
 import yaml  # type: ignore
 from pydantic import ValidationError
 
-from src.infrastructure.pyyaml.models import CatalogoConfig, SiteConfig
+from src.infrastructure.pyyaml.models import SiteConfig
 from src.infrastructure.structlog.logger import get_logger
-from src.domain.pricing.rates import ConfiguracionTarifas
 
 logger = get_logger()
 
@@ -44,28 +43,4 @@ def cargar_site() -> SiteConfig:
         return SiteConfig(**contenido)
     except ValidationError as exc:
         logger.error(f"Error validando site.yml: {exc}")
-        raise
-
-
-def cargar_productos_tienda() -> CatalogoConfig:
-    """Carga y valida el catálogo de productos (``productos_tienda.yml``)."""
-    contenido = _cargar_yaml(DATA_DIR / "productos_tienda.yml")
-    if not isinstance(contenido, dict):
-        raise ValueError("productos_tienda.yml debe ser un diccionario.")
-    try:
-        return CatalogoConfig(**contenido)
-    except ValidationError as exc:
-        logger.error(f"Error validando productos_tienda.yml: {exc}")
-        raise
-
-
-def cargar_tarifas() -> ConfiguracionTarifas:
-    """Carga y valida ``tarifas.yml``."""
-    contenido = _cargar_yaml(DATA_DIR / "tarifas.yml")
-    if not isinstance(contenido, dict):
-        raise ValueError("tarifas.yml debe ser un diccionario.")
-    try:
-        return ConfiguracionTarifas(**contenido)
-    except ValidationError as exc:
-        logger.error(f"Error validando tarifas.yml: {exc}")
         raise

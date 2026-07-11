@@ -13,21 +13,21 @@ def client():
 
 class TestProductosEndpoints:
     def test_get_producto_existente_retorna_200_con_schema(self, client):
-        response = client.get("/productos/bolsas-de-papel-kraft-personalizadas/", headers={"host": "localhost:8000"})
+        response = client.get("/productos/bolsas-kraft-marron-sin-manija/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        
+
         # Verificar que se renderiza la información del producto
-        assert "Bolsas de Papel Kraft Personalizadas" in response.text
-        assert "Impresión Flexográfica | Manijas planas" in response.text
-        
+        assert "Bolsas de Papel Kraft Marrón sin Manija" in response.text
+        assert "Gramaje: 80 gr/m²" in response.text
+
         # Verificar que contiene las breadcrumbs
         assert "Inicio" in response.text
         assert "Productos" in response.text
-        
+
         # Verificar marcado estructurado de tipo Product
         assert 'application/ld+json' in response.text
         assert '"@type": "Product"' in response.text
-        assert '"name": "Bolsas de Papel Kraft Personalizadas"' in response.text
+        assert '"name": "Bolsas de Papel Kraft Marrón sin Manija"' in response.text
 
     def test_get_producto_inexistente_retorna_404(self, client):
         response = client.get("/productos/producto-inexistente/", headers={"host": "localhost:8000"})
@@ -37,18 +37,18 @@ class TestProductosEndpoints:
         response = client.get("/sitemap.xml", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         assert "application/xml" in response.headers["content-type"]
-        
+
         # Debe contener las URLs dinámicas de los productos de la base de datos YAML
-        assert "<loc>http://localhost:8000/productos/bolsas-de-papel-kraft-personalizadas/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsas-kraft-con-manija-cordon/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsas-kraft-sin-manija-sos/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsas-kraft-marron-sin-manija/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsas-blancas-sin-manija/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsas-kraft-marron-manija-cordon/</loc>" in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia
-        response = client.get("/productos/?q=Personalizadas", headers={"host": "localhost:8000"})
+        response = client.get("/productos/?q=Blanco", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsas de Papel Kraft Personalizadas" in response.text
-        assert "Bolsas Kraft con Manija Cordón" not in response.text
+        assert "Bolsas de Papel Blanco sin Manija" in response.text
+        assert "Bolsas de Papel Kraft Marrón sin Manija" not in response.text
 
         # Debe incluir la directiva noindex, nofollow para SEO
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
@@ -60,8 +60,8 @@ class TestProductosEndpoints:
         # Búsqueda vacía / sin parámetro de query
         response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsas de Papel Kraft Personalizadas" in response.text
-        assert "Bolsas Kraft con Manija Cordón" in response.text
+        assert "Bolsas de Papel Kraft Marrón sin Manija" in response.text
+        assert "Bolsas de Papel Blanco sin Manija" in response.text
 
         # NO debe incluir noindex, nofollow sino indexar por defecto
         assert '<meta name="robots" content="noindex, nofollow">' not in response.text

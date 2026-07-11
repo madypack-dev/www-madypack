@@ -300,4 +300,6 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         parrafo.drawOn(c, x, y_pie)
 
     def _formatear_moneda(self, valor: float) -> str:
-        return f"$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        if valor > 0.0:
+            return f"$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        return "A cotizar"

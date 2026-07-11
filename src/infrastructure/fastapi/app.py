@@ -5,11 +5,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.infrastructure.config.settings import APP_TITLE
-from src.infrastructure.pyyaml.loaders import (
-    cargar_site,
-    cargar_productos_tienda,
-    cargar_tarifas,
-)
+from src.infrastructure.pyyaml.loaders import cargar_site
 from src.infrastructure.fastapi.errors.handlers import global_exception_handler
 from src.infrastructure.structlog.logger import configurar_logging, get_logger
 from src.infrastructure.fastapi.middleware.request_id import request_id_middleware
@@ -28,11 +24,9 @@ async def lifespan(app: FastAPI):
     """Valida los archivos YAML antes de arrancar."""
     import httpx
 
-    logger.info("Validando archivos YAML...")
+    logger.info("Validando site.yml...")
     cargar_site()
-    cargar_productos_tienda()
-    cargar_tarifas()
-    logger.info("Archivos YAML validados correctamente.")
+    logger.info("site.yml validado correctamente.")
 
     # Inicializar cliente HTTP singleton con límites del pool para reutilizar sockets TCP/TLS
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=50)
