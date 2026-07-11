@@ -1,5 +1,7 @@
 """Modelos de dominio del catálogo de productos/servicios."""
 
+import re
+import unicodedata
 from pydantic import BaseModel, Field, field_validator
 
 from src.domain.comercio.modelos.carrito import CalculoArticulo
@@ -20,8 +22,6 @@ class ArticuloCatalogo(BaseModel):
     def url_slug(self) -> str:
         if self.slug:
             return self.slug
-        import re
-        import unicodedata
         s = unicodedata.normalize('NFKD', self.nombre).encode('ascii', 'ignore').decode('utf-8')
         s = re.sub(r'[^\w\s-]', '', s).strip().lower()
         s = re.sub(r'[-\s]+', '-', s)
@@ -33,3 +33,4 @@ class ArticuloCatalogo(BaseModel):
         if valor % 100 != 0:
             raise ValueError("La cantidad por defecto debe ser múltiplo de 100.")
         return valor
+

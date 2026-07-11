@@ -13,26 +13,57 @@ class Lead(BaseModel):
     email: EmailStr
 
     @classmethod
-    def crear(cls, nombre: str, empresa: str, telefono: str, email: EmailStr) -> "Lead":
+    def crear(
+        cls,
+        nombre: str,
+        empresa: str,
+        telefono: str,
+        email: EmailStr,
+        fecha: datetime | None = None,
+        sufijo: str | None = None,
+    ) -> "Lead":
         """Factory method que genera el código de referencia único B2B y retorna la entidad Lead."""
-        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "COT")
+        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "COT", fecha, sufijo)
 
     @classmethod
-    def crear_cotizacion_general(cls, nombre: str, empresa: str, telefono: str, email: EmailStr) -> "Lead":
+    def crear_cotizacion_general(
+        cls,
+        nombre: str,
+        empresa: str,
+        telefono: str,
+        email: EmailStr,
+        fecha: datetime | None = None,
+        sufijo: str | None = None,
+    ) -> "Lead":
         """Factory method para cotizaciones generales sin carrito."""
-        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "COT-GEN")
+        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "COT-GEN", fecha, sufijo)
 
     @classmethod
-    def crear_contacto(cls, nombre: str, empresa: str, telefono: str, email: EmailStr) -> "Lead":
+    def crear_contacto(
+        cls,
+        nombre: str,
+        empresa: str,
+        telefono: str,
+        email: EmailStr,
+        fecha: datetime | None = None,
+        sufijo: str | None = None,
+    ) -> "Lead":
         """Factory method para contactos institucionales."""
-        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "CON")
+        return cls._crear_con_prefijo(nombre, empresa, telefono, email, "CON", fecha, sufijo)
 
     @classmethod
-    def crear_emergencia(cls, nombre: str, empresa: str, telefono: str, email: EmailStr) -> "Lead":
+    def crear_emergencia(
+        cls,
+        nombre: str,
+        empresa: str,
+        telefono: str,
+        email: EmailStr,
+        sufijo: str | None = None,
+    ) -> "Lead":
         """Factory method para leads generados ante una falla crítica del sistema."""
-        sufijo = str(uuid.uuid4())[:8].upper()
+        final_sufijo = sufijo or str(uuid.uuid4())[:8].upper()
         return cls(
-            codigo_referencia=f"COT-ERR-{sufijo}",
+            codigo_referencia=f"COT-ERR-{final_sufijo}",
             nombre=nombre,
             empresa=empresa,
             telefono=telefono,
@@ -41,10 +72,18 @@ class Lead(BaseModel):
 
     @classmethod
     def _crear_con_prefijo(
-        cls, nombre: str, empresa: str, telefono: str, email: EmailStr, prefijo: str
+        cls,
+        nombre: str,
+        empresa: str,
+        telefono: str,
+        email: EmailStr,
+        prefijo: str,
+        fecha: datetime | None = None,
+        sufijo: str | None = None,
     ) -> "Lead":
-        fecha_str = datetime.now().strftime("%Y%m%d")
-        sufijo_aleatorio = secrets.token_hex(2).upper()  # 4 caracteres alfanuméricos en mayúsculas
+        fecha_eval = fecha or datetime.now()
+        fecha_str = fecha_eval.strftime("%Y%m%d")
+        sufijo_aleatorio = sufijo or secrets.token_hex(2).upper()  # 4 caracteres alfanuméricos en mayúsculas
         return cls(
             codigo_referencia=f"{prefijo}-{fecha_str}-{sufijo_aleatorio}",
             nombre=nombre,
@@ -52,3 +91,4 @@ class Lead(BaseModel):
             telefono=telefono,
             email=email,
         )
+
