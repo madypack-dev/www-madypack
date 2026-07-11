@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 from src.adapters.lead.repositorios.chatwoot_contact import ChatwootContactRepository
 from src.domain.lead.modelos.lead import Lead
+from src.infrastructure.http_client import HttpxClientAdapter
 
 
 @pytest.mark.asyncio
@@ -22,8 +23,10 @@ async def test_chatwoot_contact_repository_guardar_success():
     
     client.post.side_effect = [mock_response1, mock_response2]
 
+    http_client = HttpxClientAdapter(client)
+
     repo = ChatwootContactRepository(
-        http_client=client,
+        http_client=http_client,
         base_url="https://chatwoot.com",
         account_id=1,
         api_token="token"
@@ -40,3 +43,4 @@ async def test_chatwoot_contact_repository_guardar_success():
     lead_id = await repo.guardar(lead, inbox_id=9)
     assert lead_id == "12345"
     assert client.post.call_count == 2
+

@@ -1,11 +1,11 @@
-import httpx
 from src.domain.lead.modelos.lead import Lead
 from src.domain.lead.puertos.repositorio import ILeadRepository
+from src.domain.lead.puertos.http_client import IHttpClient
 
 class ChatwootContactRepository(ILeadRepository):
     """Implementa la comunicación HTTP asíncrona con el backend de Chatwoot."""
     
-    def __init__(self, http_client: httpx.AsyncClient, base_url: str, account_id: int, api_token: str):
+    def __init__(self, http_client: IHttpClient, base_url: str, account_id: int, api_token: str):
         self.client = http_client
         self.base_url = base_url.rstrip("/")
         self.account_id = account_id

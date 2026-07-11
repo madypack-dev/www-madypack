@@ -9,6 +9,7 @@ from src.infrastructure.config.settings import (
     CHATWOOT_URL,
 )
 from src.adapters.lead.repositorios.chatwoot_contact import ChatwootContactRepository
+from src.infrastructure.http_client import HttpxClientAdapter
 
 
 from src.domain.comercio.puertos.repositorio import IRepositorioCarrito
@@ -38,7 +39,7 @@ def get_chatwoot_repo(
 ) -> ChatwootContactRepository:
     """Inyecta el cliente HTTP singleton para construir el repositorio de Chatwoot Contact."""
     return ChatwootContactRepository(
-        http_client=http_client,
+        http_client=HttpxClientAdapter(http_client),
         base_url=CHATWOOT_URL,
         account_id=CHATWOOT_ACCOUNT_ID,
         api_token=CHATWOOT_API_TOKEN,
