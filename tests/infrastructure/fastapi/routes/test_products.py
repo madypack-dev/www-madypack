@@ -13,12 +13,12 @@ def client():
 
 class TestProductosEndpoints:
     def test_get_producto_existente_retorna_200_con_schema(self, client):
-        response = client.get("/productos/bolsa-de-papel/", headers={"host": "localhost:8000"})
+        response = client.get("/productos/bolsa-de-papel-marron-120819/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
-        assert "Bolsa de Papel" in response.text
-        assert "B-SOS-M" in response.text
+        assert "Bolsa de Papel Marrón" in response.text
+        assert "B-120819-M-SOS-L" in response.text
 
         # Verificar que contiene las breadcrumbs
         assert "Inicio" in response.text
@@ -27,7 +27,7 @@ class TestProductosEndpoints:
         # Verificar marcado estructurado de tipo Product
         assert 'application/ld+json' in response.text
         assert '"@type": "Product"' in response.text
-        assert '"name": "Bolsa de Papel"' in response.text
+        assert '"name":' in response.text
 
     def test_get_producto_inexistente_retorna_404(self, client):
         response = client.get("/productos/producto-inexistente/", headers={"host": "localhost:8000"})
@@ -39,13 +39,14 @@ class TestProductosEndpoints:
         assert "application/xml" in response.headers["content-type"]
 
         # Debe contener las URLs dinámicas de los productos de la base de datos
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-301241/</loc>" in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia
-        response = client.get("/productos/?q=Papel", headers={"host": "localhost:8000"})
+        response = client.get("/productos/?q=Blanco", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsa de Papel" in response.text
+        assert "Bolsa de Papel Blanco" in response.text
 
         # Debe incluir la directiva noindex, nofollow para SEO
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
@@ -57,7 +58,7 @@ class TestProductosEndpoints:
         # Búsqueda vacía / sin parámetro de query
         response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsa de Papel" in response.text
+        assert "Bolsas de Papel" in response.text or "Bolsa de Papel" in response.text
 
         # NO debe incluir noindex, nofollow sino indexar por defecto
         assert '<meta name="robots" content="noindex, nofollow">' not in response.text

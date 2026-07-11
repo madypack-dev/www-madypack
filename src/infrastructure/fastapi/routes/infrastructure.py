@@ -3,7 +3,7 @@
 from datetime import date
 
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
 
 from src.infrastructure.config.settings import CHATWOOT_URL
 from src.domain.commerce.catalog_repository import ICatalogRepository
@@ -20,6 +20,12 @@ router = APIRouter()
 async def chrome_devtools_silent():
     """Silencia el request automático de Chrome DevTools retornando 200 vacío."""
     return {}
+
+
+@router.get("/favicon.ico", include_in_schema=False)
+async def favicon_ico():
+    """Redirecciona la petición automática del favicon al recurso estático."""
+    return RedirectResponse(url="/static/images/favicon.ico")
 
 
 @router.get("/health", include_in_schema=False)

@@ -36,7 +36,7 @@
                             <li><strong>Gramaje del Papel:</strong> <span id="product-gramaje">80 gr/m²</span></li>
                             <li><strong>Disponibilidad:</strong> Producción bajo demanda y stock comercial.</li>
                             <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">{{ producto.variaciones[0].cantidad_por_defecto }} unidades.</span></li>
-                            <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones IGA vigentes para el mercado argentino.</li>
+                            <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones de calidad de Cooperativa Madygraf.</li>
                         </ul>
                     </div>
                 </div>
@@ -67,6 +67,11 @@
                             <label for="cant-detail"><strong>Cantidad del Lote:</strong></label>
                             <input type="number" id="cant-detail" name="cantidad" value="{{ producto.variaciones[0].cantidad_por_defecto }}" min="100" step="100" required>
                             <span class="field-hint">Múltiplos de 100 unidades (Pedido mínimo B2B de 100).</span>
+                        </div>
+
+                        <!-- Tiempo de entrega dinámico -->
+                        <div class="lead-delivery-box" style="margin-top: 15px; margin-bottom: 15px; padding: 12px; background: #f0f7f4; border-left: 4px solid #3E8E5A; border-radius: 6px; font-size: 13.5px;">
+                            <strong>Tiempo de entrega estimado:</strong> <span id="delivery-time">3 a 5 días hábiles</span>
                         </div>
                         
                         <button type="submit" class="button button-primary btn-block">Agregar a mi cotización</button>
@@ -115,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const productGramaje = document.getElementById("product-gramaje");
     const productMinQty = document.getElementById("product-min-qty");
     const inputCantidad = document.getElementById("cant-detail");
+    const deliveryTime = document.getElementById("delivery-time");
 
     function updateVariation() {
         // Construir diccionario de atributos seleccionados
@@ -149,8 +155,26 @@ document.addEventListener("DOMContentLoaded", function() {
             if (productMinQty) {
                 productMinQty.textContent = variation.cantidad_por_defecto + " unidades.";
             }
-            
+
+            // Actualizar cantidad en input
             inputCantidad.value = variation.cantidad_por_defecto;
+
+            // Actualizar tiempo de entrega estimado dinámicamente
+            if (deliveryTime) {
+                if (selected["impresion"] === "Lisa (sin impresión)") {
+                    deliveryTime.textContent = "3 a 5 días hábiles";
+                    deliveryTime.parentElement.style.borderColor = "#3E8E5A";
+                    deliveryTime.parentElement.style.background = "#f0f7f4";
+                } else if (selected["impresion"] === "Impresa 1 o 2 colores") {
+                    deliveryTime.textContent = "15 a 20 días hábiles (sujeto a aprobación de diseño)";
+                    deliveryTime.parentElement.style.borderColor = "#C9A227";
+                    deliveryTime.parentElement.style.background = "#fffdeb";
+                } else {
+                    deliveryTime.textContent = "25 a 30 días hábiles (producción de alta cantidad)";
+                    deliveryTime.parentElement.style.borderColor = "#2E6E8E";
+                    deliveryTime.parentElement.style.background = "#f0f7fa";
+                }
+            }
         }
     }
 
