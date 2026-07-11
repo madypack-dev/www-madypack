@@ -1,10 +1,22 @@
 """Motor genérico de cálculo de precios a partir de conceptos de tarifa."""
 
-from src.domain.comercio.modelos.carrito import CalculoArticulo
+from typing import Protocol
+
+
+class IConfiguracionCalculo(Protocol):
+    """Interfaz conceptual para la configuración de cálculo de un artículo.
+
+    Permite que el motor de cálculo de precios no dependa directamente de
+    los modelos del catálogo o carrito.
+    """
+
+    tipo: str
+    conceptos: list[str]
+    concepto_fijo: str | None
 
 
 def _estrategia_suma_por_unidad(
-    calculo: CalculoArticulo, conceptos: dict[str, float], cantidad: int
+    calculo: IConfiguracionCalculo, conceptos: dict[str, float], cantidad: int
 ) -> float:
     """Suma los conceptos indicados y multiplica por la cantidad."""
     unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
@@ -12,7 +24,7 @@ def _estrategia_suma_por_unidad(
 
 
 def _estrategia_suma_por_unidad_mas_fijo(
-    calculo: CalculoArticulo, conceptos: dict[str, float], cantidad: int
+    calculo: IConfiguracionCalculo, conceptos: dict[str, float], cantidad: int
 ) -> float:
     """Suma los conceptos indicados, multiplica por cantidad y suma un costo fijo."""
     unitario = sum(conceptos.get(concepto, 0.0) for concepto in calculo.conceptos)
@@ -29,7 +41,10 @@ class CalculadorPrecio:
     }
 
     def calcular(
-        self, calculo: CalculoArticulo | None, conceptos: dict[str, float], cantidad: int
+        self,
+        calculo: IConfiguracionCalculo | None,
+        conceptos: dict[str, float],
+        cantidad: int,
     ) -> float:
         """Devuelve el precio estimado para un artículo dado su configuración de cálculo."""
         if calculo is None:
@@ -40,3 +55,5 @@ class CalculadorPrecio:
             raise ValueError(f"Tipo de cálculo desconocido: {calculo.tipo}")
 
         return estrategia(calculo, conceptos, cantidad)
+
+

@@ -1,15 +1,19 @@
 """Helpers de aplicación para el bounded context de presupuesto."""
 
-from typing import Callable
+from typing import Callable, Protocol
 
-from src.domain.comercio.modelos.carrito import Carrito
-from src.adapters.precios.servicios.cotizador import CotizadorServicio
+from src.domain.comercio.modelos.carrito import Carrito, ArticuloCarrito
 from src.domain.presupuesto.modelos.presupuesto import LineaPresupuesto
+
+
+class ICotizador(Protocol):
+    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
+        ...
 
 
 def construir_lineas_presupuesto(
     carrito: Carrito,
-    cotizador: CotizadorServicio,
+    cotizador: ICotizador,
     registrar_error: Callable[[str], None] = lambda _: None,
 ) -> list[LineaPresupuesto]:
     """Construye las líneas de presupuesto a partir de los artículos del carrito."""
@@ -35,3 +39,4 @@ def construir_lineas_presupuesto(
             )
         )
     return lineas
+
