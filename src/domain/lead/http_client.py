@@ -5,6 +5,12 @@ from typing import Any, Dict
 class IHttpResponse(ABC):
     """Interfaz abstracta para la respuesta de un cliente HTTP."""
 
+    @property
+    @abstractmethod
+    def status_code(self) -> int:
+        """Retorna el código de estado HTTP de la respuesta."""
+        pass
+
     @abstractmethod
     def json(self) -> Any:
         """Retorna el cuerpo de la respuesta parseado como JSON."""
@@ -28,4 +34,14 @@ class IHttpClient(ABC):
         timeout: float | None = None,
     ) -> IHttpResponse:
         """Realiza una petición POST asíncrona."""
+        pass
+
+    @abstractmethod
+    async def head(
+        self,
+        url: str,
+        headers: Dict[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        """Realiza una petición HEAD asíncrona."""
         pass

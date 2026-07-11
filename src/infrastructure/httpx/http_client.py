@@ -9,6 +9,10 @@ class HttpxResponseAdapter(IHttpResponse):
     def __init__(self, response: httpx.Response):
         self._response = response
 
+    @property
+    def status_code(self) -> int:
+        return self._response.status_code
+
     def json(self) -> Any:
         return self._response.json()
 
@@ -37,6 +41,23 @@ class HttpxClientAdapter(IHttpClient):
             url,
             headers=headers,
             json=json,
+            **kwargs
+        )
+        return HttpxResponseAdapter(response)
+
+    async def head(
+        self,
+        url: str,
+        headers: Dict[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        kwargs = {}
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+
+        response = await self._client.head(
+            url,
+            headers=headers,
             **kwargs
         )
         return HttpxResponseAdapter(response)

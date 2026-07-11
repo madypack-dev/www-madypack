@@ -10,6 +10,7 @@ from src.infrastructure.config.settings import (
 )
 from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
 from src.infrastructure.httpx.http_client import HttpxClientAdapter
+from src.domain.lead.http_client import IHttpClient
 
 
 from src.domain.commerce.cart_repository import IRepositorioCarrito
@@ -123,3 +124,10 @@ def get_caso_uso_obtener_resumen_carrito() -> CasoUsoObtenerResumenCarrito:
     return CasoUsoObtenerResumenCarrito(
         registrar_error=logger.warning,
     )
+
+
+def get_http_client_adapter(
+    client: httpx.AsyncClient = Depends(get_http_client)
+) -> IHttpClient:
+    """Inyecta el adaptador HttpxClientAdapter como la interfaz IHttpClient."""
+    return HttpxClientAdapter(client)

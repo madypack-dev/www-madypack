@@ -2,7 +2,6 @@
 
 from datetime import date
 
-import httpx
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse, Response
 
@@ -10,7 +9,8 @@ from src.infrastructure.config.settings import CHATWOOT_URL
 from src.infrastructure.pyyaml.loaders import cargar_productos_tienda
 from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger
-from src.infrastructure.fastapi.dependencies import get_http_client
+from src.domain.lead.http_client import IHttpClient
+from src.infrastructure.fastapi.dependencies import get_http_client_adapter
 
 logger = get_logger()
 router = APIRouter()
@@ -25,7 +25,7 @@ async def chrome_devtools_silent():
 @router.get("/health", include_in_schema=False)
 async def health_check(
     request: Request,
-    http_client: httpx.AsyncClient = Depends(get_http_client),
+    http_client: IHttpClient = Depends(get_http_client_adapter),
 ):
     """Endpoint liviano para validar que el ecommerce responde."""
 

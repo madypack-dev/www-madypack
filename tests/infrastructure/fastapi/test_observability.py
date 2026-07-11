@@ -17,7 +17,7 @@ def test_chrome_devtools_silent_route(client):
     assert response.json() == {}
 
 from unittest.mock import AsyncMock
-from src.infrastructure.fastapi.dependencies import get_http_client
+from src.infrastructure.fastapi.dependencies import get_http_client_adapter
 
 def test_health_check_endpoint(client):
     mock_client = AsyncMock()
@@ -25,7 +25,7 @@ def test_health_check_endpoint(client):
     mock_response.status_code = 200
     mock_client.head.return_value = mock_response
 
-    app.dependency_overrides[get_http_client] = lambda: mock_client
+    app.dependency_overrides[get_http_client_adapter] = lambda: mock_client
 
     try:
         response = client.get("/health", headers={"host": "localhost:8000"})
