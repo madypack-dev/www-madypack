@@ -9,13 +9,9 @@ from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from pydantic import EmailStr, ValidationError
 
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.domain.commerce.cart import Carrito
 from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito
 from src.infrastructure.pyyaml.models import SiteConfig
-from src.infrastructure.pyyaml.providers import (
-    obtener_productos_tienda,
-    obtener_tarifas,
-)
+
 from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger
 from src.infrastructure.fastapi.routes.base import load_site, templates
@@ -24,18 +20,11 @@ from src.adapters.presenters.commerce_presentation_helper import formatear_preci
 
 from src.domain.lead.lead import Lead
 from src.adapters.gateways.pricing_service import CotizadorServicio
-from src.adapters.presenters.quote_confirmation_presenter import (
-    PresentadorConfirmacionPresupuesto,
-)
-from src.adapters.gateways.quote_fallback_repository import (
-    RegistroFallbackArchivo,
-)
-from src.application.quote.generate_quote_pdf import (
-    CasoUsoGenerarPresupuestoPDF,
-)
-from src.application.quote.process_quote_request import (
-    ProcesarSolicitudPresupuesto,
-)
+from src.adapters.presenters.quote_confirmation_presenter import PresentadorConfirmacionPresupuesto
+from src.application.quote.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
+
+from src.application.quote.process_quote_request import ProcesarSolicitudPresupuesto
+
 from src.application.quote.quote_helpers import construir_lineas_presupuesto
 from src.domain.quote.visual_identity import IdentidadVisual
 from src.domain.quote.quote import DatosSolicitante
