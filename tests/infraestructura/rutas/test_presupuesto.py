@@ -5,7 +5,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from src.infraestructura.app import app
+from src.infrastructure.app import app
 
 
 @pytest.fixture

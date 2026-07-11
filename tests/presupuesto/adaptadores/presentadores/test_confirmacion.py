@@ -2,9 +2,9 @@ import urllib.parse
 
 import pytest
 
-from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
-from src.lead.dominio.modelos.lead import Lead
-from src.presupuesto.adaptadores.presentadores.confirmacion import (
+from src.domain.comercio.modelos.carrito import Carrito, ArticuloCarrito
+from src.domain.lead.modelos.lead import Lead
+from src.adapters.presupuesto.presentadores.confirmacion import (
     PresentadorConfirmacionPresupuesto,
 )
 

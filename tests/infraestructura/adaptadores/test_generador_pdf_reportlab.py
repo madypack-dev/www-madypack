@@ -4,12 +4,12 @@ from datetime import date
 
 import pytest
 
-from src.comercio.dominio.modelos.carrito import CalculoArticulo
-from src.infraestructura.adaptadores.generador_pdf_reportlab import (
+from src.domain.comercio.modelos.carrito import CalculoArticulo
+from src.adapters.presupuesto.generadores.pdf_reportlab import (
     GeneradorPresupuestoPDFReportLab,
 )
-from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
-from src.presupuesto.dominio.modelos.presupuesto import (
+from src.domain.presupuesto.modelos.identidad_visual import IdentidadVisual
+from src.domain.presupuesto.modelos.presupuesto import (
     DatosSolicitante,
     LineaPresupuesto,
     Presupuesto,

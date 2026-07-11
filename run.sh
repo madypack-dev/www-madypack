@@ -27,7 +27,7 @@ echo "INFO:     Liberando puerto $PUERTO si está ocupado..."
 _liberar_puerto "$PUERTO"
 
 echo "INFO:     Compilando bundle CSS..."
-./venv/bin/python -m src.infraestructura.build.css_bundle
+./venv/bin/python -m src.infrastructure.build.css_bundle
 
 echo "INFO:     Iniciando servidor Madypack en puerto $PUERTO..."
-./venv/bin/uvicorn src.infraestructura.app:app --port "$PUERTO" --reload
+./venv/bin/uvicorn src.infrastructure.app:app --port "$PUERTO" --reload

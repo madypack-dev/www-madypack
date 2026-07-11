@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.infraestructura.config.settings import Settings
+from src.infrastructure.config.settings import Settings
 
 
 class TestSettingsDefaults:

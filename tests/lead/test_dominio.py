@@ -1,4 +1,4 @@
-from src.lead.dominio.modelos.lead import Lead
+from src.domain.lead.modelos.lead import Lead
 
 
 def test_crear_lead_entidad():

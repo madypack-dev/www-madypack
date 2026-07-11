@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.comercio.dominio.modelos.carrito import CalculoArticulo
-from src.precios.dominio.servicios.calculador import CalculadorPrecio
+from src.domain.comercio.modelos.carrito import CalculoArticulo
+from src.domain.precios.servicios.calculador import CalculadorPrecio
 
 
 class TestCalculadorPrecio:

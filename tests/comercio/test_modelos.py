@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito, CalculoArticulo
+from src.domain.comercio.modelos.carrito import Carrito, ArticuloCarrito, CalculoArticulo
 
 def test_calculo_articulo():
     calculo = CalculoArticulo(tipo="unidad", conceptos=["base"], concepto_fijo="fijo")

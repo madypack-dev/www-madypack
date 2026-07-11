@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import MagicMock
-from src.comercio.aplicacion.casos_uso.carrito import (
+from src.application.comercio.casos_uso.carrito import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
 )
-from src.comercio.dominio.modelos.carrito import Carrito, ArticuloCarrito
-from src.comercio.dominio.modelos.catalogo import ArticuloCatalogo
-from src.comercio.dominio.puertos.repositorio import IRepositorioCarrito
+from src.domain.comercio.modelos.carrito import Carrito, ArticuloCarrito
+from src.domain.comercio.modelos.catalogo import ArticuloCatalogo
+from src.domain.comercio.puertos.repositorio import IRepositorioCarrito
 
 def test_actualizar_carrito_caso_uso():
     repo = MagicMock(spec=IRepositorioCarrito)
@@ -93,7 +93,7 @@ def test_eliminar_del_carrito_caso_uso():
 
 
 def test_obtener_resumen_carrito_caso_uso():
-    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    from src.application.comercio.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
     
     # Mockear cotizador
     cotizador = MagicMock(spec=ICotizador)
@@ -114,7 +114,7 @@ def test_obtener_resumen_carrito_caso_uso():
 
 
 def test_obtener_resumen_carrito_vacio():
-    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    from src.application.comercio.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
     
     cotizador = MagicMock(spec=ICotizador)
     carrito = Carrito()
@@ -128,7 +128,7 @@ def test_obtener_resumen_carrito_vacio():
 
 
 def test_obtener_resumen_carrito_con_error_cotizador():
-    from src.comercio.aplicacion.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
+    from src.application.comercio.casos_uso.carrito import CasoUsoObtenerResumenCarrito, ICotizador
     
     cotizador = MagicMock(spec=ICotizador)
     cotizador.calcular_precio_estimado.side_effect = Exception("Falla de cotización")

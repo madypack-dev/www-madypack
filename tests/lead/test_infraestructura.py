@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 import httpx
-from src.lead.adaptadores.repositorios.chatwoot_contact import ChatwootContactRepository
-from src.lead.dominio.modelos.lead import Lead
+from src.adapters.lead.repositorios.chatwoot_contact import ChatwootContactRepository
+from src.domain.lead.modelos.lead import Lead
 
 
 @pytest.mark.asyncio

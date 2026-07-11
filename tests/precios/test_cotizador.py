@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
 
-from src.comercio.dominio.modelos.carrito import ArticuloCarrito, CalculoArticulo
-from src.precios.adaptadores.servicios.cotizador import CotizadorServicio
+from src.domain.comercio.modelos.carrito import ArticuloCarrito, CalculoArticulo
+from src.adapters.precios.servicios.cotizador import CotizadorServicio
 
 
 def test_cotizador_servicio_exito_y_cache():

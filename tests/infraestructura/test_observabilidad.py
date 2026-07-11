@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.infraestructura.app import app
+from src.infrastructure.app import app
 
 @pytest.fixture
 def client():
@@ -65,7 +65,7 @@ def test_structlog_json_rendering_and_context_vars(monkeypatch, caplog):
     import json
     import logging
     import structlog
-    from src.infraestructura.logging.logger import configurar_logging, get_logger
+    from src.infrastructure.logging.logger import configurar_logging, get_logger
 
     # Forzar formato JSON usando variable de entorno
     monkeypatch.setenv("LOG_FORMAT", "json")

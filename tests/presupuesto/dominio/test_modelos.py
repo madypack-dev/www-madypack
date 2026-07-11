@@ -5,8 +5,8 @@ from datetime import date
 import pytest
 from pydantic import ValidationError
 
-from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
-from src.presupuesto.dominio.modelos.presupuesto import (
+from src.domain.presupuesto.modelos.identidad_visual import IdentidadVisual
+from src.domain.presupuesto.modelos.presupuesto import (
     DatosSolicitante,
     LineaPresupuesto,
     Presupuesto,

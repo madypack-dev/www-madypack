@@ -4,19 +4,19 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from src.infraestructura.datos import cargadores
-from src.infraestructura.datos.cargadores import (
+from src.infrastructure.datos import cargadores
+from src.infrastructure.datos.cargadores import (
     cargar_site,
     cargar_productos_tienda,
     cargar_tarifas,
 )
-from src.infraestructura.datos.modelos import (
+from src.infrastructure.datos.modelos import (
     CatalogoConfig,
     QuoteFormConfig,
     QuoteFormFieldConfig,
     SiteConfig,
 )
-from src.precios.dominio.modelos.tarifas import ConfiguracionTarifas
+from src.domain.precios.modelos.tarifas import ConfiguracionTarifas
 
 
 class TestCargarDefault:

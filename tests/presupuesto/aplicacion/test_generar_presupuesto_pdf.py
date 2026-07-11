@@ -5,12 +5,12 @@ from typing import Callable
 
 import pytest
 
-from src.presupuesto.aplicacion.casos_uso.generar_presupuesto_pdf import (
+from src.application.presupuesto.casos_uso.generar_presupuesto_pdf import (
     CasoUsoGenerarPresupuestoPDF,
 )
-from src.presupuesto.dominio.modelos.identidad_visual import IdentidadVisual
-from src.presupuesto.dominio.modelos.presupuesto import DatosSolicitante, LineaPresupuesto
-from src.presupuesto.dominio.puertos.generador_pdf import IGeneradorDocumentoPresupuesto
+from src.domain.presupuesto.modelos.identidad_visual import IdentidadVisual
+from src.domain.presupuesto.modelos.presupuesto import DatosSolicitante, LineaPresupuesto
+from src.domain.presupuesto.puertos.generador_pdf import IGeneradorDocumentoPresupuesto
 
 
 class GeneradorPDFFake(IGeneradorDocumentoPresupuesto):
