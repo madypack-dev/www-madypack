@@ -3,17 +3,44 @@ from src.domain.commerce.catalog_repository import ICatalogRepository
 
 
 class HardcodedCatalogRepository(ICatalogRepository):
-    """Implementación de ICatalogRepository con 12 productos variables y 72 variaciones generadas programáticamente."""
+    """Implementación de ICatalogRepository con 12 productos variables y 72 variaciones generadas programáticamente.
+    
+    Los nombres de los productos están basados en su caso de uso/rubro B2B.
+    """
 
     def __init__(self) -> None:
-        # Formatos reales extraídos del Tablero de Madygraf
+        # Formatos reales y rubros B2B
         formatos = [
-            {"codigo": "120819", "medidas": "12x8x19 cm", "nombre": "Chica SOS"},
-            {"codigo": "120841", "medidas": "12x8x41 cm", "nombre": "Fondo Americano Alto"},
-            {"codigo": "161024", "medidas": "16x10x24 cm", "nombre": "Mediana SOS"},
-            {"codigo": "221030", "medidas": "22x10x30 cm", "nombre": "Estándar Chica"},
-            {"codigo": "261236", "medidas": "26x12x36 cm", "nombre": "Estándar Mediana"},
-            {"codigo": "301241", "medidas": "30x12x41 cm", "nombre": "Estándar Grande"},
+            {
+                "codigo": "120819",
+                "medidas": "12x8x19 cm",
+                "rubro": "para Farmacia y Joyería",
+            },
+            {
+                "codigo": "120841",
+                "medidas": "12x8x41 cm",
+                "rubro": "para Vinos y Licores",
+            },
+            {
+                "codigo": "161024",
+                "medidas": "16x10x24 cm",
+                "rubro": "para Delivery Chico y Cafetería",
+            },
+            {
+                "codigo": "221030",
+                "medidas": "22x10x30 cm",
+                "rubro": "para Hamburguesas y Delivery",
+            },
+            {
+                "codigo": "261236",
+                "medidas": "26x12x36 cm",
+                "rubro": "para Indumentaria y Tiendas",
+            },
+            {
+                "codigo": "301241",
+                "medidas": "30x12x41 cm",
+                "rubro": "para Calzado y Abrigos",
+            },
         ]
 
         self._productos = []
@@ -22,10 +49,12 @@ class HardcodedCatalogRepository(ICatalogRepository):
 
         for f in formatos:
             for color in ["Marrón", "Blanco"]:
-                nombre_prod = f"Bolsa de Papel {color} - {f['nombre']} ({f['medidas']})"
+                color_name = "Kraft Marrón" if color == "Marrón" else "Blanca"
+                nombre_prod = f"Bolsa de Papel {color_name} {f['rubro']} ({f['medidas']})"
+                
                 color_slug = "marron" if color == "Marrón" else "blanco"
                 slug = f"bolsa-de-papel-{color_slug}-{f['codigo']}"
-                desc = f"Bolsa de papel de color {color.lower()} y formato {f['medidas']} (Modelo {f['codigo']}). Ideal para todo tipo de comercios, despachos y delivery."
+                desc = f"Bolsa de papel de color {color.lower()} y formato {f['medidas']} (Modelo {f['codigo']}). Diseñada especialmente {f['rubro']}. Ideal para comercios y despachos."
 
                 # Generar las 6 variaciones (Manija x Impresión) para este producto
                 variaciones = []

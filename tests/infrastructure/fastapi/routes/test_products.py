@@ -17,7 +17,7 @@ class TestProductosEndpoints:
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
-        assert "Bolsa de Papel Marrón" in response.text
+        assert "Bolsa de Papel Kraft Marrón" in response.text
         assert "B-120819-M-SOS-L" in response.text
 
         # Verificar que contiene las breadcrumbs
@@ -46,9 +46,9 @@ class TestProductosEndpoints:
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia
-        response = client.get("/productos/?q=Blanco", headers={"host": "localhost:8000"})
+        response = client.get("/productos/?q=Blanca", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsa de Papel Blanco" in response.text
+        assert "Bolsa de Papel Blanca" in response.text
 
         # Debe incluir la directiva noindex, nofollow para SEO
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
