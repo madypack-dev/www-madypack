@@ -5,7 +5,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.infrastructure.config.settings import APP_TITLE
-from src.infrastructure.datos.cargadores import (
+from src.infrastructure.data.loaders import (
     cargar_site,
     cargar_productos_tienda,
     cargar_tarifas,
@@ -14,10 +14,10 @@ from src.infrastructure.errores.handlers import global_exception_handler
 from src.infrastructure.logging.logger import configurar_logging, get_logger
 from src.infrastructure.middleware.request_id import request_id_middleware
 from src.infrastructure.middleware.trailing_slash import TrailingSlashMiddleware
-from src.infrastructure.rutas.carrito import router as carrito_router
-from src.infrastructure.rutas.infraestructura import router as infraestructura_router
-from src.infrastructure.rutas.paginas import router as paginas_router
-from src.infrastructure.rutas.presupuesto import router as presupuesto_router
+from src.infrastructure.routes.cart import router as carrito_router
+from src.infrastructure.routes.infrastructure import router as infraestructura_router
+from src.infrastructure.routes.pages import router as paginas_router
+from src.infrastructure.routes.quote import router as presupuesto_router
 
 configurar_logging()
 logger = get_logger()

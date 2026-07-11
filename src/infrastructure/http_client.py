@@ -1,6 +1,6 @@
 from typing import Any, Dict
 import httpx
-from src.domain.lead.puertos.http_client import IHttpClient, IHttpResponse
+from src.domain.lead.http_client import IHttpClient, IHttpResponse
 
 
 class HttpxResponseAdapter(IHttpResponse):
