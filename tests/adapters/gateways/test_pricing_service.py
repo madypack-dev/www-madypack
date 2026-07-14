@@ -68,6 +68,27 @@ def test_cotizador_servicio_compuesto():
     assert precio == 900.0
 
 
+def test_cotizador_servicio_compuesto_con_bobina_kg():
+    catalogo = HardcodedCatalogRepository()
+    servicio = CotizadorServicio(catalogo=catalogo)
+
+    # Compuesto visible "Bolsa de Papel Kraft Marrón 22x10x30 cm" (id 3004)
+    articulo = ArticuloCarrito(
+        id=3004,
+        nombre="Bolsa de Papel Kraft Marrón para Hamburguesas y Delivery (22x10x30 cm)",
+        descripcion="Receta",
+        cantidad=1000,
+        imagen="bolsas-sin-m.svg",
+        calculo=None,
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # Bobina: kg_por_unidad(gramaje=100) ~= 0.02775 kg/u * 1000 u * $1.0/kg = 27.75
+    # Confección: 0.08 * 1000 = 80
+    assert round(precio, 2) == 107.75
+
+
 def test_cotizador_servicio_con_catalogo_mock():
     variacion = VariacionProducto(
         id=1,

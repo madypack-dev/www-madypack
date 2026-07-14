@@ -14,6 +14,7 @@ TARIFAS = {
     "pegado": 0.10,
     "confeccion": 0.08,
     "fotopolimero": 0.05,
+    "bobina_kg": 1.0,
     "fijo_matriz": 1500.00,
 }
 
@@ -61,14 +62,25 @@ class CotizadorServicio:
     def _calcular_compuesto(self, compuesto: ProductoBien, cantidad: int) -> float:
         total = 0.0
         for componente in compuesto.componentes:
-            item = self.catalogo.resolver_componente(componente)
-            if item is None:
-                raise ValueError(
-                    f"Componente {componente.referencia_id} no encontrado en el compuesto {compuesto.id}."
-                )
-
-            subtotal = self._calculador.calcular(
-                item.calculo, self._conceptos, cantidad * componente.cantidad
-            )
+            subtotal = self._calcular_componente(componente, cantidad)
             total += subtotal
         return total
+
+    def _calcular_componente(self, componente, cantidad: int) -> float:
+        if componente.medidas is not None:
+            kg_necesarios = (
+                componente.medidas.kg_por_unidad(componente.gramaje)
+                * cantidad
+                * componente.cantidad
+            )
+            return kg_necesarios * self._conceptos.get("bobina_kg", 0.0)
+
+        item = self.catalogo.resolver_componente(componente)
+        if item is None:
+            raise ValueError(
+                f"Componente {componente.referencia_id} no encontrado en el componente."
+            )
+
+        return self._calculador.calcular(
+            item.calculo, self._conceptos, cantidad * componente.cantidad
+        )

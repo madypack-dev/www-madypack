@@ -1,7 +1,7 @@
 from src.domain.commerce.cart import CalculoArticulo
 from src.domain.commerce.catalog import VariacionProducto
 from src.domain.commerce.catalog_repository import ICatalogRepository
-from src.domain.commerce.product import ComponenteBien, ProductoBien, ProductoServicio
+from src.domain.commerce.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
 
 
 class HardcodedCatalogRepository(ICatalogRepository):
@@ -49,9 +49,13 @@ class HardcodedCatalogRepository(ICatalogRepository):
             for color in ["Marrón", "Blanco"]:
                 color_name = "Kraft Marrón" if color == "Marrón" else "Blanca"
                 color_slug = "marron" if color == "Marrón" else "blanco"
-                es_visible = f["codigo"] == "221030" and color == "Marrón"
-                nombre_prod = f"Bolsa de Papel {color_name} {f['rubro']} ({f['medidas']})"
+                # Los bienes simples de bolsa no son visibles; los formatos visibles
+                # se exponen como compuestos (bobina + confección).
+                es_visible_simple = False
                 slug = f"bolsa-de-papel-{color_slug}-{f['codigo']}"
+                if f["codigo"] == "221030" and color == "Marrón":
+                    slug = f"{slug}-base"
+                nombre_prod = f"Bolsa de Papel {color_name} {f['rubro']} ({f['medidas']})"
                 desc = (
                     f"Bolsa de papel de color {color.lower()} y formato {f['medidas']} "
                     f"(Modelo {f['codigo']}). Diseñada especialmente {f['rubro']}. "
@@ -80,11 +84,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
                             else (1000 if "1 o 2" in impresion else 3000)
                         )
 
-                        variacion_visible = (
-                            es_visible
-                            and manija == "Sin Manija"
-                            and "Lisa" in impresion
-                        )
+                        variacion_visible = False
 
                         calculo = self._calculo_bolsa(manija, impresion)
 
@@ -117,7 +117,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
                     },
                     variaciones=variaciones,
                     componentes=[],
-                    visible=es_visible,
+                    visible=es_visible_simple,
                 )
 
                 for variacion in variaciones:
@@ -403,23 +403,26 @@ class HardcodedCatalogRepository(ICatalogRepository):
             ],
         )
 
-        # "Bolsas de papel" como bobina + confección
+        # "Bolsas de papel" 22x10x30 como bobina + confección (producto visible)
         bolsa_de_papel = ProductoBien(
             tipo="bien",
             id=3004,
-            nombre="Bolsas de Papel",
-            descripcion="Bolsa de papel resultado de bobina de papel + servicio de confección.",
-            slug="bolsas-de-papel",
+            nombre="Bolsa de Papel Kraft Marrón para Hamburguesas y Delivery (22x10x30 cm)",
+            descripcion="Bolsa de papel resultado de bobina de papel kraft + servicio de confección.",
+            slug="bolsa-de-papel-marron-221030",
             imagen="bolsas-sin-m.svg",
             cantidad_por_defecto=1000,
             atributos_posibles={},
             variaciones=[],
+            visible=True,
             componentes=[
                 ComponenteBien(
                     tipo="variacion",
                     referencia_id=bobina.variaciones[0].id,
                     cantidad=1,
                     nombre=bobina.nombre,
+                    medidas=MedidasBolsa(ancho=22, fuelle=10, alto=30),
+                    gramaje=100,
                 ),
                 ComponenteBien(
                     tipo="servicio",

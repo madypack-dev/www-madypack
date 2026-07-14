@@ -18,7 +18,7 @@ def test_hardcoded_catalog_repository_operations():
     assert repo.obtener_por_id(99) is None
 
     # Obtener por slug
-    assert repo.obtener_por_slug("bolsa-de-papel-marron-221030").id == 1007
+    assert repo.obtener_por_slug("bolsa-de-papel-marron-221030").id == 3004
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
@@ -59,10 +59,16 @@ def test_hardcoded_catalog_repository_operations():
     assert isinstance(confeccion, ProductoServicio)
     assert confeccion.visible
 
-    # Ejemplo: bolsas de papel = bobina + confección
-    bolsas = repo.obtener_por_id(3004)
-    assert isinstance(bolsas, ProductoBien)
-    assert bolsas.es_compuesto
-    assert bolsas.nombre == "Bolsas de Papel"
-    assert any(c.nombre == "Confección de Bolsas de Papel" for c in bolsas.componentes)
-    assert any(c.nombre == "Bobina de Papel" for c in bolsas.componentes)
+    # Bolsa visible es el compuesto 22x10x30 con medidas
+    bolsa_visible = repo.obtener_por_id(3004)
+    assert isinstance(bolsa_visible, ProductoBien)
+    assert bolsa_visible.visible
+    assert bolsa_visible.es_compuesto
+    assert bolsa_visible.nombre == "Bolsa de Papel Kraft Marrón para Hamburguesas y Delivery (22x10x30 cm)"
+    componente_bobina = next(
+        c for c in bolsa_visible.componentes if c.nombre == "Bobina de Papel"
+    )
+    assert componente_bobina.medidas is not None
+    assert componente_bobina.medidas.ancho == 22
+    assert componente_bobina.gramaje == 100
+    assert any(c.nombre == "Confección de Bolsas de Papel" for c in bolsa_visible.componentes)

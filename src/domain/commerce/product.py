@@ -10,6 +10,30 @@ from src.domain.commerce.cart import CalculoArticulo
 from src.domain.commerce.catalog import VariacionProducto
 
 
+class MedidasBolsa(BaseModel):
+    """Medidas de una bolsa para calcular el consumo de bobina de papel."""
+
+    model_config = {"frozen": True}
+
+    ancho: float   # cm
+    fuelle: float  # cm
+    alto: float    # cm
+
+    def kg_por_unidad(
+        self,
+        gramaje: int = 100,      # gr/m²
+        solap_cm: float = 3.5,
+        rendimiento: float = 0.9,
+    ) -> float:
+        """Devuelve los kg de bobina necesarios para producir una unidad."""
+        ancho_bobina_cm = (self.ancho * 2) + (self.fuelle * 2) + solap_cm
+        largo_cutoff_cm = self.alto + (self.fuelle / 2) + 2
+        superficie_m2 = (ancho_bobina_cm / 100) * (largo_cutoff_cm / 100)
+        peso_g = superficie_m2 * gramaje
+        peso_kg = peso_g / 1000
+        return peso_kg / rendimiento
+
+
 class ComponenteBien(BaseModel):
     """Componente de un bien, ya sea una variación de otro bien o un servicio."""
 
@@ -19,6 +43,8 @@ class ComponenteBien(BaseModel):
     referencia_id: int
     cantidad: int = Field(1, ge=1)
     nombre: str
+    medidas: MedidasBolsa | None = None
+    gramaje: int = Field(default=100, ge=1)
 
 
 class ProductoBien(BaseModel):

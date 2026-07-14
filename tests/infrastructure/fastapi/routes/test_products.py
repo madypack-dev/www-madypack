@@ -12,14 +12,15 @@ def client():
 
 
 class TestProductosEndpoints:
-    def test_get_producto_existente_retorna_200_con_schema(self, client):
-        # Producto visible: Bolsa de Papel Kraft Marrón 22x10x30 cm
+    def test_get_producto_visible_retorna_200_con_schema(self, client):
+        # Producto visible: compuesto Bolsa de Papel Kraft Marrón 22x10x30 cm
         response = client.get("/productos/bolsa-de-papel-marron-221030/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
         assert "Bolsa de Papel Kraft Marrón" in response.text
-        assert "B-221030-M-SOS-L" in response.text
+        assert "Bobina de Papel" in response.text
+        assert "Confección de Bolsas de Papel" in response.text
 
         # Verificar que contiene las breadcrumbs
         assert "Inicio" in response.text
@@ -30,14 +31,14 @@ class TestProductosEndpoints:
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
 
+    def test_get_variante_simple_no_visible_retorna_404(self, client):
+        response = client.get("/productos/bolsa-de-papel-marron-221030-base/", headers={"host": "localhost:8000"})
+        assert response.status_code == 404
+
     def test_get_servicio_visible_retorna_200(self, client):
         response = client.get("/productos/confeccion-de-bolsas/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         assert "Confección de Bolsas de Papel" in response.text
-
-    def test_get_producto_no_visible_retorna_404(self, client):
-        response = client.get("/productos/bolsa-de-papel-marron-120819/", headers={"host": "localhost:8000"})
-        assert response.status_code == 404
 
     def test_sitemap_xml_incluye_urls_de_productos_visibles(self, client):
         response = client.get("/sitemap.xml", headers={"host": "localhost:8000"})

@@ -5,6 +5,7 @@ from src.domain.commerce.cart import Carrito, ArticuloCarrito, CalculoArticulo
 from src.domain.commerce.catalog import VariacionProducto
 from src.domain.commerce.product import (
     ComponenteBien,
+    MedidasBolsa,
     ProductoBien,
     ProductoServicio,
 )
@@ -82,6 +83,20 @@ def test_carrito_operaciones():
     assert carrito.eliminar_articulo(1) is True
     assert carrito.total_bolsas == 200
     assert carrito.eliminar_articulo(99) is False
+
+
+def test_medidas_bolsa_kg_por_unidad():
+    medidas = MedidasBolsa(ancho=22, fuelle=10, alto=30)
+    kg = medidas.kg_por_unidad(gramaje=100, solap_cm=3.5, rendimiento=0.9)
+
+    # ancho_bobina = 22*2 + 10*2 + 3.5 = 67.5 cm
+    # largo_cutoff = 30 + 10/2 + 2 = 37 cm
+    # superficie = 0.675 * 0.37 = 0.24975 m²
+    # peso_g = 0.24975 * 100 = 24.975 g
+    # peso_kg = 0.024975
+    # kg / rendimiento = 0.02775...
+    assert kg > 0
+    assert round(kg, 5) == 0.02775
 
 
 def test_producto_bien_simple():
