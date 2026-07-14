@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none">
+  <circle cx="60" cy="60" r="60" fill="#FBE5D2"/>
+  <!-- Cuerpo del cilindro -->
+  <path d="M35 42 h50 v48 h-50 z" fill="#FBE5D2" stroke="#B6590D" stroke-width="1.5"/>
+  <!-- Tapa superior (elipse) -->
+  <ellipse cx="60" cy="42" rx="25" ry="10" fill="#FBE5D2" stroke="#B6590D" stroke-width="1.5"/>
+  <!-- Tapa inferior (elipse) -->
+  <ellipse cx="60" cy="90" rx="25" ry="10" fill="#FBE5D2" stroke="#B6590D" stroke-width="1.5"/>
+  <!-- Indicación de rollo en la tapa superior -->
+  <ellipse cx="60" cy="42" rx="12" ry="5" fill="none" stroke="#B6590D" stroke-width="1.5"/>
+  <path d="M60 42 a12 5 0 0 1 -9 -2" stroke="#B6590D" stroke-width="1.5" fill="none"/>
+</svg>

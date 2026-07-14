@@ -5,9 +5,9 @@ from src.domain.commerce.product import ProductoBien, ProductoServicio
 def test_hardcoded_catalog_repository_operations():
     repo = HardcodedCatalogRepository()
 
-    # 12 bolsas + 3 componentes + 4 compuestos + 3 servicios = 22
+    # 12 bolsas + 4 componentes + 4 compuestos + 3 servicios = 23
     productos = repo.obtener_todos()
-    assert len(productos) == 22
+    assert len(productos) == 23
     assert productos[0].nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
     assert productos[0].tipo == "bien"
     assert not productos[0].es_compuesto
@@ -18,13 +18,13 @@ def test_hardcoded_catalog_repository_operations():
     assert repo.obtener_por_id(99) is None
 
     # Obtener por slug
-    assert repo.obtener_por_slug("bolsa-de-papel-blanco-301241").id == 1012
+    assert repo.obtener_por_slug("bolsa-de-papel-marron-221030").id == 1007
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
     assert len(repo.buscar("Farmacia")) == 2
     assert len(repo.buscar("inexistente")) == 0
-    assert len(repo.buscar("")) == 22
+    assert len(repo.buscar("")) == 23
 
     # Obtener variación por id
     res = repo.obtener_variacion_por_id(1)
@@ -48,9 +48,21 @@ def test_hardcoded_catalog_repository_operations():
     assert compuesto.nombre == "Bolsa de Papel con Manija Cordón"
     assert len(compuesto.componentes) == 3
 
+    # Bobina de papel visible
+    bobina = repo.obtener_por_id(1104)
+    assert isinstance(bobina, ProductoBien)
+    assert bobina.visible
+    assert bobina.nombre == "Bobina de Papel"
+
+    # Servicio de confección visible
+    confeccion = repo.obtener_por_id(2003)
+    assert isinstance(confeccion, ProductoServicio)
+    assert confeccion.visible
+
     # Ejemplo: bolsas de papel = bobina + confección
     bolsas = repo.obtener_por_id(3004)
     assert isinstance(bolsas, ProductoBien)
     assert bolsas.es_compuesto
     assert bolsas.nombre == "Bolsas de Papel"
     assert any(c.nombre == "Confección de Bolsas de Papel" for c in bolsas.componentes)
+    assert any(c.nombre == "Bobina de Papel" for c in bolsas.componentes)

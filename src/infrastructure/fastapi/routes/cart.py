@@ -14,7 +14,7 @@ from src.application.commerce.cart_use_cases import (
 )
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
-from src.domain.commerce.product import ProductoBien
+from src.domain.commerce.product import ProductoBien, ProductoServicio
 from src.infrastructure.fastapi.dependencies import (
     get_repositorio_carrito,
     get_repositorio_catalogo,
@@ -43,7 +43,11 @@ async def ver_tienda(
     sitio = cargar_site()
     query_filtrada = q.strip() if q else ""
     todos = repositorio_catalogo.buscar(query_filtrada)
-    productos = [p for p in todos if isinstance(p, ProductoBien) and p.visible]
+    productos = [
+        p
+        for p in todos
+        if (isinstance(p, ProductoBien) or isinstance(p, ProductoServicio)) and p.visible
+    ]
 
     return templates.TemplateResponse(
         request=request,
@@ -64,14 +68,34 @@ async def ver_producto(
     if producto_encontrado is None:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
-    if not isinstance(producto_encontrado, ProductoBien) or not producto_encontrado.visible:
+    if (
+        not isinstance(producto_encontrado, (ProductoBien, ProductoServicio))
+        or not producto_encontrado.visible
+    ):
         raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    # Servicios se renderizan con su propia plantilla
+    if isinstance(producto_encontrado, ProductoServicio):
+        relacionados = [
+            p
+            for p in repositorio_catalogo.obtener_todos()
+            if isinstance(p, (ProductoBien, ProductoServicio)) and p.visible and p.id != producto_encontrado.id
+        ][:3]
+        return templates.TemplateResponse(
+            request=request,
+            name="pages/servicio.html",
+            context={
+                "site": sitio,
+                "producto": producto_encontrado,
+                "relacionados": relacionados,
+            },
+        )
 
     # Obtener hasta 3 productos relacionados (solo comercializables y visibles)
     productos = [
         p
         for p in repositorio_catalogo.obtener_todos()
-        if isinstance(p, ProductoBien) and p.visible
+        if isinstance(p, (ProductoBien, ProductoServicio)) and p.visible
     ]
     relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
 

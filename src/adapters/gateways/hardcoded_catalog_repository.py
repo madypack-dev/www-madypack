@@ -21,6 +21,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
 
         self._generar_bienes_bolsas()
         manija_plana, manija_cordon, fotopolimero = self._generar_bienes_componentes()
+        bobina = self._generar_bobina()
         pegado, impresion, confeccion = self._generar_servicios()
         self._generar_bienes_compuestos(
             manija_cordon=manija_cordon,
@@ -28,6 +29,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             pegado=pegado,
             impresion=impresion,
             confeccion=confeccion,
+            bobina=bobina,
         )
 
     def _generar_bienes_bolsas(self) -> None:
@@ -47,7 +49,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             for color in ["Marrón", "Blanco"]:
                 color_name = "Kraft Marrón" if color == "Marrón" else "Blanca"
                 color_slug = "marron" if color == "Marrón" else "blanco"
-                es_visible = f["codigo"] == "221030"
+                es_visible = f["codigo"] == "221030" and color == "Marrón"
                 nombre_prod = f"Bolsa de Papel {color_name} {f['rubro']} ({f['medidas']})"
                 slug = f"bolsa-de-papel-{color_slug}-{f['codigo']}"
                 desc = (
@@ -96,7 +98,6 @@ class HardcodedCatalogRepository(ICatalogRepository):
                             visible=variacion_visible,
                         )
                         variaciones.append(variacion)
-                        self._variaciones[var_id] = (None, variacion)  # se completa abajo
                         var_id += 1
 
                 producto = ProductoBien(
@@ -229,6 +230,34 @@ class HardcodedCatalogRepository(ICatalogRepository):
         self._productos.extend([manija_plana, manija_cordon, fotopolimero])
         return manija_plana, manija_cordon, fotopolimero
 
+    def _generar_bobina(self) -> ProductoBien:
+        var_id = 76
+        bobina = ProductoBien(
+            tipo="bien",
+            id=1104,
+            nombre="Bobina de Papel",
+            descripcion="Materia prima: bobina de papel kraft para confección de bolsas.",
+            slug="bobina-de-papel",
+            imagen="bobina-de-papel.svg",
+            atributos_posibles={"tipo": ["Kraft Marrón"]},
+            variaciones=[
+                VariacionProducto(
+                    id=var_id,
+                    sku="BOB-001",
+                    atributos={"tipo": "Kraft Marrón"},
+                    imagen="bobina-de-papel.svg",
+                    cantidad_por_defecto=1000,
+                    calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+                    visible=True,
+                )
+            ],
+            componentes=[],
+            visible=True,
+        )
+        self._variaciones[var_id] = (bobina, bobina.variaciones[0])
+        self._productos.append(bobina)
+        return bobina
+
     def _generar_servicios(self) -> tuple[ProductoServicio, ProductoServicio, ProductoServicio]:
         pegado = ProductoServicio(
             tipo="servicio",
@@ -259,6 +288,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             imagen="icon-hoja.svg",
             calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["confeccion"]),
             cantidad_por_defecto=1000,
+            visible=True,
         )
 
         self._servicios[pegado.id] = pegado
@@ -274,6 +304,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
         pegado: ProductoServicio,
         impresion: ProductoServicio,
         confeccion: ProductoServicio,
+        bobina: ProductoBien,
     ) -> None:
         # Variación de bolsa base: 12x8x19 cm, Marrón, Sin Manija, Lisa
         bolsa_base = self._variaciones.get(1)
@@ -372,8 +403,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             ],
         )
 
-        # Ejemplo adicional: "bolsas de papel" como bobina + confección
-        # Se usa una variación de bolsa base como representación de la bobina necesaria
+        # "Bolsas de papel" como bobina + confección
         bolsa_de_papel = ProductoBien(
             tipo="bien",
             id=3004,
@@ -387,9 +417,9 @@ class HardcodedCatalogRepository(ICatalogRepository):
             componentes=[
                 ComponenteBien(
                     tipo="variacion",
-                    referencia_id=variacion_bolsa_base.id,
+                    referencia_id=bobina.variaciones[0].id,
                     cantidad=1,
-                    nombre="Bobina de papel base",
+                    nombre=bobina.nombre,
                 ),
                 ComponenteBien(
                     tipo="servicio",

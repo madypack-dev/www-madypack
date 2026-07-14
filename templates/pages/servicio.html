@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ producto.nombre }} | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}{{ producto.descripcion }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs-wrapper">
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumbs">
+            <ol>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/productos/">Productos</a></li>
+                <li aria-current="page">{{ producto.nombre }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section product-detail-section">
+    <div class="container">
+        <div class="product-detail-grid">
+            <div class="product-visuals-details">
+                <div class="product-detail-image-box">
+                    <img src="{{ url_for('static', path='images/' ~ producto.imagen_principal) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
+                </div>
+                <div class="product-technical-info">
+                    <h1>{{ producto.nombre }}</h1>
+                    <p class="product-lead-text">{{ producto.descripcion }}</p>
+                    <div class="technical-tabs">
+                        <h2 class="tab-title">Detalle del servicio</h2>
+                        <ul class="specs-list">
+                            <li><strong>Tipo:</strong> Servicio</li>
+                            <li><strong>Disponibilidad:</strong> Producción bajo demanda.</li>
+                            <li><strong>Pedido Mínimo Sugerido:</strong> {{ producto.cantidad_por_defecto }} unidades.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-actions-card">
+                <div class="quote-action-box">
+                    <h2>Cotizar este servicio</h2>
+                    <p class="quote-action-sub">Este servicio se cotiza como parte de un producto compuesto. Contactanos para armar tu receta.</p>
+                    <a href="/contacto/" class="button button-primary btn-block">Contactar un Especialista</a>
+                </div>
+            </div>
+        </div>
+
+        {% if relacionados %}
+        <div class="related-products-section">
+            <h2>Productos relacionados</h2>
+            <div class="products-grid">
+                {% for rel in relacionados %}
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="{{ url_for('static', path='images/' ~ rel.imagen_principal) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3><a href="/productos/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
+                        <p class="description">{{ rel.descripcion }}</p>
+                        <a href="/productos/{{ rel.url_slug }}/" class="button button-secondary button-small">Ver detalles</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ producto.nombre }}",
+  "description": "{{ producto.descripcion }}",
+  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.imagen_principal) }}",
+  "provider": {
+    "@type": "Organization",
+    "name": "{{ site.site.brand }}"
+  },
+  "url": "{{ site.schema_config.url }}{{ request.url.path }}"
+}
+</script>
+{% endblock %}

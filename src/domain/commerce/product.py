@@ -35,7 +35,7 @@ class ProductoBien(BaseModel):
     atributos_posibles: dict[str, list[str]]
     variaciones: list[VariacionProducto]
     componentes: list[ComponenteBien] = []
-    cantidad_por_defecto: int = Field(100, ge=100)
+    cantidad_por_defecto: int = Field(default=100, ge=100)
     visible: bool = False
 
     @property
@@ -67,7 +67,8 @@ class ProductoServicio(BaseModel):
     slug: str | None = None
     imagen: str
     calculo: CalculoArticulo
-    cantidad_por_defecto: int = Field(100, ge=100)
+    cantidad_por_defecto: int = Field(default=100, ge=100)
+    visible: bool = False
 
     @property
     def url_slug(self) -> str:

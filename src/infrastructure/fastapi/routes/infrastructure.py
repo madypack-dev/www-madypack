@@ -104,8 +104,6 @@ async def sitemap_xml(
 
     product_urls = ""
     for producto in productos:
-        if getattr(producto, "tipo", None) == "servicio":
-            continue
         if not getattr(producto, "visible", False):
             continue
         product_urls += f"""  <url>

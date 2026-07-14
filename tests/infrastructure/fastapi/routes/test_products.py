@@ -30,6 +30,11 @@ class TestProductosEndpoints:
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
 
+    def test_get_servicio_visible_retorna_200(self, client):
+        response = client.get("/productos/confeccion-de-bolsas/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Confección de Bolsas de Papel" in response.text
+
     def test_get_producto_no_visible_retorna_404(self, client):
         response = client.get("/productos/bolsa-de-papel-marron-120819/", headers={"host": "localhost:8000"})
         assert response.status_code == 404
@@ -39,17 +44,18 @@ class TestProductosEndpoints:
         assert response.status_code == 200
         assert "application/xml" in response.headers["content-type"]
 
-        # Debe contener URLs de productos visibles
+        # Debe contener URLs de productos/servicios visibles
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bobina-de-papel/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/confeccion-de-bolsas/</loc>" in response.text
         # No debe contener productos no visibles
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819/</loc>" not in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" not in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
-        # Búsqueda con coincidencia en producto visible
-        response = client.get("/productos/?q=Blanca", headers={"host": "localhost:8000"})
+        # Búsqueda con coincidencia en producto/servicio visible
+        response = client.get("/productos/?q=Bobina", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsa de Papel Blanca" in response.text
+        assert "Bobina de Papel" in response.text
 
         # Debe incluir la directiva noindex, nofollow para SEO
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
