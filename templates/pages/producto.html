@@ -33,7 +33,7 @@
                         <h2 class="tab-title">Especificaciones Técnicas</h2>
                         <ul class="specs-list">
                             {% if not producto.es_compuesto %}
-                            <li><strong>SKU Variante:</strong> <span id="product-sku">{{ producto.variaciones[0].sku }}</span></li>
+                            <li><strong>SKU Variante:</strong> <span id="product-sku">{{ variacion_inicial.sku }}</span></li>
                             <li><strong>Gramaje del Papel:</strong> <span id="product-gramaje">80 gr/m²</span></li>
                             {% else %}
                             <li><strong>Componentes:</strong>
@@ -46,7 +46,7 @@
                             {% endif %}
                             <li><strong>Disponibilidad:</strong> Producción bajo demanda y stock comercial.</li>
                             <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">
-                                {% if not producto.es_compuesto %}{{ producto.variaciones[0].cantidad_por_defecto }}{% else %}{{ producto.cantidad_por_defecto }}{% endif %} unidades.
+                                {% if not producto.es_compuesto %}{{ variacion_inicial.cantidad_por_defecto }}{% else %}{{ producto.cantidad_por_defecto }}{% endif %} unidades.
                             </span></li>
                             <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones de calidad de Cooperativa Madygraf.</li>
                         </ul>
@@ -64,10 +64,10 @@
                         <input type="hidden" name="producto_id" value="{{ producto.id }}">
                         
                         {% if not producto.es_compuesto %}
-                        <input type="hidden" name="variacion_id" id="variacion-id" value="{{ producto.variaciones[0].id }}">
+                        <input type="hidden" name="variacion_id" id="variacion-id" value="{{ variacion_inicial.id }}">
                         
                         <!-- Selectores de Opciones de Variación -->
-                        {% for attr_name, attr_values in producto.atributos_posibles.items() %}
+                        {% for attr_name, attr_values in atributos_posibles.items() %}
                         <div class="form-field">
                             <label for="attr-{{ attr_name }}"><strong>{{ attr_name | capitalize }}:</strong></label>
                             <select id="attr-{{ attr_name }}" class="variation-selector" data-attribute="{{ attr_name }}">

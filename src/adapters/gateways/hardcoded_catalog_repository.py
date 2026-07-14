@@ -47,6 +47,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             for color in ["Marrón", "Blanco"]:
                 color_name = "Kraft Marrón" if color == "Marrón" else "Blanca"
                 color_slug = "marron" if color == "Marrón" else "blanco"
+                es_visible = f["codigo"] == "221030"
                 nombre_prod = f"Bolsa de Papel {color_name} {f['rubro']} ({f['medidas']})"
                 slug = f"bolsa-de-papel-{color_slug}-{f['codigo']}"
                 desc = (
@@ -77,6 +78,12 @@ class HardcodedCatalogRepository(ICatalogRepository):
                             else (1000 if "1 o 2" in impresion else 3000)
                         )
 
+                        variacion_visible = (
+                            es_visible
+                            and manija == "Sin Manija"
+                            and "Lisa" in impresion
+                        )
+
                         calculo = self._calculo_bolsa(manija, impresion)
 
                         variacion = VariacionProducto(
@@ -86,6 +93,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
                             imagen=imagen,
                             cantidad_por_defecto=moq,
                             calculo=calculo,
+                            visible=variacion_visible,
                         )
                         variaciones.append(variacion)
                         self._variaciones[var_id] = (None, variacion)  # se completa abajo
@@ -108,6 +116,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
                     },
                     variaciones=variaciones,
                     componentes=[],
+                    visible=es_visible,
                 )
 
                 for variacion in variaciones:

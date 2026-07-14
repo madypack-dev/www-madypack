@@ -30,9 +30,11 @@ def _producto_bien_simple() -> ProductoBien:
                 imagen="img.png",
                 cantidad_por_defecto=100,
                 calculo=None,
+                visible=True,
             )
         ],
         componentes=[],
+        visible=True,
     )
 
 
@@ -47,6 +49,7 @@ def _producto_bien_compuesto() -> ProductoBien:
         cantidad_por_defecto=1000,
         atributos_posibles={},
         variaciones=[],
+        visible=True,
         componentes=[
             ComponenteBien(
                 tipo="variacion",

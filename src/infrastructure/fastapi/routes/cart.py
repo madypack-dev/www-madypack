@@ -43,7 +43,7 @@ async def ver_tienda(
     sitio = cargar_site()
     query_filtrada = q.strip() if q else ""
     todos = repositorio_catalogo.buscar(query_filtrada)
-    productos = [p for p in todos if isinstance(p, ProductoBien)]
+    productos = [p for p in todos if isinstance(p, ProductoBien) and p.visible]
 
     return templates.TemplateResponse(
         request=request,
@@ -64,20 +64,27 @@ async def ver_producto(
     if producto_encontrado is None:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
-    if not isinstance(producto_encontrado, ProductoBien):
+    if not isinstance(producto_encontrado, ProductoBien) or not producto_encontrado.visible:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
-    # Obtener hasta 3 productos relacionados (solo comercializables)
+    # Obtener hasta 3 productos relacionados (solo comercializables y visibles)
     productos = [
         p
         for p in repositorio_catalogo.obtener_todos()
-        if isinstance(p, ProductoBien)
+        if isinstance(p, ProductoBien) and p.visible
     ]
     relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
 
     variaciones_json = "[]"
+    atributos_posibles = {}
+    variacion_inicial = None
     if not producto_encontrado.es_compuesto:
         import json
+        visible_variaciones = [v for v in producto_encontrado.variaciones if v.visible]
+        if not visible_variaciones:
+            raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+        variacion_inicial = visible_variaciones[0]
         variaciones_list = [
             {
                 "id": v.id,
@@ -86,9 +93,14 @@ async def ver_producto(
                 "imagen": v.imagen,
                 "cantidad_por_defecto": v.cantidad_por_defecto,
             }
-            for v in producto_encontrado.variaciones
+            for v in visible_variaciones
         ]
         variaciones_json = json.dumps(variaciones_list)
+
+        # Calcular atributos posibles restringidos a las variaciones visibles
+        atributos_posibles = _atributos_desde_variaciones(
+            producto_encontrado.atributos_posibles, visible_variaciones
+        )
 
     return templates.TemplateResponse(
         request=request,
@@ -98,8 +110,26 @@ async def ver_producto(
             "producto": producto_encontrado,
             "relacionados": relacionados,
             "variaciones_json": variaciones_json,
+            "atributos_posibles": atributos_posibles,
+            "variacion_inicial": variacion_inicial,
         },
     )
+
+
+def _atributos_desde_variaciones(
+    atributos_posibles: dict[str, list[str]],
+    variaciones: list,
+) -> dict[str, list[str]]:
+    """Filtra los atributos posibles dejando solo los valores presentes en las variaciones."""
+    valores_usados: dict[str, set[str]] = {}
+    for variacion in variaciones:
+        for attr, valor in variacion.atributos.items():
+            valores_usados.setdefault(attr, set()).add(valor)
+
+    return {
+        attr: [valor for valor in atributos_posibles.get(attr, []) if valor in valores_usados.get(attr, set())]
+        for attr in atributos_posibles
+    }
 
 
 @router.post("/cart/agregar")

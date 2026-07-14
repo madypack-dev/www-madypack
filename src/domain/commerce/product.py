@@ -36,6 +36,7 @@ class ProductoBien(BaseModel):
     variaciones: list[VariacionProducto]
     componentes: list[ComponenteBien] = []
     cantidad_por_defecto: int = Field(100, ge=100)
+    visible: bool = False
 
     @property
     def es_compuesto(self) -> bool:

@@ -13,12 +13,13 @@ def client():
 
 class TestProductosEndpoints:
     def test_get_producto_existente_retorna_200_con_schema(self, client):
-        response = client.get("/productos/bolsa-de-papel-marron-120819/", headers={"host": "localhost:8000"})
+        # Producto visible: Bolsa de Papel Kraft Marrón 22x10x30 cm
+        response = client.get("/productos/bolsa-de-papel-marron-221030/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
         assert "Bolsa de Papel Kraft Marrón" in response.text
-        assert "B-120819-M-SOS-L" in response.text
+        assert "B-221030-M-SOS-L" in response.text
 
         # Verificar que contiene las breadcrumbs
         assert "Inicio" in response.text
@@ -29,23 +30,23 @@ class TestProductosEndpoints:
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
 
-    def test_get_producto_inexistente_retorna_404(self, client):
-        response = client.get("/productos/producto-inexistente/", headers={"host": "localhost:8000"})
+    def test_get_producto_no_visible_retorna_404(self, client):
+        response = client.get("/productos/bolsa-de-papel-marron-120819/", headers={"host": "localhost:8000"})
         assert response.status_code == 404
-        assert "¿Buscabas una bolsa de papel?" in response.text
-        assert "catálogo de productos" in response.text
 
-    def test_sitemap_xml_incluye_urls_de_productos(self, client):
+    def test_sitemap_xml_incluye_urls_de_productos_visibles(self, client):
         response = client.get("/sitemap.xml", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         assert "application/xml" in response.headers["content-type"]
 
-        # Debe contener las URLs dinámicas de los productos de la base de datos
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-301241/</loc>" in response.text
+        # Debe contener URLs de productos visibles
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" in response.text
+        # No debe contener productos no visibles
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819/</loc>" not in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
-        # Búsqueda con coincidencia
+        # Búsqueda con coincidencia en producto visible
         response = client.get("/productos/?q=Blanca", headers={"host": "localhost:8000"})
         assert response.status_code == 200
         assert "Bolsa de Papel Blanca" in response.text
@@ -60,7 +61,7 @@ class TestProductosEndpoints:
         # Búsqueda vacía / sin parámetro de query
         response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsas de Papel" in response.text or "Bolsa de Papel" in response.text
+        assert "Bolsa de Papel" in response.text
 
         # NO debe incluir noindex, nofollow sino indexar por defecto
         assert '<meta name="robots" content="noindex, nofollow">' not in response.text

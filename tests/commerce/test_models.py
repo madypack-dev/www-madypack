@@ -91,6 +91,7 @@ def test_producto_bien_simple():
         atributos={"color": "Marrón"},
         imagen="bolsa.svg",
         cantidad_por_defecto=1000,
+        visible=True,
     )
     producto = ProductoBien(
         tipo="bien",
@@ -102,6 +103,7 @@ def test_producto_bien_simple():
         atributos_posibles={"color": ["Marrón"]},
         variaciones=[variacion],
         componentes=[],
+        visible=True,
     )
     assert producto.tipo == "bien"
     assert not producto.es_compuesto
@@ -120,6 +122,7 @@ def test_producto_bien_compuesto():
         cantidad_por_defecto=1000,
         atributos_posibles={},
         variaciones=[],
+        visible=True,
         componentes=[
             ComponenteBien(
                 tipo="variacion",

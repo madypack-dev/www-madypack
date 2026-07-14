@@ -16,6 +16,7 @@ class VariacionProducto(BaseModel):
     imagen: str
     cantidad_por_defecto: int = Field(1000, ge=100)
     calculo: CalculoArticulo | None = None
+    visible: bool = False
 
     @field_validator("cantidad_por_defecto")
     @classmethod
