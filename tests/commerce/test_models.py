@@ -1,12 +1,21 @@
 import pytest
 from pydantic import ValidationError
+
 from src.domain.commerce.cart import Carrito, ArticuloCarrito, CalculoArticulo
+from src.domain.commerce.catalog import VariacionProducto
+from src.domain.commerce.product import (
+    ComponenteBien,
+    ProductoBien,
+    ProductoServicio,
+)
+
 
 def test_calculo_articulo():
     calculo = CalculoArticulo(tipo="unidad", conceptos=["base"], concepto_fijo="fijo")
     assert calculo.tipo == "unidad"
     assert "base" in calculo.conceptos
     assert calculo.concepto_fijo == "fijo"
+
 
 def test_articulo_carrito_valido():
     articulo = ArticuloCarrito(
@@ -19,6 +28,7 @@ def test_articulo_carrito_valido():
     assert articulo.id == 1
     assert articulo.cantidad == 100
 
+
 def test_articulo_carrito_cantidad_invalida_no_multiplo():
     with pytest.raises(ValidationError) as exc_info:
         ArticuloCarrito(
@@ -30,6 +40,7 @@ def test_articulo_carrito_cantidad_invalida_no_multiplo():
         )
     assert "La cantidad debe ser múltiplo de 100." in str(exc_info.value)
 
+
 def test_articulo_carrito_cantidad_invalida_menor_que_100():
     with pytest.raises(ValidationError):
         ArticuloCarrito(
@@ -39,6 +50,7 @@ def test_articulo_carrito_cantidad_invalida_menor_que_100():
             cantidad=50,
             imagen="imagen.png"
         )
+
 
 def test_carrito_operaciones():
     carrito = Carrito()
@@ -70,3 +82,84 @@ def test_carrito_operaciones():
     assert carrito.eliminar_articulo(1) is True
     assert carrito.total_bolsas == 200
     assert carrito.eliminar_articulo(99) is False
+
+
+def test_producto_bien_simple():
+    variacion = VariacionProducto(
+        id=1,
+        sku="B-001",
+        atributos={"color": "Marrón"},
+        imagen="bolsa.svg",
+        cantidad_por_defecto=1000,
+    )
+    producto = ProductoBien(
+        tipo="bien",
+        id=1001,
+        nombre="Bolsa de Papel",
+        descripcion="Bolsa kraft",
+        slug="bolsa-de-papel",
+        imagen="bolsa.svg",
+        atributos_posibles={"color": ["Marrón"]},
+        variaciones=[variacion],
+        componentes=[],
+    )
+    assert producto.tipo == "bien"
+    assert not producto.es_compuesto
+    assert producto.url_slug == "bolsa-de-papel"
+    assert producto.imagen_principal == "bolsa.svg"
+
+
+def test_producto_bien_compuesto():
+    compuesto = ProductoBien(
+        tipo="bien",
+        id=3001,
+        nombre="Bolsa con Manija",
+        descripcion="Receta fija",
+        slug="bolsa-con-manija",
+        imagen="compuesto.svg",
+        cantidad_por_defecto=1000,
+        atributos_posibles={},
+        variaciones=[],
+        componentes=[
+            ComponenteBien(
+                tipo="variacion",
+                referencia_id=1,
+                cantidad=1,
+                nombre="Bolsa base",
+            ),
+            ComponenteBien(
+                tipo="servicio",
+                referencia_id=2001,
+                cantidad=1,
+                nombre="Pegado",
+            ),
+        ],
+    )
+    assert compuesto.tipo == "bien"
+    assert compuesto.es_compuesto
+    assert compuesto.url_slug == "bolsa-con-manija"
+    assert len(compuesto.componentes) == 2
+
+
+def test_producto_servicio():
+    servicio = ProductoServicio(
+        tipo="servicio",
+        id=2001,
+        nombre="Pegado",
+        descripcion="Pegado de manijas",
+        slug="pegado",
+        imagen="servicio.svg",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["pegado"]),
+    )
+    assert servicio.tipo == "servicio"
+    assert servicio.url_slug == "pegado"
+
+
+def test_componente_bien_cantidad_invalida():
+    with pytest.raises(ValidationError):
+        ComponenteBien(
+            tipo="variacion",
+            referencia_id=1,
+            cantidad=0,
+            nombre="Bolsa base",
+        )

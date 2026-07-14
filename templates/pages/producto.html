@@ -22,7 +22,7 @@
             <!-- Columna Izquierda: Imagen y Ficha Técnica -->
             <div class="product-visuals-details">
                 <div class="product-detail-image-box">
-                    <img src="{{ url_for('static', path='images/' ~ producto.variaciones[0].imagen) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
+                    <img src="{{ url_for('static', path='images/' ~ producto.imagen_principal) }}" alt="{{ producto.nombre }}" width="300" height="300" decoding="async">
                 </div>
                 
                 <div class="product-technical-info">
@@ -32,10 +32,22 @@
                     <div class="technical-tabs">
                         <h2 class="tab-title">Especificaciones Técnicas</h2>
                         <ul class="specs-list">
+                            {% if not producto.es_compuesto %}
                             <li><strong>SKU Variante:</strong> <span id="product-sku">{{ producto.variaciones[0].sku }}</span></li>
                             <li><strong>Gramaje del Papel:</strong> <span id="product-gramaje">80 gr/m²</span></li>
+                            {% else %}
+                            <li><strong>Componentes:</strong>
+                                <ul>
+                                    {% for componente in producto.componentes %}
+                                    <li>{{ componente.nombre }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endif %}
                             <li><strong>Disponibilidad:</strong> Producción bajo demanda y stock comercial.</li>
-                            <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">{{ producto.variaciones[0].cantidad_por_defecto }} unidades.</span></li>
+                            <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">
+                                {% if not producto.es_compuesto %}{{ producto.variaciones[0].cantidad_por_defecto }}{% else %}{{ producto.cantidad_por_defecto }}{% endif %} unidades.
+                            </span></li>
                             <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones de calidad de Cooperativa Madygraf.</li>
                         </ul>
                     </div>
@@ -49,7 +61,10 @@
                     <p class="quote-action-sub">Seleccioná las opciones y la cantidad para agregar a tu lista de cotización comercial.</p>
                     
                     <form action="/cart/agregar" method="post" class="add-to-cart-form-detail">
-                        <input type="hidden" name="id_articulo" value="{{ producto.variaciones[0].id }}">
+                        <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                        
+                        {% if not producto.es_compuesto %}
+                        <input type="hidden" name="variacion_id" id="variacion-id" value="{{ producto.variaciones[0].id }}">
                         
                         <!-- Selectores de Opciones de Variación -->
                         {% for attr_name, attr_values in producto.atributos_posibles.items() %}
@@ -73,6 +88,13 @@
                         <div class="lead-delivery-box" style="margin-top: 15px; margin-bottom: 15px; padding: 12px; background: #f0f7f4; border-left: 4px solid #3E8E5A; border-radius: 6px; font-size: 13.5px;">
                             <strong>Tiempo de entrega estimado:</strong> <span id="delivery-time">3 a 5 días hábiles</span>
                         </div>
+                        {% else %}
+                        <div class="form-field">
+                            <label for="cant-detail"><strong>Cantidad del Lote:</strong></label>
+                            <input type="number" id="cant-detail" name="cantidad" value="{{ producto.cantidad_por_defecto }}" min="100" step="100" required>
+                            <span class="field-hint">Múltiplos de 100 unidades.</span>
+                        </div>
+                        {% endif %}
                         
                         <button type="submit" class="button button-primary btn-block">Agregar a mi cotización</button>
                     </form>
@@ -94,7 +116,7 @@
                 {% for rel in relacionados %}
                 <div class="product-card">
                     <div class="product-image-container">
-                        <img src="{{ url_for('static', path='images/' ~ rel.variaciones[0].imagen) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
+                        <img src="{{ url_for('static', path='images/' ~ rel.imagen_principal) }}" alt="{{ rel.nombre }}" class="product-image" width="120" height="120" loading="lazy">
                     </div>
                     <div class="product-info">
                         <h3><a href="/productos/{{ rel.url_slug }}/">{{ rel.nombre }}</a></h3>
@@ -109,12 +131,13 @@
     </div>
 </section>
 
+{% if not producto.es_compuesto %}
 <!-- Script para actualizar dinámicamente la variación seleccionada -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const variations = {{ variaciones_json | safe }};
     const selectors = document.querySelectorAll(".variation-selector");
-    const inputArticulo = document.querySelector('input[name="id_articulo"]');
+    const inputArticulo = document.querySelector('input[name="variacion_id"]');
     const productImage = document.querySelector(".product-detail-image-box img");
     const productSku = document.getElementById("product-sku");
     const productGramaje = document.getElementById("product-gramaje");
@@ -186,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function() {
     updateVariation();
 });
 </script>
+{% endif %}
 
 <!-- Marcado Estructurado JSON-LD del Producto -->
 <script type="application/ld+json">
@@ -194,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
   "@type": "Product",
   "name": "{{ producto.nombre }}",
   "description": "{{ producto.descripcion }}",
-  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.variaciones[0].imagen) }}",
+  "image": "{{ site.schema_config.url }}{{ url_for('static', path='images/' ~ producto.imagen_principal) }}",
   "brand": {
     "@type": "Brand",
     "name": "{{ site.site.brand }}"

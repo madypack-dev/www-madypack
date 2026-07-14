@@ -1,31 +1,26 @@
 import pytest
 from unittest.mock import MagicMock
+
 from src.application.commerce.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
 )
 from src.domain.commerce.cart import Carrito, ArticuloCarrito
-from src.domain.commerce.catalog import ProductoVariable, VariacionProducto
+from src.domain.commerce.catalog import VariacionProducto
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.commerce.product import ComponenteBien, ProductoBien
 
 
-def test_actualizar_carrito_caso_uso():
-    repo = MagicMock(spec=IRepositorioCarrito)
-    carrito = Carrito()
-    art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
-    carrito.agregar_articulo(art1)
-
-    repo.obtener_carrito.return_value = carrito
-
-    # Mockear catalogo para devolver variación válida con MOQ de 100
-    mock_catalog = MagicMock(spec=ICatalogRepository)
-    prod = ProductoVariable(
-        id=1,
+def _producto_bien_simple() -> ProductoBien:
+    return ProductoBien(
+        tipo="bien",
+        id=1001,
         nombre="Bolsa A",
         descripcion="A",
         slug="bolsa-a",
+        imagen="img.png",
         atributos_posibles={"color": ["Marrón"]},
         variaciones=[
             VariacionProducto(
@@ -36,8 +31,43 @@ def test_actualizar_carrito_caso_uso():
                 cantidad_por_defecto=100,
                 calculo=None,
             )
-        ]
+        ],
+        componentes=[],
     )
+
+
+def _producto_bien_compuesto() -> ProductoBien:
+    return ProductoBien(
+        tipo="bien",
+        id=3001,
+        nombre="Bolsa con Manija",
+        descripcion="Compuesto",
+        slug="bolsa-con-manija",
+        imagen="bolsas-con-m.svg",
+        cantidad_por_defecto=1000,
+        atributos_posibles={},
+        variaciones=[],
+        componentes=[
+            ComponenteBien(
+                tipo="variacion",
+                referencia_id=1,
+                cantidad=1,
+                nombre="Bolsa base",
+            ),
+        ],
+    )
+
+
+def test_actualizar_carrito_caso_uso():
+    repo = MagicMock(spec=IRepositorioCarrito)
+    carrito = Carrito()
+    art1 = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
+    carrito.agregar_articulo(art1)
+
+    repo.obtener_carrito.return_value = carrito
+
+    prod = _producto_bien_simple()
+    mock_catalog = MagicMock(spec=ICatalogRepository)
     mock_catalog.obtener_variacion_por_id.return_value = (prod, prod.variaciones[0])
 
     # Caso 1: actualización válida
@@ -55,56 +85,59 @@ def test_actualizar_carrito_caso_uso():
     repo.guardar_carrito.assert_not_called()
 
 
-def test_agregar_al_carrito_caso_uso():
+def test_agregar_al_carrito_caso_uso_simple():
     repo = MagicMock(spec=IRepositorioCarrito)
     carrito = Carrito()
     repo.obtener_carrito.return_value = carrito
 
-    prod = ProductoVariable(
-        id=1,
-        nombre="Bolsa A",
-        descripcion="A",
-        slug="bolsa-a",
-        atributos_posibles={"color": ["Marrón"]},
-        variaciones=[
-            VariacionProducto(
-                id=1,
-                sku="B-SOS-M",
-                atributos={"color": "Marrón"},
-                imagen="img.png",
-                cantidad_por_defecto=100,
-                calculo=None,
-            )
-        ]
-    )
-
+    prod = _producto_bien_simple()
     mock_catalog = MagicMock(spec=ICatalogRepository)
-    mock_catalog.obtener_variacion_por_id.side_effect = lambda i: (prod, prod.variaciones[0]) if i == 1 else None
+    mock_catalog.obtener_por_id.side_effect = lambda pid: prod if pid == 1001 else None
+    mock_catalog.obtener_variacion_por_id.return_value = (prod, prod.variaciones[0])
 
     caso_uso = CasoUsoAgregarAlCarrito(repo, mock_catalog)
 
-    # Agregar artículo válido
-    caso_uso.ejecutar(id_articulo=1, cantidad=200)
+    # Agregar variación válida
+    caso_uso.ejecutar(producto_id=1001, variacion_id=1, cantidad=200)
     assert len(carrito.articulos) == 1
     assert carrito.articulos[0].id == 1
     assert carrito.articulos[0].cantidad == 200
     repo.guardar_carrito.assert_called_once_with(carrito)
 
-    # Agregar artículo inexistente en catálogo
+    # Agregar producto inexistente en catálogo
     repo.guardar_carrito.reset_mock()
     registrar_error = MagicMock()
     caso_uso_con_error = CasoUsoAgregarAlCarrito(repo, mock_catalog, registrar_error)
     with pytest.raises(ValueError) as exc_info:
-        caso_uso_con_error.ejecutar(id_articulo=99, cantidad=200)
-    assert "El artículo no existe en el catálogo." in str(exc_info.value)
+        caso_uso_con_error.ejecutar(producto_id=99, variacion_id=1, cantidad=200)
+    assert "El producto no existe en el catálogo." in str(exc_info.value)
     registrar_error.assert_called_once()
     repo.guardar_carrito.assert_not_called()
 
     # Agregar cantidad inválida
     registrar_error.reset_mock()
     with pytest.raises(ValueError):
-        caso_uso_con_error.ejecutar(id_articulo=1, cantidad=150)
+        caso_uso_con_error.ejecutar(producto_id=1001, variacion_id=1, cantidad=150)
     registrar_error.assert_called_once()
+
+
+def test_agregar_al_carrito_caso_uso_compuesto():
+    repo = MagicMock(spec=IRepositorioCarrito)
+    carrito = Carrito()
+    repo.obtener_carrito.return_value = carrito
+
+    prod = _producto_bien_compuesto()
+    mock_catalog = MagicMock(spec=ICatalogRepository)
+    mock_catalog.obtener_por_id.return_value = prod
+
+    caso_uso = CasoUsoAgregarAlCarrito(repo, mock_catalog)
+    caso_uso.ejecutar(producto_id=3001, variacion_id=None, cantidad=2000)
+
+    assert len(carrito.articulos) == 1
+    assert carrito.articulos[0].id == 3001
+    assert carrito.articulos[0].cantidad == 2000
+    assert carrito.articulos[0].calculo is None
+    repo.guardar_carrito.assert_called_once_with(carrito)
 
 
 def test_eliminar_del_carrito_caso_uso():

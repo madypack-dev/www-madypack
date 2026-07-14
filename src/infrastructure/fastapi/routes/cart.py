@@ -14,6 +14,7 @@ from src.application.commerce.cart_use_cases import (
 )
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
+from src.domain.commerce.product import ProductoBien
 from src.infrastructure.fastapi.dependencies import (
     get_repositorio_carrito,
     get_repositorio_catalogo,
@@ -41,7 +42,8 @@ async def ver_tienda(
 ):
     sitio = cargar_site()
     query_filtrada = q.strip() if q else ""
-    productos = repositorio_catalogo.buscar(query_filtrada)
+    todos = repositorio_catalogo.buscar(query_filtrada)
+    productos = [p for p in todos if isinstance(p, ProductoBien)]
 
     return templates.TemplateResponse(
         request=request,
@@ -62,21 +64,31 @@ async def ver_producto(
     if producto_encontrado is None:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
-    # Obtener hasta 3 productos relacionados
-    productos = repositorio_catalogo.obtener_todos()
+    if not isinstance(producto_encontrado, ProductoBien):
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    # Obtener hasta 3 productos relacionados (solo comercializables)
+    productos = [
+        p
+        for p in repositorio_catalogo.obtener_todos()
+        if isinstance(p, ProductoBien)
+    ]
     relacionados = [p for p in productos if p.id != producto_encontrado.id][:3]
 
-    import json
-    variaciones_list = [
-        {
-            "id": v.id,
-            "sku": v.sku,
-            "atributos": v.atributos,
-            "imagen": v.imagen,
-            "cantidad_por_defecto": v.cantidad_por_defecto
-        }
-        for v in producto_encontrado.variaciones
-    ]
+    variaciones_json = "[]"
+    if not producto_encontrado.es_compuesto:
+        import json
+        variaciones_list = [
+            {
+                "id": v.id,
+                "sku": v.sku,
+                "atributos": v.atributos,
+                "imagen": v.imagen,
+                "cantidad_por_defecto": v.cantidad_por_defecto,
+            }
+            for v in producto_encontrado.variaciones
+        ]
+        variaciones_json = json.dumps(variaciones_list)
 
     return templates.TemplateResponse(
         request=request,
@@ -85,7 +97,7 @@ async def ver_producto(
             "site": sitio,
             "producto": producto_encontrado,
             "relacionados": relacionados,
-            "variaciones_json": json.dumps(variaciones_list),
+            "variaciones_json": variaciones_json,
         },
     )
 
@@ -93,18 +105,19 @@ async def ver_producto(
 @router.post("/cart/agregar")
 async def agregar_al_carrito(
     request: Request,
-    id_articulo: int = Form(...),
+    producto_id: int = Form(...),
     cantidad: int = Form(...),
+    variacion_id: int | None = Form(None),
     repositorio: IRepositorioCarrito = Depends(get_repositorio_carrito),
     caso_uso: CasoUsoAgregarAlCarrito = Depends(get_caso_uso_agregar_carrito),
 ):
     try:
-        caso_uso.ejecutar(id_articulo, cantidad)
+        caso_uso.ejecutar(producto_id, variacion_id, cantidad)
         logger.info(
-            f"Artículo {id_articulo} agregado al carrito con cantidad {cantidad}"
+            f"Producto {producto_id} agregado al carrito con cantidad {cantidad}"
         )
     except ValueError as err:
-        logger.error(f"Error al agregar artículo {id_articulo} al carrito: {err}")
+        logger.error(f"Error al agregar producto {producto_id} al carrito: {err}")
         return RedirectResponse(url="/productos/?error=cantidad_invalida", status_code=303)
 
     respuesta = RedirectResponse(url="/cart/", status_code=303)

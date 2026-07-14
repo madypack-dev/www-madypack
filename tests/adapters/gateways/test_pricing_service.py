@@ -1,8 +1,16 @@
 import pytest
 from unittest.mock import MagicMock
 
-from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
+from src.adapters.gateways.hardcoded_catalog_repository import HardcodedCatalogRepository
 from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
+from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.commerce.product import (
+    ComponenteBien,
+    ProductoBien,
+    ProductoServicio,
+)
+from src.domain.commerce.catalog import VariacionProducto
 
 
 def test_cotizador_servicio_exito():
@@ -36,3 +44,90 @@ def test_cotizador_servicio_error_calculo_nulo():
         servicio.calcular_precio_estimado(articulo)
 
     registrar_error_fn.assert_called_once()
+
+
+def test_cotizador_servicio_compuesto():
+    catalogo = HardcodedCatalogRepository()
+    servicio = CotizadorServicio(catalogo=catalogo)
+
+    # Compuesto "Bolsa de Papel con Manija Cordón" (id 3001)
+    articulo = ArticuloCarrito(
+        id=3001,
+        nombre="Bolsa de Papel con Manija Cordón",
+        descripcion="Receta",
+        cantidad=1000,
+        imagen="bolsas-con-m.svg",
+        calculo=None,
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # Bolsa base (sin manija, lisa): base 0.15 * 1000 = 150
+    # Manija cordón: 0.65 * 1000 = 650
+    # Pegado: 0.10 * 1000 = 100
+    assert precio == 900.0
+
+
+def test_cotizador_servicio_con_catalogo_mock():
+    variacion = VariacionProducto(
+        id=1,
+        sku="VAR",
+        atributos={},
+        imagen="img.png",
+        cantidad_por_defecto=100,
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+    )
+    simple = ProductoBien(
+        tipo="bien",
+        id=1001,
+        nombre="Simple",
+        descripcion="",
+        imagen="img.png",
+        atributos_posibles={},
+        variaciones=[variacion],
+        componentes=[],
+    )
+    servicio_model = ProductoServicio(
+        tipo="servicio",
+        id=2001,
+        nombre="Servicio",
+        descripcion="",
+        imagen="img.png",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["pegado"]),
+    )
+    compuesto = ProductoBien(
+        tipo="bien",
+        id=3001,
+        nombre="Compuesto",
+        descripcion="",
+        imagen="img.png",
+        cantidad_por_defecto=100,
+        atributos_posibles={},
+        variaciones=[],
+        componentes=[
+            ComponenteBien(tipo="variacion", referencia_id=1, cantidad=2, nombre="Simple"),
+            ComponenteBien(tipo="servicio", referencia_id=2001, cantidad=1, nombre="Servicio"),
+        ],
+    )
+
+    catalogo = MagicMock(spec=ICatalogRepository)
+    catalogo.obtener_por_id.return_value = compuesto
+    catalogo.resolver_componente.side_effect = lambda c: (
+        variacion if c.tipo == "variacion" else servicio_model
+    )
+
+    servicio = CotizadorServicio(catalogo=catalogo)
+    articulo = ArticuloCarrito(
+        id=3001,
+        nombre="Compuesto",
+        descripcion="",
+        cantidad=100,
+        imagen="img.png",
+        calculo=None,
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # Variación factor 2: base 0.15 * 200 = 30
+    # Servicio: pegado 0.10 * 100 = 10
+    assert precio == 40.0

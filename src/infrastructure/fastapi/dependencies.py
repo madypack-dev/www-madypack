@@ -64,9 +64,17 @@ def get_chatwoot_repo(
     )
 
 
-def get_cotizador() -> CotizadorServicio:
+def get_repositorio_catalogo() -> ICatalogRepository:
+    """Inyecta el repositorio de catálogo hardcodeado."""
+    return HardcodedCatalogRepository()
+
+
+def get_cotizador(
+    repo_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
+) -> CotizadorServicio:
     """Inyecta el servicio cotizador."""
     return CotizadorServicio(
+        catalogo=repo_catalogo,
         registrar_error=logger.error,
     )
 
@@ -89,11 +97,6 @@ def get_caso_uso_generar_pdf(
         generador_pdf=generador_pdf,
         registrar_error=logger.error,
     )
-
-
-def get_repositorio_catalogo() -> ICatalogRepository:
-    """Inyecta el repositorio de catálogo hardcodeado."""
-    return HardcodedCatalogRepository()
 
 
 def get_caso_uso_agregar_carrito(

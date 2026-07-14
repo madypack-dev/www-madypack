@@ -1,9 +1,13 @@
 from typing import Callable
 
-from src.domain.commerce.cart import ArticuloCarrito
-from src.domain.commerce.catalog import ProductoVariable, VariacionProducto
+from dataclasses import dataclass
+from typing import Protocol
+
+from src.domain.commerce.cart import ArticuloCarrito, Carrito
 from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.domain.commerce.catalog import VariacionProducto
 from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.commerce.product import ProductoBien
 
 
 class CasoUsoActualizarCarrito:
@@ -21,18 +25,16 @@ class CasoUsoActualizarCarrito:
         carrito = self.repositorio.obtener_carrito()
         modificado = False
         for id_articulo, nueva_cantidad in actualizaciones.items():
-            res = self.repositorio_catalogo.obtener_variacion_por_id(id_articulo)
-            if not res:
-                self.registrar_error(f"Variación inexistente {id_articulo} en actualización.")
+            moq = self._obtener_moq(id_articulo)
+            if moq is None:
+                self.registrar_error(f"Artículo inexistente {id_articulo} en actualización.")
                 continue
-            _, datos_variacion = res
-            
-            # Enforzar MOQ dinámico
-            if nueva_cantidad < datos_variacion.cantidad_por_defecto:
+
+            if nueva_cantidad < moq:
                 self.registrar_error(
-                    f"Cantidad {nueva_cantidad} inferior al MOQ ({datos_variacion.cantidad_por_defecto}) para variante {id_articulo}"
+                    f"Cantidad {nueva_cantidad} inferior al MOQ ({moq}) para artículo {id_articulo}"
                 )
-                nueva_cantidad = datos_variacion.cantidad_por_defecto
+                nueva_cantidad = moq
 
             try:
                 if carrito.actualizar_cantidad(id_articulo, nueva_cantidad):
@@ -40,8 +42,20 @@ class CasoUsoActualizarCarrito:
             except ValueError as err:
                 self.registrar_error(f"Error de validación al actualizar artículo {id_articulo}: {err}")
                 continue
+
         if modificado:
             self.repositorio.guardar_carrito(carrito)
+
+    def _obtener_moq(self, id_articulo: int) -> int | None:
+        res = self.repositorio_catalogo.obtener_variacion_por_id(id_articulo)
+        if res:
+            return res[1].cantidad_por_defecto
+
+        producto = self.repositorio_catalogo.obtener_por_id(id_articulo)
+        if isinstance(producto, ProductoBien):
+            return producto.cantidad_por_defecto
+
+        return None
 
 
 class CasoUsoAgregarAlCarrito:
@@ -55,30 +69,60 @@ class CasoUsoAgregarAlCarrito:
         self.repositorio_catalogo = repositorio_catalogo
         self.registrar_error = registrar_error
 
-    def ejecutar(self, id_articulo: int, cantidad: int) -> None:
-        res = self.repositorio_catalogo.obtener_variacion_por_id(id_articulo)
-        if not res:
-            self.registrar_error(f"Intento de agregar variación inexistente del catálogo: {id_articulo}")
-            raise ValueError("El artículo no existe en el catálogo.")
+    def ejecutar(
+        self, producto_id: int, variacion_id: int | None, cantidad: int
+    ) -> None:
+        producto = self.repositorio_catalogo.obtener_por_id(producto_id)
+        if producto is None:
+            self.registrar_error(f"Intento de agregar producto inexistente: {producto_id}")
+            raise ValueError("El producto no existe en el catálogo.")
 
-        datos_producto, datos_variacion = res
+        if isinstance(producto, ProductoBien):
+            if producto.es_compuesto:
+                self._agregar_compuesto(producto, cantidad)
+            else:
+                self._agregar_simple(producto, variacion_id, cantidad)
+        else:
+            self.registrar_error(f"Intento de agregar un servicio suelto: {producto_id}")
+            raise ValueError("Los servicios solo pueden agregarse dentro de un producto compuesto.")
 
-        # Validar MOQ dinámico
+    def _agregar_simple(
+        self, producto: ProductoBien, variacion_id: int | None, cantidad: int
+    ) -> None:
+        if variacion_id is None:
+            self.registrar_error(f"Falta variación para producto simple {producto.id}")
+            raise ValueError("Debe seleccionar una variación para este producto.")
+
+        res = self.repositorio_catalogo.obtener_variacion_por_id(variacion_id)
+        if not res or res[0].id != producto.id:
+            self.registrar_error(
+                f"La variación {variacion_id} no pertenece al producto {producto.id}"
+            )
+            raise ValueError("La variación seleccionada no es válida para este producto.")
+
+        datos_variacion = res[1]
+
         if cantidad < datos_variacion.cantidad_por_defecto:
             self.registrar_error(
-                f"Intento de agregar cantidad {cantidad} inferior al MOQ ({datos_variacion.cantidad_por_defecto}) para variante {id_articulo}"
+                f"Intento de agregar cantidad {cantidad} inferior al MOQ "
+                f"({datos_variacion.cantidad_por_defecto}) para variante {variacion_id}"
             )
-            raise ValueError(f"La cantidad mínima para este producto es de {datos_variacion.cantidad_por_defecto} unidades.")
+            raise ValueError(
+                f"La cantidad mínima para este producto es de {datos_variacion.cantidad_por_defecto} unidades."
+            )
 
         carrito = self.repositorio.obtener_carrito()
 
         try:
-            # Construir un nombre descriptivo combinando atributos
-            atributos_str = " | ".join(f"{k.capitalize()}: {v}" for k, v in datos_variacion.atributos.items())
-            nombre = f"{datos_producto.nombre} - {atributos_str}"
-            
-            # El gramaje varía según el tipo de manija
-            gramaje = "80 gr/m²" if "Sin Manija" in datos_variacion.atributos.values() else "100 gr/m²"
+            atributos_str = " | ".join(
+                f"{k.capitalize()}: {v}" for k, v in datos_variacion.atributos.items()
+            )
+            nombre = f"{producto.nombre} - {atributos_str}"
+            gramaje = (
+                "80 gr/m²"
+                if "Sin Manija" in datos_variacion.atributos.values()
+                else "100 gr/m²"
+            )
             descripcion = f"Gramaje: {gramaje} | SKU: {datos_variacion.sku}"
 
             articulo = ArticuloCarrito(
@@ -92,8 +136,38 @@ class CasoUsoAgregarAlCarrito:
             carrito.agregar_articulo(articulo)
             self.repositorio.guardar_carrito(carrito)
         except ValueError as err:
-            self.registrar_error(f"Error de validación al agregar artículo {id_articulo} al carrito: {err}")
-            raise err
+            self.registrar_error(f"Error de validación al agregar variación {variacion_id}: {err}")
+            raise
+
+    def _agregar_compuesto(self, producto: ProductoBien, cantidad: int) -> None:
+        if cantidad < producto.cantidad_por_defecto:
+            self.registrar_error(
+                f"Intento de agregar cantidad {cantidad} inferior al MOQ "
+                f"({producto.cantidad_por_defecto}) para compuesto {producto.id}"
+            )
+            raise ValueError(
+                f"La cantidad mínima para este producto es de {producto.cantidad_por_defecto} unidades."
+            )
+
+        carrito = self.repositorio.obtener_carrito()
+
+        try:
+            componentes_str = " + ".join(c.nombre for c in producto.componentes)
+            descripcion = f"Receta: {componentes_str}"
+
+            articulo = ArticuloCarrito(
+                id=producto.id,
+                nombre=producto.nombre,
+                descripcion=descripcion,
+                cantidad=cantidad,
+                imagen=producto.imagen,
+                calculo=None,
+            )
+            carrito.agregar_articulo(articulo)
+            self.repositorio.guardar_carrito(carrito)
+        except ValueError as err:
+            self.registrar_error(f"Error de validación al agregar compuesto {producto.id}: {err}")
+            raise
 
 
 class CasoUsoEliminarDelCarrito:
@@ -109,11 +183,6 @@ class CasoUsoEliminarDelCarrito:
             raise ValueError("El artículo no está en el carrito.")
 
         self.repositorio.guardar_carrito(carrito)
-
-
-from dataclasses import dataclass
-from typing import Protocol
-from src.domain.commerce.cart import Carrito
 
 
 class ICotizador(Protocol):

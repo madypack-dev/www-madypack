@@ -104,6 +104,8 @@ async def sitemap_xml(
 
     product_urls = ""
     for producto in productos:
+        if getattr(producto, "tipo", None) == "servicio":
+            continue
         product_urls += f"""  <url>
     <loc>{base_url}/productos/{producto.url_slug}/</loc>
     <lastmod>{today}</lastmod>
