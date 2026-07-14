@@ -18,6 +18,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
         self._productos: list[ProductoBien | ProductoServicio] = []
         self._variaciones: dict[int, tuple[ProductoBien, VariacionProducto]] = {}
         self._servicios: dict[int, ProductoServicio] = {}
+        self._bolsas_base: dict[int, VariacionProducto] = {}
 
         self._generar_bienes_bolsas()
         manija_plana, manija_cordon, fotopolimero = self._generar_bienes_componentes()
@@ -123,6 +124,9 @@ class HardcodedCatalogRepository(ICatalogRepository):
                 for variacion in variaciones:
                     self._variaciones[variacion.id] = (producto, variacion)
 
+                # La primera variación siempre es Sin Manija + Lisa (bolsa base)
+                self._bolsas_base[prod_id] = variaciones[0]
+
                 self._productos.append(producto)
                 prod_id += 1
 
@@ -194,9 +198,11 @@ class HardcodedCatalogRepository(ICatalogRepository):
                     calculo=CalculoArticulo(
                         tipo="suma_por_unidad", conceptos=["manija_cordon"]
                     ),
+                    visible=True,
                 )
             ],
             componentes=[],
+            visible=True,
         )
         self._variaciones[var_id] = (manija_cordon, manija_cordon.variaciones[0])
         var_id += 1
@@ -269,6 +275,7 @@ class HardcodedCatalogRepository(ICatalogRepository):
             imagen="icon-hand.svg",
             calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["pegado"]),
             cantidad_por_defecto=1000,
+            visible=True,
         )
         impresion = ProductoServicio(
             tipo="servicio",
@@ -434,7 +441,52 @@ class HardcodedCatalogRepository(ICatalogRepository):
             ],
         )
 
-        self._productos.extend([bolsa_con_manija, bolsa_impresa, bolsa_impresa_foto, bolsa_de_papel])
+        compuestos_fijos = [bolsa_con_manija, bolsa_impresa, bolsa_impresa_foto, bolsa_de_papel]
+
+        # Compuestos visibles: cada bolsa simple base + Manija Cordón + Pegado
+        compuestos_con_manija: list[ProductoBien] = []
+        compuesto_id = 3005
+        for prod_id, variacion_base in self._bolsas_base.items():
+            base_producto = next(p for p in self._productos if isinstance(p, ProductoBien) and p.id == prod_id)
+            nombre_compuesto = f"{base_producto.nombre} con Manija Cordón"
+            slug_compuesto = f"{base_producto.slug}-con-manija-cordon"
+
+            compuesto = ProductoBien(
+                tipo="bien",
+                id=compuesto_id,
+                nombre=nombre_compuesto,
+                descripcion=f"{base_producto.nombre} con manija cordón ya pegada. Receta fija lista para usar.",
+                slug=slug_compuesto,
+                imagen="bolsas-con-m.svg",
+                cantidad_por_defecto=variacion_base.cantidad_por_defecto,
+                atributos_posibles={},
+                variaciones=[],
+                visible=True,
+                componentes=[
+                    ComponenteBien(
+                        tipo="variacion",
+                        referencia_id=variacion_base.id,
+                        cantidad=1,
+                        nombre="Bolsa de papel base",
+                    ),
+                    ComponenteBien(
+                        tipo="variacion",
+                        referencia_id=manija_cordon.variaciones[0].id,
+                        cantidad=1,
+                        nombre=manija_cordon.nombre,
+                    ),
+                    ComponenteBien(
+                        tipo="servicio",
+                        referencia_id=pegado.id,
+                        cantidad=1,
+                        nombre=pegado.nombre,
+                    ),
+                ],
+            )
+            compuestos_con_manija.append(compuesto)
+            compuesto_id += 1
+
+        self._productos.extend(compuestos_fijos + compuestos_con_manija)
 
     def obtener_todos(self) -> list[ProductoBien | ProductoServicio]:
         return self._productos

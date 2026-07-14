@@ -5,9 +5,9 @@ from src.domain.commerce.product import ProductoBien, ProductoServicio
 def test_hardcoded_catalog_repository_operations():
     repo = HardcodedCatalogRepository()
 
-    # 12 bolsas + 4 componentes + 4 compuestos + 3 servicios = 23
+    # 12 bolsas + 4 componentes + 3 servicios + 4 compuestos fijos + 12 compuestos con manija = 35
     productos = repo.obtener_todos()
-    assert len(productos) == 23
+    assert len(productos) == 35
     assert productos[0].nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
     assert productos[0].tipo == "bien"
     assert not productos[0].es_compuesto
@@ -22,9 +22,9 @@ def test_hardcoded_catalog_repository_operations():
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
-    assert len(repo.buscar("Farmacia")) == 2
+    assert len(repo.buscar("Farmacia")) == 4
     assert len(repo.buscar("inexistente")) == 0
-    assert len(repo.buscar("")) == 23
+    assert len(repo.buscar("")) == 35
 
     # Obtener variación por id
     res = repo.obtener_variacion_por_id(1)
@@ -61,6 +61,23 @@ def test_hardcoded_catalog_repository_operations():
     confeccion = repo.obtener_por_id(2003)
     assert isinstance(confeccion, ProductoServicio)
     assert confeccion.visible
+
+    # Manija Cordón y Pegado de Manijas visibles
+    manija_cordon = repo.obtener_por_id(1102)
+    assert isinstance(manija_cordon, ProductoBien)
+    assert manija_cordon.visible
+    pegado = repo.obtener_por_id(2001)
+    assert isinstance(pegado, ProductoServicio)
+    assert pegado.visible
+
+    # Compuesto con manija cordón para cada bolsa simple
+    compuesto_manija = repo.obtener_por_id(3005)
+    assert isinstance(compuesto_manija, ProductoBien)
+    assert compuesto_manija.visible
+    assert compuesto_manija.es_compuesto
+    assert "Manija Cordón" in compuesto_manija.nombre
+    assert any(c.nombre == "Manija Cordón" for c in compuesto_manija.componentes)
+    assert any(c.nombre == "Pegado de Manijas" for c in compuesto_manija.componentes)
 
     # Bolsa visible es el compuesto 22x10x30 con medidas
     bolsa_visible = repo.obtener_por_id(3004)
