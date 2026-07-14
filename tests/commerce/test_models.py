@@ -124,6 +124,32 @@ def test_producto_bien_simple():
     assert not producto.es_compuesto
     assert producto.url_slug == "bolsa-de-papel"
     assert producto.imagen_principal == "bolsa.svg"
+    assert producto.unidad == "unidades"
+
+
+def test_producto_bien_con_unidad_kg():
+    variacion = VariacionProducto(
+        id=1,
+        sku="BOB-001",
+        atributos={"tipo": "Kraft Marrón"},
+        imagen="bobina.svg",
+        cantidad_por_defecto=100,
+        visible=True,
+    )
+    producto = ProductoBien(
+        tipo="bien",
+        id=1104,
+        nombre="Bobina de Papel",
+        descripcion="Bobina",
+        slug="bobina-de-papel",
+        imagen="bobina.svg",
+        atributos_posibles={"tipo": ["Kraft Marrón"]},
+        variaciones=[variacion],
+        componentes=[],
+        visible=True,
+        unidad="kg",
+    )
+    assert producto.unidad == "kg"
 
 
 def test_producto_bien_compuesto():
@@ -171,6 +197,7 @@ def test_producto_servicio():
     )
     assert servicio.tipo == "servicio"
     assert servicio.url_slug == "pegado"
+    assert servicio.unidad == "unidades"
 
 
 def test_componente_bien_cantidad_invalida():

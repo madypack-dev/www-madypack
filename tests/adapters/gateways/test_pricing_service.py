@@ -89,6 +89,26 @@ def test_cotizador_servicio_compuesto_con_bobina_kg():
     assert round(precio, 2) == 107.75
 
 
+def test_cotizador_servicio_bobina_simple_precio_por_kg():
+    catalogo = HardcodedCatalogRepository()
+    servicio = CotizadorServicio(catalogo=catalogo)
+
+    # Variación de Bobina de Papel (id 76)
+    articulo = ArticuloCarrito(
+        id=76,
+        nombre="Bobina de Papel",
+        descripcion="Bobina",
+        cantidad=500,
+        imagen="bobina-de-papel.svg",
+        calculo=catalogo.obtener_variacion_por_id(76)[1].calculo,
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # 500 kg * $1.0/kg = 500
+    assert precio == 500.0
+
+
 def test_cotizador_servicio_con_catalogo_mock():
     variacion = VariacionProducto(
         id=1,

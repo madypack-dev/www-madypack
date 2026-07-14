@@ -36,6 +36,7 @@ def construir_lineas_presupuesto(
                 cantidad=articulo.cantidad,
                 precio_unitario_estimado=precio_unitario,
                 subtotal=subtotal,
+                unidad=articulo.unidad,
             )
         )
     return lineas

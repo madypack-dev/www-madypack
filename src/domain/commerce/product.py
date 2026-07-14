@@ -63,6 +63,7 @@ class ProductoBien(BaseModel):
     componentes: list[ComponenteBien] = []
     cantidad_por_defecto: int = Field(default=100, ge=100)
     visible: bool = False
+    unidad: str = Field(default="unidades")
 
     @property
     def es_compuesto(self) -> bool:
@@ -95,6 +96,7 @@ class ProductoServicio(BaseModel):
     calculo: CalculoArticulo
     cantidad_por_defecto: int = Field(default=100, ge=100)
     visible: bool = False
+    unidad: str = Field(default="unidades")
 
     @property
     def url_slug(self) -> str:

@@ -246,13 +246,14 @@ class HardcodedCatalogRepository(ICatalogRepository):
                     sku="BOB-001",
                     atributos={"tipo": "Kraft Marrón"},
                     imagen="bobina-de-papel.svg",
-                    cantidad_por_defecto=1000,
-                    calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+                    cantidad_por_defecto=100,
+                    calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["bobina_kg"]),
                     visible=True,
                 )
             ],
             componentes=[],
             visible=True,
+            unidad="kg",
         )
         self._variaciones[var_id] = (bobina, bobina.variaciones[0])
         self._productos.append(bobina)

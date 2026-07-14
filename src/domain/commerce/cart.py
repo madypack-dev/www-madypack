@@ -25,6 +25,7 @@ class ArticuloCarrito(BaseModel):
     cantidad: int = Field(..., ge=100)
     imagen: str
     calculo: CalculoArticulo | None = None
+    unidad: str = Field(default="unidades")
 
     @field_validator("cantidad")
     @classmethod

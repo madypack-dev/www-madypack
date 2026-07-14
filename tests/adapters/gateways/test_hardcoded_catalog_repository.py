@@ -48,11 +48,14 @@ def test_hardcoded_catalog_repository_operations():
     assert compuesto.nombre == "Bolsa de Papel con Manija Cordón"
     assert len(compuesto.componentes) == 3
 
-    # Bobina de papel visible
+    # Bobina de papel visible, cotizada en kg
     bobina = repo.obtener_por_id(1104)
     assert isinstance(bobina, ProductoBien)
     assert bobina.visible
     assert bobina.nombre == "Bobina de Papel"
+    assert bobina.unidad == "kg"
+    assert bobina.variaciones[0].cantidad_por_defecto == 100
+    assert bobina.variaciones[0].calculo.conceptos == ["bobina_kg"]
 
     # Servicio de confección visible
     confeccion = repo.obtener_por_id(2003)

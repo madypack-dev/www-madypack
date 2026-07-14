@@ -46,7 +46,7 @@
                             {% endif %}
                             <li><strong>Disponibilidad:</strong> Producción bajo demanda y stock comercial.</li>
                             <li><strong>Pedido Mínimo Sugerido:</strong> <span id="product-min-qty">
-                                {% if not producto.es_compuesto %}{{ variacion_inicial.cantidad_por_defecto }}{% else %}{{ producto.cantidad_por_defecto }}{% endif %} unidades.
+                                {% if not producto.es_compuesto %}{{ variacion_inicial.cantidad_por_defecto }}{% else %}{{ producto.cantidad_por_defecto }}{% endif %} {{ producto.unidad }}.
                             </span></li>
                             <li><strong>Normas y Aprobaciones:</strong> Ensayos de estanqueidad 100% neumática. Certificaciones de calidad de Cooperativa Madygraf.</li>
                         </ul>
@@ -79,9 +79,9 @@
                         {% endfor %}
                         
                         <div class="form-field">
-                            <label for="cant-detail"><strong>Cantidad del Lote:</strong></label>
+                            <label for="cant-detail"><strong>Cantidad del Lote ({{ producto.unidad }}):</strong></label>
                             <input type="number" id="cant-detail" name="cantidad" value="{{ producto.variaciones[0].cantidad_por_defecto }}" min="100" step="100" required>
-                            <span class="field-hint">Múltiplos de 100 unidades (Pedido mínimo B2B de 100).</span>
+                            <span class="field-hint">Múltiplos de 100 {{ producto.unidad }}.</span>
                         </div>
 
                         <!-- Tiempo de entrega dinámico -->
@@ -90,9 +90,9 @@
                         </div>
                         {% else %}
                         <div class="form-field">
-                            <label for="cant-detail"><strong>Cantidad del Lote:</strong></label>
+                            <label for="cant-detail"><strong>Cantidad del Lote ({{ producto.unidad }}):</strong></label>
                             <input type="number" id="cant-detail" name="cantidad" value="{{ producto.cantidad_por_defecto }}" min="100" step="100" required>
-                            <span class="field-hint">Múltiplos de 100 unidades.</span>
+                            <span class="field-hint">Múltiplos de 100 {{ producto.unidad }}.</span>
                         </div>
                         {% endif %}
                         
@@ -136,6 +136,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const variations = {{ variaciones_json | safe }};
+    const unidadProducto = "{{ producto.unidad }}";
     const selectors = document.querySelectorAll(".variation-selector");
     const inputArticulo = document.querySelector('input[name="variacion_id"]');
     const productImage = document.querySelector(".product-detail-image-box img");
@@ -176,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Actualizar pedido mínimo
             if (productMinQty) {
-                productMinQty.textContent = variation.cantidad_por_defecto + " unidades.";
+                productMinQty.textContent = variation.cantidad_por_defecto + " " + unidadProducto + ".";
             }
 
             // Actualizar cantidad en input

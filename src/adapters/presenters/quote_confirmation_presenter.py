@@ -73,7 +73,8 @@ class PresentadorConfirmacionPresupuesto:
         if carrito.articulos:
             detalles = []
             for art in carrito.articulos:
-                detalles.append(f"- {art.cantidad:,} u. de {art.nombre} ({art.descripcion})")
+                unidad = getattr(art, "unidad", "u.")
+                detalles.append(f"- {art.cantidad:,} {unidad} de {art.nombre} ({art.descripcion})")
             detalles_str = "\n".join(detalles)
             return (
                 f"Hola, me contacto de parte de la empresa *{lead.empresa}* "

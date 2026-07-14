@@ -28,6 +28,7 @@ class LineaPresupuesto(BaseModel):
     cantidad: int = Field(..., ge=100)
     precio_unitario_estimado: float = Field(..., ge=0)
     subtotal: float = Field(..., ge=0)
+    unidad: str = Field(default="unidades")
 
 
     @field_validator("cantidad")

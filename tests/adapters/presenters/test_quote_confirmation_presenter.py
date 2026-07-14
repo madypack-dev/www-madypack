@@ -32,7 +32,28 @@ class TestPresentadorConfirmacionPresupuesto:
         assert "descargar" in response.pdf_url
         assert "John" in urllib.parse.unquote(response.whatsapp_url)
         assert "ACME" in urllib.parse.unquote(response.whatsapp_url)
-        assert "1" in urllib.parse.unquote(response.whatsapp_url)
+        assert "100 unidades" in urllib.parse.unquote(response.whatsapp_url)
+
+    def test_presentar_con_carrito_muestra_unidad_kg(self, presentador):
+        lead = Lead.crear(
+            nombre="John", empresa="ACME", telefono="+5491125794649", email="john@example.com"
+        )
+        lead.id = "chatwoot-contact-123"
+        carrito = Carrito()
+        carrito.agregar_articulo(
+            ArticuloCarrito(
+                id=76,
+                nombre="Bobina de Papel",
+                descripcion="Bobina",
+                cantidad=500,
+                imagen="bobina.svg",
+                unidad="kg",
+            )
+        )
+
+        response = presentador.presentar(lead, carrito)
+
+        assert "500 kg" in urllib.parse.unquote(response.whatsapp_url)
 
     def test_presentar_sin_carrito_no_incluye_pdf(self, presentador):
         lead = Lead.crear_cotizacion_general(

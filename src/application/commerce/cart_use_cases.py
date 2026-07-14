@@ -132,6 +132,7 @@ class CasoUsoAgregarAlCarrito:
                 cantidad=cantidad,
                 imagen=datos_variacion.imagen,
                 calculo=datos_variacion.calculo,
+                unidad=producto.unidad,
             )
             carrito.agregar_articulo(articulo)
             self.repositorio.guardar_carrito(carrito)
@@ -162,6 +163,7 @@ class CasoUsoAgregarAlCarrito:
                 cantidad=cantidad,
                 imagen=producto.imagen,
                 calculo=None,
+                unidad=producto.unidad,
             )
             carrito.agregar_articulo(articulo)
             self.repositorio.guardar_carrito(carrito)

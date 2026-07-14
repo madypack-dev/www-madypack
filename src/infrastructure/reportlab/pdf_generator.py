@@ -224,7 +224,7 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
             nombre = Paragraph(f"<b>{linea.nombre}</b><br/>{linea.descripcion}", estilo_normal)
             datos_tabla.append([
                 nombre,
-                Paragraph(f"{linea.cantidad:,}", estilo_normal),
+                Paragraph(f"{linea.cantidad:,} {linea.unidad}", estilo_normal),
                 Paragraph(self._formatear_moneda(linea.precio_unitario_estimado), estilo_normal),
                 Paragraph(self._formatear_moneda(linea.subtotal), estilo_normal),
             ])
