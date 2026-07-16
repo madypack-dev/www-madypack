@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from unittest.mock import MagicMock
 
@@ -11,6 +13,17 @@ from src.domain.commerce.product import (
     ProductoServicio,
 )
 from src.domain.commerce.catalog import VariacionProducto
+from src.domain.pricing.concepto_tarifa import ConceptoTarifa
+from src.domain.pricing.moneda import Moneda
+from src.domain.pricing.tasa_cambio import TasaCambio
+
+
+class _ProveedorTasaFija:
+    def __init__(self, tasa: TasaCambio):
+        self._tasa = tasa
+
+    def obtener_tasa(self) -> TasaCambio:
+        return self._tasa
 
 
 def test_cotizador_servicio_exito():
@@ -223,3 +236,47 @@ def test_cotizador_servicio_usa_solapa_configurable(monkeypatch):
     precio_mayor_solapa = servicio.calcular_precio_estimado(articulo)
 
     assert precio_mayor_solapa > precio_default
+
+
+def test_cotizador_servicio_concepto_usd_se_convierte_a_ars():
+    tasa = TasaCambio(fecha=date.today(), ars_por_usd=1000.0, fuente="BNA")
+    conceptos = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD),
+    }
+    servicio = CotizadorServicio(
+        proveedor_tasa=_ProveedorTasaFija(tasa),
+        conceptos=conceptos,
+    )
+    articulo = ArticuloCarrito(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        cantidad=1000,
+        imagen="img.png",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # 0.10 USD/u * 1000 ARS/USD * 1000 unidades = 100000 ARS
+    assert precio == 100000.0
+
+
+def test_cotizador_servicio_sin_proveedor_tasa_asume_paridad_para_usd():
+    """Sin proveedor de tasa, USD se trata con tasa 1.0 (modo compatibilidad)."""
+    conceptos = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD),
+    }
+    servicio = CotizadorServicio(conceptos=conceptos)
+    articulo = ArticuloCarrito(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        cantidad=1000,
+        imagen="img.png",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    assert precio == 100.0
