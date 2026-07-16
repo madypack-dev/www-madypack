@@ -294,9 +294,14 @@ Convenciones observadas:
   (`articulos_carrito`).
 - **`gateways/catalog/in_memory_catalog_repository.py`**: adaptador delgado que
   implementa `ICatalogRepository` en memoria.
-- **`gateways/catalog/catalog_seed.py`**: datos semi-estáticos y builders puros
-  para construir el catálogo (12 productos variables × 6 variaciones = 72
-  variaciones).
+- **`gateways/catalog/catalog_seed.py`**: orquestador que ensambla el catálogo.
+- **`gateways/catalog/data.py`**: datos semi-estáticos y constantes del catálogo.
+- **`gateways/catalog/builders.py`**: helpers puros (SKU, MOQ, cálculo de precio,
+  imagen).
+- **`gateways/catalog/bolsas.py`**: builders de bolsas simples y sus variaciones.
+- **`gateways/catalog/componentes.py`**: builders de manijas, fotopolímero y bobina.
+- **`gateways/catalog/servicios.py`**: builders de servicios.
+- **`gateways/catalog/compuestos.py`**: builders de bienes compuestos.
 - **`gateways/pricing_service.py`**: cotizador con tarifas estáticas en código.
 - **`gateways/json_quote_repository.py`**: guarda presupuestos en
   `data/presupuestos/{ref}.json`.

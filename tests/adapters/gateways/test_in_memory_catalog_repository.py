@@ -1,9 +1,9 @@
 from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
-from src.adapters.gateways.catalog.catalog_seed import (
-    _construir_sku_bolsa,
-    _crear_calculo_para_bolsa,
-    construir_catalogo,
+from src.adapters.gateways.catalog.builders import (
+    calculo_articulo_para_bolsa,
+    construir_sku_bolsa,
 )
+from src.adapters.gateways.catalog.catalog_seed import construir_catalogo
 from src.domain.commerce.product import ProductoBien, ProductoServicio
 
 
@@ -112,19 +112,19 @@ def test_in_memory_catalog_repository_operations():
 
 
 def test_construir_sku_bolsa():
-    assert _construir_sku_bolsa("221030", "M", "SOS", "L") == "B-221030-M-SOS-L"
-    assert _construir_sku_bolsa("120841", "B", "CRD", "C") == "B-120841-B-CRD-C"
+    assert construir_sku_bolsa("221030", "M", "SOS", "L") == "B-221030-M-SOS-L"
+    assert construir_sku_bolsa("120841", "B", "CRD", "C") == "B-120841-B-CRD-C"
 
 
-def test_crear_calculo_para_bolsa_sin_personalizacion():
-    calculo = _crear_calculo_para_bolsa("Sin Manija", "Lisa (sin impresión)")
+def test_calculo_articulo_para_bolsa_sin_personalizacion():
+    calculo = calculo_articulo_para_bolsa("Sin Manija", "Lisa (sin impresión)")
     assert calculo.tipo == "suma_por_unidad"
     assert calculo.conceptos == ["base"]
     assert calculo.concepto_fijo is None
 
 
-def test_crear_calculo_para_bolsa_con_manija_y_personalizacion():
-    calculo = _crear_calculo_para_bolsa("Manija Cordón", "Impresa 1 o 2 colores")
+def test_calculo_articulo_para_bolsa_con_manija_y_personalizacion():
+    calculo = calculo_articulo_para_bolsa("Manija Cordón", "Impresa 1 o 2 colores")
     assert calculo.tipo == "suma_por_unidad_mas_fijo"
     assert calculo.conceptos == ["base", "manija_cordon", "personalizacion"]
     assert calculo.concepto_fijo == "fijo_matriz"
