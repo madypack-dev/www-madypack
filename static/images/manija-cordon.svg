@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Cuerda / cordón formando una manija -->
+  <path d="M12 52 L12 28 C12 12 52 12 52 28 L52 52" />
+  <!-- Nudos o puntos de unión -->
+  <circle cx="12" cy="52" r="4" />
+  <circle cx="52" cy="52" r="4" />
+</svg>

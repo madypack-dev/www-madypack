@@ -227,14 +227,14 @@ def _crear_componentes(
         nombre="Manija Cordón",
         descripcion="Manija cordón de papel kraft para pegado manual o automático.",
         slug="manija-cordon",
-        imagen="bolsas-con-m.svg",
+        imagen="manija-cordon.svg",
         atributos_posibles={"tipo": ["Cordón"]},
         variaciones=[
             VariacionProducto(
                 id=var_id,
                 sku="MAN-C",
                 atributos={"tipo": "Cordón"},
-                imagen="bolsas-con-m.svg",
+                imagen="manija-cordon.svg",
                 cantidad_por_defecto=1000,
                 calculo=CalculoArticulo(
                     tipo="suma_por_unidad", conceptos=["manija_cordon"]
