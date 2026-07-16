@@ -2,14 +2,23 @@ from typing import Callable
 
 from src.domain.commerce.cart import ArticuloCarrito
 from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.commerce.manija import FormatoManija
 from src.domain.commerce.product import ProductoBien
 from src.domain.pricing.calculator import CalculadorPrecio
+
+
+def _tarifas_manija_cordon() -> dict[str, float]:
+    """Tarifas unitarias derivadas del peso de papel de cada formato de manija."""
+    return {
+        f"manija_cordon_{fmt.largo_mm}": fmt.peso_kg_por_unidad
+        for fmt in [FormatoManija(114), FormatoManija(152), FormatoManija(190)]
+    }
+
 
 # Conceptos de costo estáticos (tarifas) en pesos
 TARIFAS = {
     "base": 0.15,
     "manija_plana": 0.35,
-    "manija_cordon": 0.65,
     "personalizacion": 0.20,
     "pegado": 0.10,
     "confeccion": 0.08,
@@ -18,6 +27,7 @@ TARIFAS = {
     "corte": 0.02,
     "confeccion_cuerdas": 0.05,
     "fijo_matriz": 1500.00,
+    **_tarifas_manija_cordon(),
 }
 
 

@@ -63,9 +63,9 @@ def test_cotizador_servicio_compuesto():
     precio = servicio.calcular_precio_estimado(articulo)
 
     # Bolsa base (sin manija, lisa): base 0.15 * 1000 = 150
-    # Manija cordón: 0.65 * 1000 = 650
+    # Manija cordón 114mm (formato para ancho 12cm): 0.000912 * 1000 = 0.912
     # Pegado: 0.10 * 1000 = 100
-    assert precio == 900.0
+    assert round(precio, 3) == 250.912
 
 
 def test_cotizador_servicio_compuesto_con_bobina_kg():
@@ -93,14 +93,17 @@ def test_cotizador_servicio_bobina_simple_precio_por_kg():
     catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
-    # Variación de Bobina de Papel (id 76)
+    # Variación de Bobina de Papel
+    bobina = catalogo.obtener_por_id(1104)
+    assert isinstance(bobina, ProductoBien)
+    variacion_bobina = bobina.variaciones[0]
     articulo = ArticuloCarrito(
-        id=76,
+        id=variacion_bobina.id,
         nombre="Bobina de Papel",
         descripcion="Bobina",
         cantidad=500,
         imagen="bobina-de-papel.svg",
-        calculo=catalogo.obtener_variacion_por_id(76)[1].calculo,
+        calculo=variacion_bobina.calculo,
     )
 
     precio = servicio.calcular_precio_estimado(articulo)

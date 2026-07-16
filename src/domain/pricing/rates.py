@@ -7,7 +7,7 @@ class Tarifas(BaseModel):
     """Conjunto genérico de conceptos de costo indexados por nombre.
 
     Cada sitio define los conceptos que necesite para calcular precios.
-    Ejemplos: base, manija_plana, manija_cordon, personalizacion, fijo_matriz.
+    Ejemplos: base, manija_plana, manija_cordon_114, personalizacion, fijo_matriz.
     """
 
     model_config = {"frozen": True}

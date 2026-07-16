@@ -46,7 +46,7 @@ def _crear_variaciones_de_bolsa(
                 atributos={"manija": manija, "impresion": impresion},
                 imagen=imagen_para_manija(manija),
                 cantidad_por_defecto=moq_para_impresion(impresion),
-                calculo=calculo_articulo_para_bolsa(manija, impresion),
+                calculo=calculo_articulo_para_bolsa(manija, impresion, formato),
                 visible=False,
             )
             variaciones.append(variacion)

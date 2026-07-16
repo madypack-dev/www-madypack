@@ -4,7 +4,11 @@ from src.adapters.gateways.catalog.builders import (
     construir_sku_bolsa,
 )
 from src.adapters.gateways.catalog.catalog_seed import construir_catalogo
+from src.adapters.gateways.catalog.data import FormatoBolsa
 from src.domain.commerce.product import ProductoBien, ProductoServicio
+
+
+_FORMATO_EJEMPLO = FormatoBolsa("120819", "12x8x19 cm", "para Farmacia y Joyería")
 
 
 def test_in_memory_catalog_repository_operations():
@@ -79,10 +83,12 @@ def test_in_memory_catalog_repository_operations():
     assert isinstance(confeccion, ProductoServicio)
     assert confeccion.visible
 
-    # Manija Cordón y Pegado de Manijas visibles
+    # Manija Cordón es un producto intermedio (no visible) con 3 formatos
     manija_cordon = repo.obtener_por_id(1102)
     assert isinstance(manija_cordon, ProductoBien)
-    assert manija_cordon.visible
+    assert not manija_cordon.visible
+    assert len(manija_cordon.variaciones) == 3
+    assert {v.atributos["formato"] for v in manija_cordon.variaciones} == {"114mm", "152mm", "190mm"}
     pegado = repo.obtener_por_id(2001)
     assert isinstance(pegado, ProductoServicio)
     assert pegado.visible
@@ -94,7 +100,7 @@ def test_in_memory_catalog_repository_operations():
     assert compuesto_manija_visible.es_compuesto
     assert "Manija Cordón" in compuesto_manija_visible.nombre
     assert "22x10x30" in compuesto_manija_visible.nombre
-    assert any(c.nombre == "Manija Cordón" for c in compuesto_manija_visible.componentes)
+    assert any("Manija Cordón" in c.nombre for c in compuesto_manija_visible.componentes)
     assert any(c.nombre == "Pegado de Manijas" for c in compuesto_manija_visible.componentes)
 
     # Los demás compuestos con manija cordón permanecen ocultos
@@ -158,16 +164,16 @@ def test_construir_sku_bolsa():
 
 
 def test_calculo_articulo_para_bolsa_sin_personalizacion():
-    calculo = calculo_articulo_para_bolsa("Sin Manija", "Lisa (sin impresión)")
+    calculo = calculo_articulo_para_bolsa("Sin Manija", "Lisa (sin impresión)", _FORMATO_EJEMPLO)
     assert calculo.tipo == "suma_por_unidad"
     assert calculo.conceptos == ["base"]
     assert calculo.concepto_fijo is None
 
 
 def test_calculo_articulo_para_bolsa_con_manija_y_personalizacion():
-    calculo = calculo_articulo_para_bolsa("Manija Cordón", "Impresa 1 o 2 colores")
+    calculo = calculo_articulo_para_bolsa("Manija Cordón", "Impresa 1 o 2 colores", _FORMATO_EJEMPLO)
     assert calculo.tipo == "suma_por_unidad_mas_fijo"
-    assert calculo.conceptos == ["base", "manija_cordon", "personalizacion"]
+    assert calculo.conceptos == ["base", "manija_cordon_114", "personalizacion"]
     assert calculo.concepto_fijo == "fijo_matriz"
 
 

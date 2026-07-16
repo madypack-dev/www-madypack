@@ -2,7 +2,15 @@
 
 from src.domain.commerce.cart import CalculoArticulo
 from src.domain.commerce.catalog import VariacionProducto
+from src.domain.commerce.manija import FormatoManija
 from src.domain.commerce.product import ProductoBien
+
+
+_FORMATOS_MANIJA_CORDON = [
+    FormatoManija(largo_mm=114),
+    FormatoManija(largo_mm=152),
+    FormatoManija(largo_mm=190),
+]
 
 
 def crear_componentes(
@@ -43,6 +51,21 @@ def crear_componentes(
     variaciones[var_id] = (manija_plana, manija_plana.variaciones[0])
     var_id += 1
 
+    variaciones_manija_cordon = [
+        VariacionProducto(
+            id=var_id + idx,
+            sku=f"MAN-C-{formato.etiqueta}",
+            atributos={"tipo": "Cordón", "formato": formato.etiqueta},
+            imagen="manija-cordon.svg",
+            cantidad_por_defecto=1000,
+            calculo=CalculoArticulo(
+                tipo="suma_por_unidad",
+                conceptos=[f"manija_cordon_{formato.largo_mm}"],
+            ),
+            visible=True,
+        )
+        for idx, formato in enumerate(_FORMATOS_MANIJA_CORDON)
+    ]
     manija_cordon = ProductoBien(
         tipo="bien",
         id=1102,
@@ -50,25 +73,14 @@ def crear_componentes(
         descripcion="Manija cordón de papel kraft para pegado manual o automático.",
         slug="manija-cordon",
         imagen="manija-cordon.svg",
-        atributos_posibles={"tipo": ["Cordón"]},
-        variaciones=[
-            VariacionProducto(
-                id=var_id,
-                sku="MAN-C",
-                atributos={"tipo": "Cordón"},
-                imagen="manija-cordon.svg",
-                cantidad_por_defecto=1000,
-                calculo=CalculoArticulo(
-                    tipo="suma_por_unidad", conceptos=["manija_cordon"]
-                ),
-                visible=True,
-            )
-        ],
+        atributos_posibles={"tipo": ["Cordón"], "formato": [f.etiqueta for f in _FORMATOS_MANIJA_CORDON]},
+        variaciones=variaciones_manija_cordon,
         componentes=[],
-        visible=True,
+        visible=False,
     )
-    variaciones[var_id] = (manija_cordon, manija_cordon.variaciones[0])
-    var_id += 1
+    for variacion in variaciones_manija_cordon:
+        variaciones[variacion.id] = (manija_cordon, variacion)
+    var_id += len(_FORMATOS_MANIJA_CORDON)
 
     fotopolimero = ProductoBien(
         tipo="bien",

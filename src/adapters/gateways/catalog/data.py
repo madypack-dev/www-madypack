@@ -11,6 +11,11 @@ class FormatoBolsa:
     medidas: str
     rubro: str
 
+    @property
+    def ancho(self) -> int:
+        """Ancho de la bolsa en cm, extraído del código de formato."""
+        return int(self.codigo[:2])
+
 
 FORMATOS_BOLSA: list[FormatoBolsa] = [
     FormatoBolsa("120819", "12x8x19 cm", "para Farmacia y Joyería"),

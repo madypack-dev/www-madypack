@@ -1,6 +1,7 @@
 """Builders para bienes compuestos del catálogo."""
 
 from src.domain.commerce.catalog import VariacionProducto
+from src.domain.commerce.manija import FormatoManija, formato_manija_para_ancho
 from src.domain.commerce.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
 
 from .builders import construir_nombre_bolsa
@@ -10,6 +11,20 @@ from .data import (
     SLUG_BOLSA_VISIBLE_IMPRESA_SIN_MANIJA,
     FormatoBolsa,
 )
+
+
+def _variacion_manija_para_formato(
+    manija_cordon: ProductoBien,
+    formato: FormatoManija,
+) -> VariacionProducto:
+    """Devuelve la variación de Manija Cordón que coincide con el formato dado."""
+    etiqueta = formato.etiqueta
+    for variacion in manija_cordon.variaciones:
+        if variacion.atributos.get("formato") == etiqueta:
+            return variacion
+    raise ValueError(
+        f"No se encontró variación de manija cordón para formato {etiqueta}"
+    )
 
 
 def _slug_impreso_desde_bolsa_base(producto: ProductoBien, sufijo: str = "") -> str:
@@ -48,6 +63,10 @@ def crear_compuestos_predefinidos(
         manija="Manija Cordón",
         impresion="Lisa (sin impresión)",
     )
+    formato_manija_base = formato_manija_para_ancho(formato_base.ancho)
+    variacion_manija_base = _variacion_manija_para_formato(
+        manija_cordon, formato_manija_base
+    )
     bolsa_con_manija = ProductoBien(
         tipo="bien",
         id=3001,
@@ -68,9 +87,9 @@ def crear_compuestos_predefinidos(
             ),
             ComponenteBien(
                 tipo="variacion",
-                referencia_id=manija_cordon.variaciones[0].id,
+                referencia_id=variacion_manija_base.id,
                 cantidad=1,
-                nombre=manija_cordon.nombre,
+                nombre=f"{manija_cordon.nombre} {formato_manija_base.etiqueta}",
             ),
             ComponenteBien(
                 tipo="servicio",
@@ -346,6 +365,10 @@ def crear_compuestos_impresos_con_manija_por_formato(
     for producto in bolsas_base:
         variacion_base = variacion_base_por_producto[producto.id]
         formato, color = datos_por_producto[producto.id]
+        formato_manija = formato_manija_para_ancho(formato.ancho)
+        variacion_manija = _variacion_manija_para_formato(
+            manija_cordon, formato_manija
+        )
 
         # Impreso con manija cordón, sin fotopolímero
         slug = _slug_impreso_desde_bolsa_base(producto, "con-manija-cordon")
@@ -376,9 +399,9 @@ def crear_compuestos_impresos_con_manija_por_formato(
                     ),
                     ComponenteBien(
                         tipo="variacion",
-                        referencia_id=manija_cordon.variaciones[0].id,
+                        referencia_id=variacion_manija.id,
                         cantidad=1,
-                        nombre=manija_cordon.nombre,
+                        nombre=f"{manija_cordon.nombre} {formato_manija.etiqueta}",
                     ),
                     ComponenteBien(
                         tipo="servicio",
@@ -426,9 +449,9 @@ def crear_compuestos_impresos_con_manija_por_formato(
                     ),
                     ComponenteBien(
                         tipo="variacion",
-                        referencia_id=manija_cordon.variaciones[0].id,
+                        referencia_id=variacion_manija.id,
                         cantidad=1,
-                        nombre=manija_cordon.nombre,
+                        nombre=f"{manija_cordon.nombre} {formato_manija.etiqueta}",
                     ),
                     ComponenteBien(
                         tipo="servicio",
@@ -471,6 +494,10 @@ def crear_compuestos_manija_por_formato(
     for producto in bolsas_base:
         variacion_base = variacion_base_por_producto[producto.id]
         formato, color = datos_por_producto[producto.id]
+        formato_manija = formato_manija_para_ancho(formato.ancho)
+        variacion_manija = _variacion_manija_para_formato(
+            manija_cordon, formato_manija
+        )
         nombre_compuesto = construir_nombre_bolsa(
             formato=formato,
             color=color,
@@ -499,9 +526,9 @@ def crear_compuestos_manija_por_formato(
                 ),
                 ComponenteBien(
                     tipo="variacion",
-                    referencia_id=manija_cordon.variaciones[0].id,
+                    referencia_id=variacion_manija.id,
                     cantidad=1,
-                    nombre=manija_cordon.nombre,
+                    nombre=f"{manija_cordon.nombre} {formato_manija.etiqueta}",
                 ),
                 ComponenteBien(
                     tipo="servicio",

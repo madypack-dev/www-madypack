@@ -1,6 +1,7 @@
 """Helpers puros para construir partes del catálogo."""
 
 from src.domain.commerce.cart import CalculoArticulo
+from src.domain.commerce.manija import formato_manija_para_ancho
 
 from .data import FormatoBolsa
 
@@ -18,13 +19,15 @@ def construir_sku_bolsa(
 def calculo_articulo_para_bolsa(
     manija: str,
     impresion: str,
+    formato: FormatoBolsa,
 ) -> CalculoArticulo:
     """Devuelve el cálculo de precio que corresponde a una combinación de bolsa."""
     conceptos = ["base"]
     concepto_fijo: str | None = None
 
     if manija == "Manija Cordón":
-        conceptos.append("manija_cordon")
+        formato_manija = formato_manija_para_ancho(formato.ancho)
+        conceptos.append(f"manija_cordon_{formato_manija.largo_mm}")
     elif manija == "Manija Plana":
         conceptos.append("manija_plana")
 
