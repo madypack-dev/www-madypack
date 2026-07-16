@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from src.adapters.gateways.hardcoded_catalog_repository import HardcodedCatalogRepository
+from src.adapters.gateways.catalog import InMemoryCatalogRepository
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
 from src.domain.commerce.catalog_repository import ICatalogRepository
@@ -47,7 +47,7 @@ def test_cotizador_servicio_error_calculo_nulo():
 
 
 def test_cotizador_servicio_compuesto():
-    catalogo = HardcodedCatalogRepository()
+    catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
     # Compuesto "Bolsa de Papel con Manija Cordón" (id 3001)
@@ -69,7 +69,7 @@ def test_cotizador_servicio_compuesto():
 
 
 def test_cotizador_servicio_compuesto_con_bobina_kg():
-    catalogo = HardcodedCatalogRepository()
+    catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
     # Compuesto visible "Bolsa de Papel Kraft Marrón 22x10x30 cm" (id 3004)
@@ -90,7 +90,7 @@ def test_cotizador_servicio_compuesto_con_bobina_kg():
 
 
 def test_cotizador_servicio_bobina_simple_precio_por_kg():
-    catalogo = HardcodedCatalogRepository()
+    catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
     # Variación de Bobina de Papel (id 76)

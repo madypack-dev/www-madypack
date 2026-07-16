@@ -16,7 +16,7 @@ from src.domain.lead.http_client import IHttpClient
 from src.domain.commerce.cart_repository import IRepositorioCarrito
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
 from src.domain.commerce.catalog_repository import ICatalogRepository
-from src.adapters.gateways.hardcoded_catalog_repository import HardcodedCatalogRepository
+from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.infrastructure.structlog.logger import get_logger
 from src.domain.quote.quote_repository import IQuoteRepository
 from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
@@ -65,8 +65,8 @@ def get_chatwoot_repo(
 
 
 def get_repositorio_catalogo() -> ICatalogRepository:
-    """Inyecta el repositorio de catálogo hardcodeado."""
-    return HardcodedCatalogRepository()
+    """Inyecta el repositorio de catálogo en memoria."""
+    return InMemoryCatalogRepository()
 
 
 def get_cotizador(

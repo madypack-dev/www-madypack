@@ -292,8 +292,11 @@ Convenciones observadas:
 
 - **`gateways/commerce_cookie_repository.py`**: persistencia del carrito en cookie
   (`articulos_carrito`).
-- **`gateways/hardcoded_catalog_repository.py`**: catálogo generado
-  programáticamente (12 productos variables × 6 variaciones = 72 variaciones).
+- **`gateways/catalog/in_memory_catalog_repository.py`**: adaptador delgado que
+  implementa `ICatalogRepository` en memoria.
+- **`gateways/catalog/catalog_seed.py`**: datos semi-estáticos y builders puros
+  para construir el catálogo (12 productos variables × 6 variaciones = 72
+  variaciones).
 - **`gateways/pricing_service.py`**: cotizador con tarifas estáticas en código.
 - **`gateways/json_quote_repository.py`**: guarda presupuestos en
   `data/presupuestos/{ref}.json`.
@@ -378,9 +381,10 @@ Los trackers de Google se desactivan automáticamente en `localhost` y
   `CalculadorPrecio._estrategias` o mediante `registrar_estrategia`.
 - Si cambiás la estructura de `site.yml`, asegurate de que los tests de
   `tests/infrastructure/pyyaml/` y las rutas FastAPI sigan pasando.
-- El catálogo es hardcodeado en `HardcodedCatalogRepository`; para cambiar
-  productos simples, servicios, compuestos, variaciones o MOQs hay que modificar
-  ese archivo y sus tests.
+- El catálogo se construye en `catalog_seed.py` y se expone a través de
+  `InMemoryCatalogRepository`; para cambiar productos simples, servicios,
+  compuestos, variaciones o MOQs hay que modificar `catalog_seed.py` y sus
+  tests.
 - Antes de commitear, ejecutá `./venv/bin/pytest` para verificar que no se
   rompió nada.
 
