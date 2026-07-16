@@ -51,8 +51,9 @@ class TestProductosEndpoints:
         assert "Pegado de Manijas" in response.text
 
     def test_get_compuesto_con_manija_visible_retorna_200(self, client):
+        # Solo el compuesto con manija cordón 22x10x30 Marrón es visible
         response = client.get(
-            "/productos/bolsa-de-papel-marron-120819-con-manija-cordon/",
+            "/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/",
             headers={"host": "localhost:8000"},
         )
         assert response.status_code == 200
@@ -69,9 +70,10 @@ class TestProductosEndpoints:
         assert "<loc>http://localhost:8000/productos/confeccion-de-bolsas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/manija-cordon/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/pegado-de-manijas/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819-con-manija-cordon/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/</loc>" in response.text
         # No debe contener productos no visibles
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" not in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819-con-manija-cordon/</loc>" not in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia en producto/servicio visible

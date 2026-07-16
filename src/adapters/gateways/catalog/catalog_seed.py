@@ -59,7 +59,6 @@ def _crear_calculo_para_bolsa(
     manija: str,
     impresion: str,
 ) -> CalculoArticulo:
-    """Devuelve el cálculo de precio que corresponde a una combinación de bolsa."""
     conceptos = ["base"]
     concepto_fijo: str | None = None
 
@@ -81,7 +80,6 @@ def _crear_calculo_para_bolsa(
 
 
 def _cantidad_por_defecto_para_impresion(impresion: str) -> int:
-    """Devuelve el MOQ según el tipo de impresión."""
     if "Lisa" in impresion:
         return 500
     if "1 o 2" in impresion:
@@ -97,7 +95,6 @@ def _crear_variaciones_de_bolsa(
     color_inicial: str,
     var_id_inicial: int,
 ) -> tuple[list[VariacionProducto], int]:
-    """Crea las 6 variaciones de una bolsa según manija e impresión."""
     variaciones: list[VariacionProducto] = []
     var_id = var_id_inicial
 
@@ -122,7 +119,6 @@ def _crear_variaciones_de_bolsa(
             var_id += 1
 
     return variaciones, var_id
-
 
 def _crear_bolsas_base() -> tuple[
     list[ProductoBien],
@@ -341,7 +337,6 @@ def _crear_servicios() -> tuple[ProductoServicio, ProductoServicio, ProductoServ
     )
     return pegado, impresion, confeccion
 
-
 def _crear_compuestos_fijos(
     variacion_bolsa_base: VariacionProducto,
     manija_cordon: ProductoBien,
@@ -351,7 +346,6 @@ def _crear_compuestos_fijos(
     confeccion: ProductoServicio,
     bobina: ProductoBien,
 ) -> list[ProductoBien]:
-    """Crea los 4 compuestos fijos del catálogo."""
     bolsa_con_manija = ProductoBien(
         tipo="bien",
         id=3001,
@@ -362,6 +356,7 @@ def _crear_compuestos_fijos(
         cantidad_por_defecto=1000,
         atributos_posibles={},
         variaciones=[],
+        visible=False,
         componentes=[
             ComponenteBien(
                 tipo="variacion",
@@ -481,7 +476,6 @@ def _crear_compuestos_con_manija(
     pegado: ProductoServicio,
     id_inicial: int,
 ) -> list[ProductoBien]:
-    """Crea un compuesto "con manija cordón" para cada bolsa simple base."""
     compuestos: list[ProductoBien] = []
     compuesto_id = id_inicial
 
@@ -500,7 +494,7 @@ def _crear_compuestos_con_manija(
             cantidad_por_defecto=variacion_base.cantidad_por_defecto,
             atributos_posibles={},
             variaciones=[],
-            visible=True,
+            visible=producto.slug == "bolsa-de-papel-marron-221030-base",
             componentes=[
                 ComponenteBien(
                     tipo="variacion",

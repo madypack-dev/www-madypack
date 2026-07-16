@@ -75,14 +75,26 @@ def test_in_memory_catalog_repository_operations():
     assert isinstance(pegado, ProductoServicio)
     assert pegado.visible
 
-    # Compuesto con manija cordón para cada bolsa simple
-    compuesto_manija = repo.obtener_por_id(3005)
-    assert isinstance(compuesto_manija, ProductoBien)
-    assert compuesto_manija.visible
-    assert compuesto_manija.es_compuesto
-    assert "Manija Cordón" in compuesto_manija.nombre
-    assert any(c.nombre == "Manija Cordón" for c in compuesto_manija.componentes)
-    assert any(c.nombre == "Pegado de Manijas" for c in compuesto_manija.componentes)
+    # Solo el compuesto con manija cordón 22x10x30 Marrón es visible
+    compuesto_manija_visible = repo.obtener_por_id(3011)
+    assert isinstance(compuesto_manija_visible, ProductoBien)
+    assert compuesto_manija_visible.visible
+    assert compuesto_manija_visible.es_compuesto
+    assert "Manija Cordón" in compuesto_manija_visible.nombre
+    assert "22x10x30" in compuesto_manija_visible.nombre
+    assert any(c.nombre == "Manija Cordón" for c in compuesto_manija_visible.componentes)
+    assert any(c.nombre == "Pegado de Manijas" for c in compuesto_manija_visible.componentes)
+
+    # Los demás compuestos con manija cordón permanecen ocultos
+    compuesto_manija_oculto = repo.obtener_por_id(3005)
+    assert isinstance(compuesto_manija_oculto, ProductoBien)
+    assert not compuesto_manija_oculto.visible
+    assert "Manija Cordón" in compuesto_manija_oculto.nombre
+
+    # El compuesto fijo genérico también permanece oculto
+    compuesto_fijo_manija = repo.obtener_por_id(3001)
+    assert isinstance(compuesto_fijo_manija, ProductoBien)
+    assert not compuesto_fijo_manija.visible
 
     # Bolsa visible es el compuesto 22x10x30 con medidas
     bolsa_visible = repo.obtener_por_id(3004)
