@@ -6,6 +6,7 @@ from src.domain.commerce.product import ProductoBien
 
 from .builders import (
     calculo_articulo_para_bolsa,
+    construir_nombre_bolsa,
     construir_sku_bolsa,
     imagen_para_manija,
     moq_para_impresion,
@@ -58,16 +59,21 @@ def crear_bolsas_base() -> tuple[
     list[ProductoBien],
     dict[int, VariacionProducto],
     dict[int, tuple[ProductoBien, VariacionProducto]],
+    dict[int, tuple[FormatoBolsa, str]],
     int,
 ]:
     """Crea los bienes simples de bolsa y sus variaciones.
 
     Los bienes simples no son visibles; los formatos visibles se exponen como
     compuestos (bobina + confección).
+
+    Devuelve también un diccionario con el formato y color originales de cada
+    bolsa base, útil para construir compuestos con nombres normalizados.
     """
     productos: list[ProductoBien] = []
     variacion_base_por_producto: dict[int, VariacionProducto] = {}
     variaciones: dict[int, tuple[ProductoBien, VariacionProducto]] = {}
+    datos_por_producto: dict[int, tuple[FormatoBolsa, str]] = {}
 
     prod_id = ID_INICIAL_PRODUCTO_BOLSA
     var_id = ID_INICIAL_VARIACION
@@ -78,7 +84,12 @@ def crear_bolsas_base() -> tuple[
             if formato.codigo == "221030" and color == "Marrón":
                 slug = f"{slug}-base"
 
-            nombre = f"Bolsa de Papel {color_name} {formato.rubro} ({formato.medidas})"
+            nombre = construir_nombre_bolsa(
+                formato=formato,
+                color=color,
+                manija="Sin Manija",
+                impresion="Lisa (sin impresión)",
+            )
             descripcion = (
                 f"Bolsa de papel de color {color.lower()} y formato {formato.medidas} "
                 f"(Modelo {formato.codigo}). Diseñada especialmente {formato.rubro}. "
@@ -113,7 +124,8 @@ def crear_bolsas_base() -> tuple[
                 variaciones[variacion.id] = (producto, variacion)
 
             variacion_base_por_producto[prod_id] = variaciones_bolsa[0]
+            datos_por_producto[prod_id] = (formato, color)
             productos.append(producto)
             prod_id += 1
 
-    return productos, variacion_base_por_producto, variaciones, var_id
+    return productos, variacion_base_por_producto, variaciones, datos_por_producto, var_id

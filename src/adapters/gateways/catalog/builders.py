@@ -2,6 +2,8 @@
 
 from src.domain.commerce.cart import CalculoArticulo
 
+from .data import FormatoBolsa
+
 
 def construir_sku_bolsa(
     codigo: str,
@@ -50,3 +52,34 @@ def moq_para_impresion(impresion: str) -> int:
 def imagen_para_manija(manija: str) -> str:
     """Devuelve la imagen por defecto según el tipo de manija."""
     return "bolsas-sin-m.svg" if manija == "Sin Manija" else "bolsas-con-m.svg"
+
+
+def _texto_manija(manija: str) -> str:
+    """Convierte el atributo manija a texto para el título del producto."""
+    if manija == "Manija Cordón":
+        return "con Manija Cordón"
+    return "sin Manija"
+
+
+def _texto_impresion(impresion: str) -> str:
+    """Convierte el atributo impresión a 'Lisa' o 'Impresa'."""
+    if "Lisa" in impresion:
+        return "Lisa"
+    return "Impresa"
+
+
+def construir_nombre_bolsa(
+    formato: FormatoBolsa,
+    color: str,
+    manija: str,
+    impresion: str,
+    gramaje: str = "100g",
+) -> str:
+    """Construye el título normalizado de un producto de bolsa.
+
+    Formato: Bolsa {medidas} {color} {con/sin manija} {Lisa/Impresa} {gramaje}
+    """
+    return (
+        f"Bolsa {formato.medidas} {color} {_texto_manija(manija)} "
+        f"{_texto_impresion(impresion)} {gramaje}"
+    )

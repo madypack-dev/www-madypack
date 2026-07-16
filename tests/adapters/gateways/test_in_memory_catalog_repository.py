@@ -14,13 +14,13 @@ def test_in_memory_catalog_repository_operations():
     # 12 compuestos con manija + 24 impresos + 24 impresos con manija = 86
     productos = repo.obtener_todos()
     assert len(productos) == 86
-    assert productos[0].nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
+    assert productos[0].nombre == "Bolsa 12x8x19 cm Marrón sin Manija Lisa 100g"
     assert productos[0].tipo == "bien"
     assert not productos[0].es_compuesto
     assert len(productos[0].variaciones) == 6
 
     # Obtener por id
-    assert repo.obtener_por_id(1001).nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
+    assert repo.obtener_por_id(1001).nombre == "Bolsa 12x8x19 cm Marrón sin Manija Lisa 100g"
     assert repo.obtener_por_id(99) is None
 
     # Obtener por slug
@@ -28,8 +28,8 @@ def test_in_memory_catalog_repository_operations():
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
-    # 2 bolsas simples + 4 impresos + 4 impresos con manija + 2 con manija cordón original
-    assert len(repo.buscar("Farmacia")) == 12
+    # 2 bolsas simples + 3 compuestos predefinidos + 4 impresos + 4 impresos con manija + 2 con manija cordón
+    assert len(repo.buscar("Farmacia")) == 15
     assert len(repo.buscar("inexistente")) == 0
     assert len(repo.buscar("")) == 86
 
@@ -37,7 +37,7 @@ def test_in_memory_catalog_repository_operations():
     res = repo.obtener_variacion_por_id(1)
     assert res is not None
     prod, var = res
-    assert prod.nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
+    assert prod.nombre == "Bolsa 12x8x19 cm Marrón sin Manija Lisa 100g"
     assert var.sku == "B-120819-M-SOS-L"
     assert var.atributos == {"manija": "Sin Manija", "impresion": "Lisa (sin impresión)"}
 
@@ -62,7 +62,7 @@ def test_in_memory_catalog_repository_operations():
     compuesto = repo.obtener_por_id(3001)
     assert isinstance(compuesto, ProductoBien)
     assert compuesto.es_compuesto
-    assert compuesto.nombre == "Bolsa de Papel con Manija Cordón"
+    assert compuesto.nombre == "Bolsa 12x8x19 cm Marrón con Manija Cordón Lisa 100g"
     assert len(compuesto.componentes) == 3
 
     # Bobina de papel visible, cotizada en kg
@@ -142,7 +142,7 @@ def test_in_memory_catalog_repository_operations():
     assert isinstance(bolsa_visible, ProductoBien)
     assert bolsa_visible.visible
     assert bolsa_visible.es_compuesto
-    assert bolsa_visible.nombre == "Bolsa de Papel Kraft Marrón para Hamburguesas y Delivery (22x10x30 cm)"
+    assert bolsa_visible.nombre == "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g"
     componente_bobina = next(
         c for c in bolsa_visible.componentes if c.nombre == "Bobina de Papel"
     )

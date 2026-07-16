@@ -35,9 +35,13 @@ def construir_catalogo() -> tuple[
         - Diccionario de variaciones indexadas por ID.
         - Diccionario de servicios indexados por ID.
     """
-    bolsas_base, variacion_base_por_producto, variaciones, siguiente_var_id = (
-        crear_bolsas_base()
-    )
+    (
+        bolsas_base,
+        variacion_base_por_producto,
+        variaciones,
+        datos_por_producto,
+        siguiente_var_id,
+    ) = crear_bolsas_base()
 
     (
         _manija_plana,
@@ -56,6 +60,13 @@ def construir_catalogo() -> tuple[
     servicios = {s.id: s for s in [pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas]}
 
     variacion_bolsa_base = variaciones[1][1]
+    producto_bolsa_base = variaciones[1][0]
+    formato_base, color_base = datos_por_producto[producto_bolsa_base.id]
+
+    producto_visible_221030 = next(
+        p for p in bolsas_base if p.slug == "bolsa-de-papel-marron-221030-base"
+    )
+    formato_visible, color_visible = datos_por_producto[producto_visible_221030.id]
 
     compuestos_predefinidos = crear_compuestos_predefinidos(
         variacion_bolsa_base=variacion_bolsa_base,
@@ -67,11 +78,16 @@ def construir_catalogo() -> tuple[
         corte_bobinas=corte_bobinas,
         confeccion_cuerdas=confeccion_cuerdas,
         bobina=bobina,
+        formato_base=formato_base,
+        color_base=color_base,
+        formato_visible=formato_visible,
+        color_visible=color_visible,
     )
 
     compuestos_con_manija = crear_compuestos_manija_por_formato(
         bolsas_base=bolsas_base,
         variacion_base_por_producto=variacion_base_por_producto,
+        datos_por_producto=datos_por_producto,
         manija_cordon=manija_cordon,
         pegado=pegado,
         id_inicial=ID_BASE_COMPUESTOS_CON_MANIJA,
@@ -80,6 +96,7 @@ def construir_catalogo() -> tuple[
     compuestos_impresos = crear_compuestos_impresos_por_formato(
         bolsas_base=bolsas_base,
         variacion_base_por_producto=variacion_base_por_producto,
+        datos_por_producto=datos_por_producto,
         fotopolimero=fotopolimero,
         impresion=impresion,
         id_inicial=ID_BASE_COMPUESTOS_IMPRESOS,
@@ -88,6 +105,7 @@ def construir_catalogo() -> tuple[
     compuestos_impresos_con_manija = crear_compuestos_impresos_con_manija_por_formato(
         bolsas_base=bolsas_base,
         variacion_base_por_producto=variacion_base_por_producto,
+        datos_por_producto=datos_por_producto,
         manija_cordon=manija_cordon,
         fotopolimero=fotopolimero,
         impresion=impresion,

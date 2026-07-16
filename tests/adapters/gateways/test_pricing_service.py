@@ -50,10 +50,10 @@ def test_cotizador_servicio_compuesto():
     catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
-    # Compuesto "Bolsa de Papel con Manija Cordón" (id 3001)
+    # Compuesto "Bolsa 12x8x19 cm Marrón con Manija Cordón Lisa 100g" (id 3001)
     articulo = ArticuloCarrito(
         id=3001,
-        nombre="Bolsa de Papel con Manija Cordón",
+        nombre="Bolsa 12x8x19 cm Marrón con Manija Cordón Lisa 100g",
         descripcion="Receta",
         cantidad=1000,
         imagen="bolsas-con-m.svg",
@@ -72,10 +72,10 @@ def test_cotizador_servicio_compuesto_con_bobina_kg():
     catalogo = InMemoryCatalogRepository()
     servicio = CotizadorServicio(catalogo=catalogo)
 
-    # Compuesto visible "Bolsa de Papel Kraft Marrón 22x10x30 cm" (id 3004)
+    # Compuesto visible "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g" (id 3004)
     articulo = ArticuloCarrito(
         id=3004,
-        nombre="Bolsa de Papel Kraft Marrón para Hamburguesas y Delivery (22x10x30 cm)",
+        nombre="Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g",
         descripcion="Receta",
         cantidad=1000,
         imagen="bolsas-sin-m.svg",

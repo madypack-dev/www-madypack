@@ -13,12 +13,12 @@ def client():
 
 class TestProductosEndpoints:
     def test_get_producto_visible_retorna_200_con_schema(self, client):
-        # Producto visible: compuesto Bolsa de Papel Kraft Marrón 22x10x30 cm
+        # Producto visible: compuesto Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g
         response = client.get("/productos/bolsa-de-papel-marron-221030/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
-        assert "Bolsa de Papel Kraft Marrón" in response.text
+        assert "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g" in response.text
         assert "Bobina de Papel" in response.text
         assert "Confección de Bolsas de Papel" in response.text
 
@@ -121,7 +121,7 @@ class TestProductosEndpoints:
         # Búsqueda vacía / sin parámetro de query
         response = client.get("/productos/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
-        assert "Bolsa de Papel" in response.text
+        assert "Bolsa" in response.text
 
         # NO debe incluir noindex, nofollow sino indexar por defecto
         assert '<meta name="robots" content="noindex, nofollow">' not in response.text
