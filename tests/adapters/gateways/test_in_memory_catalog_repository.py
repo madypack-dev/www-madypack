@@ -10,9 +10,10 @@ from src.domain.commerce.product import ProductoBien, ProductoServicio
 def test_in_memory_catalog_repository_operations():
     repo = InMemoryCatalogRepository()
 
-    # 12 bolsas + 4 componentes + 3 servicios + 4 compuestos fijos + 12 compuestos con manija = 35
+    # 12 bolsas + 4 componentes + 3 servicios + 4 compuestos fijos +
+    # 12 compuestos con manija + 24 impresos + 24 impresos con manija = 83
     productos = repo.obtener_todos()
-    assert len(productos) == 35
+    assert len(productos) == 83
     assert productos[0].nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
     assert productos[0].tipo == "bien"
     assert not productos[0].es_compuesto
@@ -27,9 +28,10 @@ def test_in_memory_catalog_repository_operations():
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
-    assert len(repo.buscar("Farmacia")) == 4
+    # 2 bolsas simples + 4 impresos + 4 impresos con manija + 2 con manija cordón original
+    assert len(repo.buscar("Farmacia")) == 12
     assert len(repo.buscar("inexistente")) == 0
-    assert len(repo.buscar("")) == 35
+    assert len(repo.buscar("")) == 83
 
     # Obtener variación por id
     res = repo.obtener_variacion_por_id(1)
@@ -96,6 +98,35 @@ def test_in_memory_catalog_repository_operations():
     assert isinstance(compuesto_fijo_manija, ProductoBien)
     assert not compuesto_fijo_manija.visible
 
+    # Solo el compuesto impreso 22x10x30 Marrón es visible (sin manija)
+    compuesto_impreso_visible = repo.obtener_por_id(4013)
+    assert isinstance(compuesto_impreso_visible, ProductoBien)
+    assert compuesto_impreso_visible.visible
+    assert compuesto_impreso_visible.es_compuesto
+    assert "Impresa" in compuesto_impreso_visible.nombre
+    assert "22x10x30" in compuesto_impreso_visible.nombre
+    assert any(c.nombre == "Impresión" for c in compuesto_impreso_visible.componentes)
+
+    # Los demás compuestos impresos sin manija permanecen ocultos
+    compuesto_impreso_oculto = repo.obtener_por_id(4001)
+    assert isinstance(compuesto_impreso_oculto, ProductoBien)
+    assert not compuesto_impreso_oculto.visible
+
+    # Solo el compuesto impreso con manija 22x10x30 Marrón es visible
+    compuesto_impreso_manija_visible = repo.obtener_por_id(5013)
+    assert isinstance(compuesto_impreso_manija_visible, ProductoBien)
+    assert compuesto_impreso_manija_visible.visible
+    assert compuesto_impreso_manija_visible.es_compuesto
+    assert "Impresa" in compuesto_impreso_manija_visible.nombre
+    assert "Manija Cordón" in compuesto_impreso_manija_visible.nombre
+    assert any(c.nombre == "Impresión" for c in compuesto_impreso_manija_visible.componentes)
+    assert any(c.nombre == "Pegado de Manijas" for c in compuesto_impreso_manija_visible.componentes)
+
+    # Los demás compuestos impresos con manija permanecen ocultos
+    compuesto_impreso_manija_oculto = repo.obtener_por_id(5001)
+    assert isinstance(compuesto_impreso_manija_oculto, ProductoBien)
+    assert not compuesto_impreso_manija_oculto.visible
+
     # Bolsa visible es el compuesto 22x10x30 con medidas
     bolsa_visible = repo.obtener_por_id(3004)
     assert isinstance(bolsa_visible, ProductoBien)
@@ -146,3 +177,12 @@ def test_catalogo_mantiene_rangos_de_ids():
     # Sin IDs duplicados dentro de cada colección.
     assert len(ids_productos) == len(productos)
     assert len(ids_variaciones) == len(variaciones)
+
+    # Rangos disjuntos entre familias de compuestos.
+    compuestos_predefinidos = {p.id for p in productos if 3001 <= p.id <= 3016}
+    compuestos_impresos = {p.id for p in productos if 4001 <= p.id <= 4099}
+    compuestos_impresos_con_manija = {p.id for p in productos if 5001 <= p.id <= 5099}
+
+    assert len(compuestos_predefinidos & compuestos_impresos) == 0
+    assert len(compuestos_predefinidos & compuestos_impresos_con_manija) == 0
+    assert len(compuestos_impresos & compuestos_impresos_con_manija) == 0

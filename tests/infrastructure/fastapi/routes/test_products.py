@@ -59,6 +59,23 @@ class TestProductosEndpoints:
         assert response.status_code == 200
         assert "con Manija Cordón" in response.text
 
+    def test_get_compuesto_impreso_visible_retorna_200(self, client):
+        response = client.get(
+            "/productos/bolsa-de-papel-impresa-marron-221030-base/",
+            headers={"host": "localhost:8000"},
+        )
+        assert response.status_code == 200
+        assert "Impresa" in response.text
+
+    def test_get_compuesto_impreso_con_manija_visible_retorna_200(self, client):
+        response = client.get(
+            "/productos/bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon/",
+            headers={"host": "localhost:8000"},
+        )
+        assert response.status_code == 200
+        assert "Impresa" in response.text
+        assert "Manija Cordón" in response.text
+
     def test_sitemap_xml_incluye_urls_de_productos_visibles(self, client):
         response = client.get("/sitemap.xml", headers={"host": "localhost:8000"})
         assert response.status_code == 200
@@ -71,9 +88,13 @@ class TestProductosEndpoints:
         assert "<loc>http://localhost:8000/productos/manija-cordon/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/pegado-de-manijas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon/</loc>" in response.text
         # No debe contener productos no visibles
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" not in response.text
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819-con-manija-cordon/</loc>" not in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819/</loc>" not in response.text
+        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819-con-manija-cordon/</loc>" not in response.text
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia en producto/servicio visible

@@ -9,8 +9,17 @@ from src.domain.commerce.product import ProductoBien, ProductoServicio
 
 from .bolsas import crear_bolsas_base
 from .componentes import crear_bobina, crear_componentes
-from .compuestos import crear_compuestos_manija_por_formato, crear_compuestos_predefinidos
-from .data import ID_INICIAL_COMPUESTO
+from .compuestos import (
+    crear_compuestos_impresos_con_manija_por_formato,
+    crear_compuestos_impresos_por_formato,
+    crear_compuestos_manija_por_formato,
+    crear_compuestos_predefinidos,
+)
+from .data import (
+    ID_INICIAL_COMPUESTO,
+    ID_INICIAL_COMPUESTO_IMPRESO,
+    ID_INICIAL_COMPUESTO_IMPRESO_CON_MANIJA,
+)
 from .servicios import crear_servicios
 
 
@@ -66,6 +75,24 @@ def construir_catalogo() -> tuple[
         id_inicial=ID_INICIAL_COMPUESTO + len(compuestos_predefinidos),
     )
 
+    compuestos_impresos = crear_compuestos_impresos_por_formato(
+        bolsas_base=bolsas_base,
+        variacion_base_por_producto=variacion_base_por_producto,
+        fotopolimero=fotopolimero,
+        impresion=impresion,
+        id_inicial=ID_INICIAL_COMPUESTO_IMPRESO,
+    )
+
+    compuestos_impresos_con_manija = crear_compuestos_impresos_con_manija_por_formato(
+        bolsas_base=bolsas_base,
+        variacion_base_por_producto=variacion_base_por_producto,
+        manija_cordon=manija_cordon,
+        fotopolimero=fotopolimero,
+        impresion=impresion,
+        pegado=pegado,
+        id_inicial=ID_INICIAL_COMPUESTO_IMPRESO_CON_MANIJA,
+    )
+
     productos: list[ProductoBien | ProductoServicio] = [
         *bolsas_base,
         _manija_plana,
@@ -77,6 +104,8 @@ def construir_catalogo() -> tuple[
         confeccion,
         *compuestos_predefinidos,
         *compuestos_con_manija,
+        *compuestos_impresos,
+        *compuestos_impresos_con_manija,
     ]
 
     return productos, variaciones, servicios
