@@ -1,0 +1,12 @@
+# Índice de precios al consumidor (IPC) para actualización de tarifas en ARS.
+# Cada entrada representa la variación intermensual del mes indicado.
+# El mes debe ser el primer día del mes.
+#
+# Ejemplo:
+# ipc:
+#   - mes: "2024-01-01"
+#     variacion_intermensual: 0.15
+#   - mes: "2024-02-01"
+#     variacion_intermensual: 0.13
+
+ipc: []

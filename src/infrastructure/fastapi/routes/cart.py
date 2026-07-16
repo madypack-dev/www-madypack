@@ -12,7 +12,7 @@ from src.application.commerce.cart_use_cases import (
     CasoUsoEliminarDelCarrito,
     CasoUsoObtenerResumenCarrito,
 )
-from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.application.quote.pricing_service import CotizadorServicio
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 from src.domain.commerce.product import ProductoBien, ProductoServicio
 from src.infrastructure.fastapi.dependencies import (

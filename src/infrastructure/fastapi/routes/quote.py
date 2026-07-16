@@ -19,7 +19,7 @@ from src.application.lead.lead_dtos import CrearLeadRequest
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 
 from src.domain.lead.lead import Lead
-from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.application.quote.pricing_service import CotizadorServicio
 from src.adapters.presenters.quote_confirmation_presenter import PresentadorConfirmacionPresupuesto
 from src.application.quote.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
 

@@ -1,12 +1,17 @@
 """Wiring de dependencias compartidas entre rutas de infraestructura."""
 
+from datetime import date
+from pathlib import Path
+
 import httpx
 from fastapi import Request, Depends
 
 from src.infrastructure.config.settings import (
+    BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
     CHATWOOT_API_TOKEN,
     CHATWOOT_URL,
+    IPC_DATA_PATH,
 )
 from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
 from src.infrastructure.httpx.http_client import HttpxClientAdapter
@@ -21,7 +26,11 @@ from src.infrastructure.structlog.logger import get_logger
 from src.domain.quote.quote_repository import IQuoteRepository
 from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
 
-from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.application.quote.pricing_service import CotizadorServicio
+from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
+from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
+from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
+from src.adapters.gateways.proveedor_ipc_yaml import ProveedorIPCYaml
 from src.infrastructure.reportlab.pdf_generator import GeneradorPresupuestoPDFReportLab
 from src.domain.quote.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.adapters.gateways.quote_fallback_repository import RegistroFallbackArchivo
@@ -72,10 +81,18 @@ def get_repositorio_catalogo() -> ICatalogRepository:
 def get_cotizador(
     repo_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
 ) -> CotizadorServicio:
-    """Inyecta el servicio cotizador."""
+    """Inyecta el servicio cotizador con tarifas, tasa de cambio e IPC."""
+    ruta_ipc = Path(IPC_DATA_PATH)
+    proveedor_ipc = ProveedorIPCYaml(str(ruta_ipc)) if ruta_ipc.exists() else ProveedorIPCDefault()
+
     return CotizadorServicio(
         catalogo=repo_catalogo,
         registrar_error=logger.error,
+        proveedor_tarifas=ProveedorTarifasDefault(),
+        proveedor_tasa=ProveedorTasaCambioDefault(),
+        proveedor_ipc=proveedor_ipc,
+        fecha_presente=date.today(),
+        bolsa_solap_cm=BOLSA_SOLAP_CM,
     )
 
 

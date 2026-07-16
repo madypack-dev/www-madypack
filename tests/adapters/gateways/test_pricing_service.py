@@ -1,10 +1,14 @@
 from datetime import date
+from decimal import Decimal
 
 import pytest
 from unittest.mock import MagicMock
 
 from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
-from src.adapters.gateways.pricing_service import BOLSA_SOLAP_CM, CotizadorServicio
+from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
+from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
+from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
+from src.application.quote.pricing_service import CotizadorServicio
 from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
 from src.domain.commerce.catalog_repository import ICatalogRepository
 from src.domain.commerce.product import (
@@ -15,6 +19,9 @@ from src.domain.commerce.product import (
 from src.domain.commerce.catalog import VariacionProducto
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.moneda import Moneda
+from src.domain.pricing.proveedor_ipc import IProveedorIPC
+from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
+from src.domain.pricing.proveedor_tasa_cambio import IProveedorTasaCambio
 from src.domain.pricing.tasa_cambio import TasaCambio
 
 
@@ -26,6 +33,42 @@ class _ProveedorTasaFija:
         return self._tasa
 
 
+class _ProveedorTarifasFijo:
+    def __init__(self, tarifas: dict[str, ConceptoTarifa]):
+        self._tarifas = tarifas
+
+    def obtener_tarifas(self) -> dict[str, ConceptoTarifa]:
+        return self._tarifas
+
+
+class _ProveedorIPCFijo:
+    def __init__(self, factor: Decimal):
+        self._factor = factor
+
+    def obtener_factor(self, desde: date, hasta: date) -> Decimal:
+        return self._factor
+
+
+def _cotizador_default(
+    catalogo=None,
+    registrar_error=None,
+    proveedor_tarifas: IProveedorTarifas | None = None,
+    proveedor_tasa: IProveedorTasaCambio | None = None,
+    proveedor_ipc: IProveedorIPC | None = None,
+    fecha_presente: date = date(2024, 1, 1),
+    bolsa_solap_cm: float = 3.5,
+):
+    return CotizadorServicio(
+        catalogo=catalogo,
+        registrar_error=registrar_error or (lambda _: None),
+        proveedor_tarifas=proveedor_tarifas or ProveedorTarifasDefault(),
+        proveedor_tasa=proveedor_tasa or ProveedorTasaCambioDefault(),
+        proveedor_ipc=proveedor_ipc or ProveedorIPCDefault(),
+        fecha_presente=fecha_presente,
+        bolsa_solap_cm=bolsa_solap_cm,
+    )
+
+
 def test_cotizador_servicio_exito():
     articulo_1 = ArticuloCarrito(
         id=1,
@@ -35,7 +78,7 @@ def test_cotizador_servicio_exito():
         imagen="img.png",
         calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
     )
-    servicio = CotizadorServicio()
+    servicio = _cotizador_default()
     precio = servicio.calcular_precio_estimado(articulo_1)
     # base es 0.15 en tarifas fijas -> 0.15 * 1000 = 150.0
     assert precio == 150.0
@@ -51,7 +94,7 @@ def test_cotizador_servicio_error_calculo_nulo():
         imagen="img.png",
         calculo=None,
     )
-    servicio = CotizadorServicio(registrar_error=registrar_error_fn)
+    servicio = _cotizador_default(registrar_error=registrar_error_fn)
 
     with pytest.raises(ValueError):
         servicio.calcular_precio_estimado(articulo)
@@ -61,7 +104,7 @@ def test_cotizador_servicio_error_calculo_nulo():
 
 def test_cotizador_servicio_compuesto():
     catalogo = InMemoryCatalogRepository()
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio = _cotizador_default(catalogo=catalogo)
 
     # Compuesto "Bolsa 12x8x19 cm Marrón con Manija Cordón Lisa 100g" (id 3001)
     articulo = ArticuloCarrito(
@@ -83,7 +126,7 @@ def test_cotizador_servicio_compuesto():
 
 def test_cotizador_servicio_compuesto_con_bobina_kg():
     catalogo = InMemoryCatalogRepository()
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio = _cotizador_default(catalogo=catalogo)
 
     # Compuesto visible "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g" (id 3004)
     articulo = ArticuloCarrito(
@@ -104,7 +147,7 @@ def test_cotizador_servicio_compuesto_con_bobina_kg():
 
 def test_cotizador_servicio_bobina_simple_precio_por_kg():
     catalogo = InMemoryCatalogRepository()
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio = _cotizador_default(catalogo=catalogo)
 
     # Variación de Bobina de Papel
     bobina = catalogo.obtener_por_id(1104)
@@ -127,7 +170,7 @@ def test_cotizador_servicio_bobina_simple_precio_por_kg():
 
 def test_cotizador_servicio_cuerdas_de_papel_retorcidas():
     catalogo = InMemoryCatalogRepository()
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio = _cotizador_default(catalogo=catalogo)
 
     # Producto compuesto "Cuerdas de Papel Retorcidas" (id 3005)
     articulo = ArticuloCarrito(
@@ -195,7 +238,7 @@ def test_cotizador_servicio_con_catalogo_mock():
         variacion if c.tipo == "variacion" else servicio_model
     )
 
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio = _cotizador_default(catalogo=catalogo)
     articulo = ArticuloCarrito(
         id=3001,
         nombre="Compuesto",
@@ -212,10 +255,10 @@ def test_cotizador_servicio_con_catalogo_mock():
     assert precio == 40.0
 
 
-
-def test_cotizador_servicio_usa_solapa_configurable(monkeypatch):
+def test_cotizador_servicio_usa_solapa_configurable():
     catalogo = InMemoryCatalogRepository()
-    servicio = CotizadorServicio(catalogo=catalogo)
+    servicio_default = _cotizador_default(catalogo=catalogo, bolsa_solap_cm=3.5)
+    servicio_mayor_solapa = _cotizador_default(catalogo=catalogo, bolsa_solap_cm=4.5)
 
     # Compuesto visible "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g" (id 3004)
     articulo = ArticuloCarrito(
@@ -227,25 +270,21 @@ def test_cotizador_servicio_usa_solapa_configurable(monkeypatch):
         calculo=None,
     )
 
-    precio_default = servicio.calcular_precio_estimado(articulo)
+    precio_default = servicio_default.calcular_precio_estimado(articulo)
+    precio_mayor_solapa = servicio_mayor_solapa.calcular_precio_estimado(articulo)
 
     # Al aumentar la solapa, el consumo de bobina (y el precio) debe subir
-    monkeypatch.setattr(
-        "src.adapters.gateways.pricing_service.BOLSA_SOLAP_CM", BOLSA_SOLAP_CM + 1.0
-    )
-    precio_mayor_solapa = servicio.calcular_precio_estimado(articulo)
-
     assert precio_mayor_solapa > precio_default
 
 
 def test_cotizador_servicio_concepto_usd_se_convierte_a_ars():
-    tasa = TasaCambio(fecha=date.today(), ars_por_usd=1000.0, fuente="BNA")
-    conceptos = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD),
+    tasa = TasaCambio(fecha=date(2024, 6, 1), ars_por_usd=1000.0, fuente="BNA")
+    tarifas = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
     }
-    servicio = CotizadorServicio(
+    servicio = _cotizador_default(
+        proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
         proveedor_tasa=_ProveedorTasaFija(tasa),
-        conceptos=conceptos,
     )
     articulo = ArticuloCarrito(
         id=1,
@@ -263,11 +302,13 @@ def test_cotizador_servicio_concepto_usd_se_convierte_a_ars():
 
 
 def test_cotizador_servicio_sin_proveedor_tasa_asume_paridad_para_usd():
-    """Sin proveedor de tasa, USD se trata con tasa 1.0 (modo compatibilidad)."""
-    conceptos = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD),
+    """Sin proveedor de tasa explícito, se usa la tasa default (paridad 1:1)."""
+    tarifas = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
     }
-    servicio = CotizadorServicio(conceptos=conceptos)
+    servicio = _cotizador_default(
+        proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
+    )
     articulo = ArticuloCarrito(
         id=1,
         nombre="Bolsa A",
@@ -280,3 +321,55 @@ def test_cotizador_servicio_sin_proveedor_tasa_asume_paridad_para_usd():
     precio = servicio.calcular_precio_estimado(articulo)
 
     assert precio == 100.0
+
+
+def test_cotizador_servicio_actualiza_concepto_ars_por_ipc():
+    """Una tarifa ARS de fecha anterior con IPC acumulado se actualiza a valor presente."""
+    tarifas = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.ARS, fecha=date(2024, 1, 1)),
+    }
+    servicio = _cotizador_default(
+        proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
+        proveedor_ipc=_ProveedorIPCFijo(Decimal("1.21")),
+        fecha_presente=date(2024, 6, 1),
+    )
+    articulo = ArticuloCarrito(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        cantidad=1000,
+        imagen="img.png",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # 0.10 ARS/u * 1.21 (IPC) * 1000 unidades = 121.0 ARS
+    assert precio == 121.0
+
+
+def test_cotizador_servicio_no_actualiza_usd_por_ipc():
+    """Los conceptos en USD se convierten al tipo de cambio y no se reescalan por IPC."""
+    tarifas = {
+        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
+    }
+    tasa = TasaCambio(fecha=date(2024, 6, 1), ars_por_usd=1000.0, fuente="BNA")
+    servicio = _cotizador_default(
+        proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
+        proveedor_tasa=_ProveedorTasaFija(tasa),
+        proveedor_ipc=_ProveedorIPCFijo(Decimal("1.21")),
+        fecha_presente=date(2024, 6, 1),
+    )
+    articulo = ArticuloCarrito(
+        id=1,
+        nombre="Bolsa A",
+        descripcion="A",
+        cantidad=1000,
+        imagen="img.png",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # 0.10 USD/u * 1000 ARS/USD * 1000 unidades = 100000 ARS (sin IPC)
+    assert precio == 100000.0

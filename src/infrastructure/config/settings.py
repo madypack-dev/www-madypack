@@ -11,6 +11,7 @@ class Settings(BaseModel):
     CHATWOOT_INBOX_ID: int = Field(default_factory=lambda: int(os.getenv("CHATWOOT_INBOX_ID", "1")))
     CHATWOOT_API_TOKEN: str = Field(default_factory=lambda: os.getenv("CHATWOOT_API_TOKEN", ""))
     BOLSA_SOLAP_CM: float = Field(default_factory=lambda: float(os.getenv("BOLSA_SOLAP_CM", "3.5")))
+    IPC_DATA_PATH: str = Field(default_factory=lambda: os.getenv("IPC_DATA_PATH", "data/ipc.yml"))
 
 
 _settings = Settings()
@@ -22,3 +23,4 @@ CHATWOOT_ACCOUNT_ID: int = _settings.CHATWOOT_ACCOUNT_ID
 CHATWOOT_INBOX_ID: int = _settings.CHATWOOT_INBOX_ID
 CHATWOOT_API_TOKEN: str = _settings.CHATWOOT_API_TOKEN
 BOLSA_SOLAP_CM: float = _settings.BOLSA_SOLAP_CM
+IPC_DATA_PATH: str = _settings.IPC_DATA_PATH

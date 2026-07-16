@@ -47,6 +47,7 @@ adapters**:
 .
 ├── data/
 │   ├── site.yml                  # Configuración central del sitio (validada con Pydantic)
+│   ├── ipc.yml                   # Índices IPC intermensuales (opcional)
 │   └── presupuestos/             # Presupuestos generados en JSON (ignorados por git)
 ├── docs/
 │   └── DUDAS.md                  # Registro de dudas arquitectónicas resueltas/pendientes
@@ -117,12 +118,17 @@ La aplicación lee su configuración desde dos fuentes:
    | `CHATWOOT_INBOX_ID` | `1` | ID de inbox Chatwoot |
    | `CHATWOOT_API_TOKEN` | `""` | Token de API Chatwoot |
    | `BOLSA_SOLAP_CM` | `3.5` | Solapa estándar de bobina (cm) para cotizar bolsas lisas sin manija |
+   | `IPC_DATA_PATH` | `"data/ipc.yml"` | Ruta al archivo YAML con índices IPC mensuales |
 
 2. **`data/site.yml`**: contenido del sitio, menús, textos, redes sociales,
    configuración del formulario de cotización, condiciones comerciales, etc. Se
    valida al iniciar la aplicación mediante los modelos Pydantic de
    `src/infrastructure/pyyaml/models.py`. Si `site.yml` es inválido, la app no
    arranca.
+
+3. **`data/ipc.yml`**: tabla opcional de índices IPC intermensuales para
+   actualizar tarifas en ARS a valor presente. Si no existe o está vacío, el
+   factor de actualización es 1.0.
 
 ---
 
@@ -186,7 +192,7 @@ vanilla para reducir requests.
 ./venv/bin/pytest
 ```
 
-Actualmente hay **99 tests** y todos pasan.
+Actualmente hay **161 tests** y todos pasan.
 
 ### Configuración
 
@@ -273,7 +279,10 @@ Convenciones observadas:
   `ProductoServicio`, `ComponenteBien`, `VariacionProducto`, `CalculoArticulo`
   y puertos de repositorios.
 - **`pricing/`**: `CalculadorPrecio` con estrategias registrables
-  (`suma_por_unidad`, `suma_por_unidad_mas_fijo`), `Tarifas`.
+  (`suma_por_unidad`, `suma_por_unidad_mas_fijo`), `Tarifas`, value objects
+  `Dinero`, `ConceptoTarifa` (con fecha de referencia), `IndiceIPC`/`FactorIPC`,
+  `ActualizadorIPC`, y puertos `IProveedorTarifas`, `IProveedorIPC` e
+  `IProveedorTasaCambio`.
 - **`quote/`**: `Presupuesto`, `LineaPresupuesto`, `DatosSolicitante`, puertos para
   repositorio de presupuesto, generador de PDF y registro fallback.
 - **`lead/`**: `Lead` con factories (`crear`, `crear_cotizacion_general`,
@@ -288,6 +297,8 @@ Convenciones observadas:
   lead, presupuesto y fallback.
 - **`quote/generate_quote_pdf.py`**: `CasoUsoGenerarPresupuestoPDF`.
 - **`quote/quote_helpers.py`**: `construir_lineas_presupuesto`.
+- **`quote/pricing_service.py`**: `CotizadorServicio`, orquestador que calcula
+  precios en valor presente usando tarifas, tasa de cambio e IPC.
 
 ### 7.3 Adaptadores (`src/adapters`)
 
@@ -303,7 +314,15 @@ Convenciones observadas:
 - **`gateways/catalog/componentes.py`**: builders de manijas, fotopolímero y bobina.
 - **`gateways/catalog/servicios.py`**: builders de servicios.
 - **`gateways/catalog/compuestos.py`**: builders de bienes compuestos.
-- **`gateways/pricing_service.py`**: cotizador con tarifas estáticas en código.
+- **`gateways/pricing_service.py`**: *(eliminado)*; el cotizador ahora vive en
+  `src/application/quote/pricing_service.py`.
+- **`gateways/proveedor_tarifas_default.py`**: tarifas estáticas en memoria con
+  fecha de referencia.
+- **`gateways/proveedor_tasa_cambio_default.py`**: tasa de cambio USD/ARS default
+  (paridad 1:1).
+- **`gateways/proveedor_ipc_default.py`**: proveedor neutro que no aplica IPC.
+- **`gateways/proveedor_ipc_yaml.py`**: lee índices IPC desde `data/ipc.yml` y
+  calcula el factor acumulado intermensual.
 - **`gateways/json_quote_repository.py`**: guarda presupuestos en
   `data/presupuestos/{ref}.json`.
 - **`gateways/lead_chatwoot_repository.py`**: envía leads a Chatwoot vía API REST.
@@ -393,6 +412,17 @@ Los trackers de Google se desactivan automáticamente en `localhost` y
   tests.
 - Antes de commitear, ejecutá `./venv/bin/pytest` para verificar que no se
   rompió nada.
+- Si agregás o modificás conceptos de tarifa en ARS, asegurate de que tengan
+  una `fecha` de referencia; el cotizador las actualiza a valor presente con
+  el IPC acumulado hasta la fecha de cotización.
+- El cálculo de precios se realiza en `src/application/quote/pricing_service.py`
+  y depende de los puertos `IProveedorTarifas`, `IProveedorIPC` e
+  `IProveedorTasaCambio`. Las implementaciones concretas se encuentran en
+  `src/adapters/gateways/proveedor_*.py` y se cablean en
+  `src/infrastructure/fastapi/dependencies.py`.
+- Para habilitar la actualización por IPC en producción, completá `data/ipc.yml`
+  con los índices intermensuales oficiales y asegurate de que las tarifas tengan
+  una fecha de referencia anterior al período de actualización.
 
 ---
 
