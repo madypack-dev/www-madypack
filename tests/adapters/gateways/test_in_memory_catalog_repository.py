@@ -1,4 +1,4 @@
-from src.adapters.gateways.catalog import InMemoryCatalogRepository
+from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.adapters.gateways.catalog.catalog_seed import (
     _construir_sku_bolsa,
     _crear_calculo_para_bolsa,

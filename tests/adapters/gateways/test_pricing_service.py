@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from src.adapters.gateways.catalog import InMemoryCatalogRepository
+from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.adapters.gateways.pricing_service import CotizadorServicio
 from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
 from src.domain.commerce.catalog_repository import ICatalogRepository
