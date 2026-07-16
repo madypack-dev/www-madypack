@@ -4,8 +4,14 @@ from src.domain.commerce.cart import CalculoArticulo
 from src.domain.commerce.product import ProductoServicio
 
 
-def crear_servicios() -> tuple[ProductoServicio, ProductoServicio, ProductoServicio]:
-    """Crea los servicios de pegado, impresión y confección."""
+def crear_servicios() -> tuple[
+    ProductoServicio,
+    ProductoServicio,
+    ProductoServicio,
+    ProductoServicio,
+    ProductoServicio,
+]:
+    """Crea los servicios del catálogo."""
     pegado = ProductoServicio(
         tipo="servicio",
         id=2001,
@@ -38,4 +44,24 @@ def crear_servicios() -> tuple[ProductoServicio, ProductoServicio, ProductoServi
         cantidad_por_defecto=1000,
         visible=True,
     )
-    return pegado, impresion, confeccion
+    corte_bobinas = ProductoServicio(
+        tipo="servicio",
+        id=2004,
+        nombre="Corte de Bobinas",
+        descripcion="Servicio de corte de bobinas de papel kraft.",
+        slug="corte-de-bobinas",
+        imagen="icon-hoja.svg",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["corte"]),
+        cantidad_por_defecto=1000,
+    )
+    confeccion_cuerdas = ProductoServicio(
+        tipo="servicio",
+        id=2005,
+        nombre="Confección de Cuerdas de Papel Retorcidas",
+        descripcion="Servicio de confección de cuerdas de papel retorcidas a partir de bobinas.",
+        slug="confeccion-de-cuerdas-de-papel-retorcidas",
+        imagen="icon-hoja.svg",
+        calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["confeccion_cuerdas"]),
+        cantidad_por_defecto=1000,
+    )
+    return pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas

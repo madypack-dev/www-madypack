@@ -10,10 +10,10 @@ from src.domain.commerce.product import ProductoBien, ProductoServicio
 def test_in_memory_catalog_repository_operations():
     repo = InMemoryCatalogRepository()
 
-    # 12 bolsas + 4 componentes + 3 servicios + 4 compuestos fijos +
-    # 12 compuestos con manija + 24 impresos + 24 impresos con manija = 83
+    # 12 bolsas + 4 componentes + 5 servicios + 5 compuestos predefinidos +
+    # 12 compuestos con manija + 24 impresos + 24 impresos con manija = 86
     productos = repo.obtener_todos()
-    assert len(productos) == 83
+    assert len(productos) == 86
     assert productos[0].nombre == "Bolsa de Papel Kraft Marrón para Farmacia y Joyería (12x8x19 cm)"
     assert productos[0].tipo == "bien"
     assert not productos[0].es_compuesto
@@ -31,7 +31,7 @@ def test_in_memory_catalog_repository_operations():
     # 2 bolsas simples + 4 impresos + 4 impresos con manija + 2 con manija cordón original
     assert len(repo.buscar("Farmacia")) == 12
     assert len(repo.buscar("inexistente")) == 0
-    assert len(repo.buscar("")) == 83
+    assert len(repo.buscar("")) == 86
 
     # Obtener variación por id
     res = repo.obtener_variacion_por_id(1)
@@ -47,6 +47,16 @@ def test_in_memory_catalog_repository_operations():
     servicio = repo.obtener_por_id(2001)
     assert isinstance(servicio, ProductoServicio)
     assert servicio.nombre == "Pegado de Manijas"
+
+    corte = repo.obtener_por_id(2004)
+    assert isinstance(corte, ProductoServicio)
+    assert corte.nombre == "Corte de Bobinas"
+    assert not corte.visible
+
+    confeccion_cuerdas = repo.obtener_por_id(2005)
+    assert isinstance(confeccion_cuerdas, ProductoServicio)
+    assert confeccion_cuerdas.nombre == "Confección de Cuerdas de Papel Retorcidas"
+    assert not confeccion_cuerdas.visible
 
     # Compuestos
     compuesto = repo.obtener_por_id(3001)
@@ -78,7 +88,7 @@ def test_in_memory_catalog_repository_operations():
     assert pegado.visible
 
     # Solo el compuesto con manija cordón 22x10x30 Marrón es visible
-    compuesto_manija_visible = repo.obtener_por_id(3011)
+    compuesto_manija_visible = repo.obtener_por_id(3107)
     assert isinstance(compuesto_manija_visible, ProductoBien)
     assert compuesto_manija_visible.visible
     assert compuesto_manija_visible.es_compuesto
@@ -88,7 +98,7 @@ def test_in_memory_catalog_repository_operations():
     assert any(c.nombre == "Pegado de Manijas" for c in compuesto_manija_visible.componentes)
 
     # Los demás compuestos con manija cordón permanecen ocultos
-    compuesto_manija_oculto = repo.obtener_por_id(3005)
+    compuesto_manija_oculto = repo.obtener_por_id(3101)
     assert isinstance(compuesto_manija_oculto, ProductoBien)
     assert not compuesto_manija_oculto.visible
     assert "Manija Cordón" in compuesto_manija_oculto.nombre
@@ -99,7 +109,7 @@ def test_in_memory_catalog_repository_operations():
     assert not compuesto_fijo_manija.visible
 
     # Solo el compuesto impreso 22x10x30 Marrón es visible (sin manija)
-    compuesto_impreso_visible = repo.obtener_por_id(4013)
+    compuesto_impreso_visible = repo.obtener_por_id(3213)
     assert isinstance(compuesto_impreso_visible, ProductoBien)
     assert compuesto_impreso_visible.visible
     assert compuesto_impreso_visible.es_compuesto
@@ -108,12 +118,12 @@ def test_in_memory_catalog_repository_operations():
     assert any(c.nombre == "Impresión" for c in compuesto_impreso_visible.componentes)
 
     # Los demás compuestos impresos sin manija permanecen ocultos
-    compuesto_impreso_oculto = repo.obtener_por_id(4001)
+    compuesto_impreso_oculto = repo.obtener_por_id(3201)
     assert isinstance(compuesto_impreso_oculto, ProductoBien)
     assert not compuesto_impreso_oculto.visible
 
     # Solo el compuesto impreso con manija 22x10x30 Marrón es visible
-    compuesto_impreso_manija_visible = repo.obtener_por_id(5013)
+    compuesto_impreso_manija_visible = repo.obtener_por_id(3313)
     assert isinstance(compuesto_impreso_manija_visible, ProductoBien)
     assert compuesto_impreso_manija_visible.visible
     assert compuesto_impreso_manija_visible.es_compuesto
@@ -123,7 +133,7 @@ def test_in_memory_catalog_repository_operations():
     assert any(c.nombre == "Pegado de Manijas" for c in compuesto_impreso_manija_visible.componentes)
 
     # Los demás compuestos impresos con manija permanecen ocultos
-    compuesto_impreso_manija_oculto = repo.obtener_por_id(5001)
+    compuesto_impreso_manija_oculto = repo.obtener_por_id(3301)
     assert isinstance(compuesto_impreso_manija_oculto, ProductoBien)
     assert not compuesto_impreso_manija_oculto.visible
 
@@ -179,10 +189,14 @@ def test_catalogo_mantiene_rangos_de_ids():
     assert len(ids_variaciones) == len(variaciones)
 
     # Rangos disjuntos entre familias de compuestos.
-    compuestos_predefinidos = {p.id for p in productos if 3001 <= p.id <= 3016}
-    compuestos_impresos = {p.id for p in productos if 4001 <= p.id <= 4099}
-    compuestos_impresos_con_manija = {p.id for p in productos if 5001 <= p.id <= 5099}
+    compuestos_predefinidos = {p.id for p in productos if 3001 <= p.id <= 3005}
+    compuestos_con_manija = {p.id for p in productos if 3101 <= p.id <= 3112}
+    compuestos_impresos = {p.id for p in productos if 3201 <= p.id <= 3224}
+    compuestos_impresos_con_manija = {p.id for p in productos if 3301 <= p.id <= 3324}
 
+    assert len(compuestos_predefinidos & compuestos_con_manija) == 0
     assert len(compuestos_predefinidos & compuestos_impresos) == 0
     assert len(compuestos_predefinidos & compuestos_impresos_con_manija) == 0
+    assert len(compuestos_con_manija & compuestos_impresos) == 0
+    assert len(compuestos_con_manija & compuestos_impresos_con_manija) == 0
     assert len(compuestos_impresos & compuestos_impresos_con_manija) == 0

@@ -15,6 +15,8 @@ TARIFAS = {
     "confeccion": 0.08,
     "fotopolimero": 0.05,
     "bobina_kg": 1.0,
+    "corte": 0.02,
+    "confeccion_cuerdas": 0.05,
     "fijo_matriz": 1500.00,
 }
 
@@ -74,6 +76,9 @@ class CotizadorServicio:
                 * componente.cantidad
             )
             return kg_necesarios * self._conceptos.get("bobina_kg", 0.0)
+
+        if self.catalogo is None:
+            raise ValueError("Se requiere un catálogo para resolver componentes.")
 
         item = self.catalogo.resolver_componente(componente)
         if item is None:

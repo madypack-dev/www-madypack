@@ -31,9 +31,11 @@ def crear_compuestos_predefinidos(
     pegado: ProductoServicio,
     impresion: ProductoServicio,
     confeccion: ProductoServicio,
+    corte_bobinas: ProductoServicio,
+    confeccion_cuerdas: ProductoServicio,
     bobina: ProductoBien,
 ) -> list[ProductoBien]:
-    """Crea los 4 compuestos fijos del catálogo."""
+    """Crea los compuestos predefinidos del catálogo, incluyendo cuerdas de papel."""
     bolsa_con_manija = ProductoBien(
         tipo="bien",
         id=3001,
@@ -154,7 +156,46 @@ def crear_compuestos_predefinidos(
         ],
     )
 
-    return [bolsa_con_manija, bolsa_impresa, bolsa_impresa_foto, bolsa_de_papel]
+    cuerdas_de_papel = ProductoBien(
+        tipo="bien",
+        id=3005,
+        nombre="Cuerdas de Papel Retorcidas",
+        descripcion="Cuerdas de papel kraft retorcidas, resultado de bobina + corte + confección.",
+        slug="cuerdas-de-papel-retorcidas",
+        imagen="cuerdas-de-papel.svg",
+        cantidad_por_defecto=1000,
+        atributos_posibles={},
+        variaciones=[],
+        visible=True,
+        componentes=[
+            ComponenteBien(
+                tipo="variacion",
+                referencia_id=bobina.variaciones[0].id,
+                cantidad=1,
+                nombre=bobina.nombre,
+            ),
+            ComponenteBien(
+                tipo="servicio",
+                referencia_id=corte_bobinas.id,
+                cantidad=1,
+                nombre=corte_bobinas.nombre,
+            ),
+            ComponenteBien(
+                tipo="servicio",
+                referencia_id=confeccion_cuerdas.id,
+                cantidad=1,
+                nombre=confeccion_cuerdas.nombre,
+            ),
+        ],
+    )
+
+    return [
+        bolsa_con_manija,
+        bolsa_impresa,
+        bolsa_impresa_foto,
+        bolsa_de_papel,
+        cuerdas_de_papel,
+    ]
 
 
 def crear_compuestos_impresos_por_formato(

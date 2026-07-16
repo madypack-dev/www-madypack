@@ -109,6 +109,28 @@ def test_cotizador_servicio_bobina_simple_precio_por_kg():
     assert precio == 500.0
 
 
+def test_cotizador_servicio_cuerdas_de_papel_retorcidas():
+    catalogo = InMemoryCatalogRepository()
+    servicio = CotizadorServicio(catalogo=catalogo)
+
+    # Producto compuesto "Cuerdas de Papel Retorcidas" (id 3005)
+    articulo = ArticuloCarrito(
+        id=3005,
+        nombre="Cuerdas de Papel Retorcidas",
+        descripcion="Receta",
+        cantidad=1000,
+        imagen="cuerdas-de-papel.svg",
+        calculo=None,
+    )
+
+    precio = servicio.calcular_precio_estimado(articulo)
+
+    # Bobina: 1 kg/unidad * 1000 unidades * $1.0/kg = 1000
+    # Corte: 0.02 * 1000 = 20
+    # Confección de cuerdas: 0.05 * 1000 = 50
+    assert precio == 1070.0
+
+
 def test_cotizador_servicio_con_catalogo_mock():
     variacion = VariacionProducto(
         id=1,
