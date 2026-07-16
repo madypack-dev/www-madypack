@@ -53,6 +53,7 @@ def crear_servicios() -> tuple[
         imagen="icon-hoja.svg",
         calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["corte"]),
         cantidad_por_defecto=1000,
+        visible=True,
     )
     confeccion_cuerdas = ProductoServicio(
         tipo="servicio",
@@ -63,5 +64,6 @@ def crear_servicios() -> tuple[
         imagen="icon-hoja.svg",
         calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["confeccion_cuerdas"]),
         cantidad_por_defecto=1000,
+        visible=True,
     )
     return pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas

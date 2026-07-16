@@ -51,12 +51,12 @@ def test_in_memory_catalog_repository_operations():
     corte = repo.obtener_por_id(2004)
     assert isinstance(corte, ProductoServicio)
     assert corte.nombre == "Corte de Bobinas"
-    assert not corte.visible
+    assert corte.visible
 
     confeccion_cuerdas = repo.obtener_por_id(2005)
     assert isinstance(confeccion_cuerdas, ProductoServicio)
     assert confeccion_cuerdas.nombre == "Confección de Cuerdas de Papel Retorcidas"
-    assert not confeccion_cuerdas.visible
+    assert confeccion_cuerdas.visible
 
     # Compuestos
     compuesto = repo.obtener_por_id(3001)

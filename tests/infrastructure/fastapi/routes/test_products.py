@@ -50,6 +50,19 @@ class TestProductosEndpoints:
         assert response.status_code == 200
         assert "Pegado de Manijas" in response.text
 
+    def test_get_corte_de_bobinas_visible_retorna_200(self, client):
+        response = client.get("/productos/corte-de-bobinas/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Corte de Bobinas" in response.text
+
+    def test_get_confeccion_cuerdas_visible_retorna_200(self, client):
+        response = client.get(
+            "/productos/confeccion-de-cuerdas-de-papel-retorcidas/",
+            headers={"host": "localhost:8000"},
+        )
+        assert response.status_code == 200
+        assert "Confección de Cuerdas de Papel Retorcidas" in response.text
+
     def test_get_compuesto_con_manija_visible_retorna_200(self, client):
         # Solo el compuesto con manija cordón 22x10x30 Marrón es visible
         response = client.get(
@@ -95,6 +108,8 @@ class TestProductosEndpoints:
         assert "<loc>http://localhost:8000/productos/confeccion-de-bolsas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/manija-cordon/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/pegado-de-manijas/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/corte-de-bobinas/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/confeccion-de-cuerdas-de-papel-retorcidas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon/</loc>" in response.text
