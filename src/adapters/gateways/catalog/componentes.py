@@ -102,9 +102,11 @@ def crear_componentes(
                     conceptos=[],
                     concepto_fijo="fijo_matriz",
                 ),
+                visible=True,
             )
         ],
         componentes=[],
+        visible=True,
     )
     variaciones[var_id] = (fotopolimero, fotopolimero.variaciones[0])
 

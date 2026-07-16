@@ -32,6 +32,7 @@ def crear_servicios() -> tuple[
         imagen="bolsas-personalizadas.svg",
         calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["personalizacion"]),
         cantidad_por_defecto=1000,
+        visible=True,
     )
     confeccion = ProductoServicio(
         tipo="servicio",

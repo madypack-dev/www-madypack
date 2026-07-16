@@ -45,6 +45,16 @@ class TestProductosEndpoints:
         response = client.get("/productos/manija-cordon/", headers={"host": "localhost:8000"})
         assert response.status_code == 404
 
+    def test_get_fotopolimero_visible_retorna_200(self, client):
+        response = client.get("/productos/fotopolimero/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Fotopolímero" in response.text
+
+    def test_get_impresion_visible_retorna_200(self, client):
+        response = client.get("/productos/impresion/", headers={"host": "localhost:8000"})
+        assert response.status_code == 200
+        assert "Impresión" in response.text
+
     def test_get_pegado_visible_retorna_200(self, client):
         response = client.get("/productos/pegado-de-manijas/", headers={"host": "localhost:8000"})
         assert response.status_code == 200
@@ -105,6 +115,8 @@ class TestProductosEndpoints:
         # Debe contener URLs de productos/servicios visibles
         assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/bobina-de-papel/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/fotopolimero/</loc>" in response.text
+        assert "<loc>http://localhost:8000/productos/impresion/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/confeccion-de-bolsas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/manija-cordon/</loc>" not in response.text
         assert "<loc>http://localhost:8000/productos/pegado-de-manijas/</loc>" in response.text

@@ -69,6 +69,12 @@ def test_in_memory_catalog_repository_operations():
     assert compuesto.nombre == "Bolsa 12x8x19 cm Marrón con Manija Cordón Lisa 100g"
     assert len(compuesto.componentes) == 3
 
+    # Fotopolímero visible
+    fotopolimero = repo.obtener_por_id(1103)
+    assert isinstance(fotopolimero, ProductoBien)
+    assert fotopolimero.visible
+    assert fotopolimero.nombre == "Fotopolímero"
+
     # Bobina de papel visible, cotizada en kg
     bobina = repo.obtener_por_id(1104)
     assert isinstance(bobina, ProductoBien)
