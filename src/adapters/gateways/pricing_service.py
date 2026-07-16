@@ -5,6 +5,7 @@ from src.domain.commerce.catalog_repository import ICatalogRepository
 from src.domain.commerce.manija import FormatoManija
 from src.domain.commerce.product import ProductoBien
 from src.domain.pricing.calculator import CalculadorPrecio
+from src.infrastructure.config.settings import BOLSA_SOLAP_CM
 
 
 def _tarifas_manija_cordon() -> dict[str, float]:
@@ -81,7 +82,9 @@ class CotizadorServicio:
     def _calcular_componente(self, componente, cantidad: int) -> float:
         if componente.medidas is not None:
             kg_necesarios = (
-                componente.medidas.kg_por_unidad(componente.gramaje)
+                componente.medidas.kg_por_unidad(
+                    componente.gramaje, solap_cm=BOLSA_SOLAP_CM
+                )
                 * cantidad
                 * componente.cantidad
             )

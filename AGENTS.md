@@ -116,6 +116,7 @@ La aplicación lee su configuración desde dos fuentes:
    | `CHATWOOT_ACCOUNT_ID` | `1` | ID de cuenta Chatwoot |
    | `CHATWOOT_INBOX_ID` | `1` | ID de inbox Chatwoot |
    | `CHATWOOT_API_TOKEN` | `""` | Token de API Chatwoot |
+   | `BOLSA_SOLAP_CM` | `3.5` | Solapa estándar de bobina (cm) para cotizar bolsas lisas sin manija |
 
 2. **`data/site.yml`**: contenido del sitio, menús, textos, redes sociales,
    configuración del formulario de cotización, condiciones comerciales, etc. Se

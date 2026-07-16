@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 
 from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
-from src.adapters.gateways.pricing_service import CotizadorServicio
+from src.adapters.gateways.pricing_service import BOLSA_SOLAP_CM, CotizadorServicio
 from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
 from src.domain.commerce.catalog_repository import ICatalogRepository
 from src.domain.commerce.product import (
@@ -197,3 +197,29 @@ def test_cotizador_servicio_con_catalogo_mock():
     # Variación factor 2: base 0.15 * 200 = 30
     # Servicio: pegado 0.10 * 100 = 10
     assert precio == 40.0
+
+
+
+def test_cotizador_servicio_usa_solapa_configurable(monkeypatch):
+    catalogo = InMemoryCatalogRepository()
+    servicio = CotizadorServicio(catalogo=catalogo)
+
+    # Compuesto visible "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g" (id 3004)
+    articulo = ArticuloCarrito(
+        id=3004,
+        nombre="Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g",
+        descripcion="Receta",
+        cantidad=1000,
+        imagen="bolsas-sin-m.svg",
+        calculo=None,
+    )
+
+    precio_default = servicio.calcular_precio_estimado(articulo)
+
+    # Al aumentar la solapa, el consumo de bobina (y el precio) debe subir
+    monkeypatch.setattr(
+        "src.adapters.gateways.pricing_service.BOLSA_SOLAP_CM", BOLSA_SOLAP_CM + 1.0
+    )
+    precio_mayor_solapa = servicio.calcular_precio_estimado(articulo)
+
+    assert precio_mayor_solapa > precio_default

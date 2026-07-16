@@ -10,6 +10,7 @@ class TestSettingsDefaults:
         settings = Settings()
         assert settings.APP_TITLE == "Madypack"
         assert settings.LOG_LEVEL == "INFO"
+        assert settings.BOLSA_SOLAP_CM == 3.5
 
 
 class TestSettingsEnvironment:
@@ -17,3 +18,8 @@ class TestSettingsEnvironment:
         monkeypatch.setenv("APP_TITLE", "Mi App")
         settings = Settings()
         assert settings.APP_TITLE == "Mi App"
+
+    def test_bolsa_solap_cm_desde_env(self, monkeypatch):
+        monkeypatch.setenv("BOLSA_SOLAP_CM", "4.0")
+        settings = Settings()
+        assert settings.BOLSA_SOLAP_CM == 4.0
