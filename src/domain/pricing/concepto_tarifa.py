@@ -20,7 +20,9 @@ class ConceptoTarifa(BaseModel):
 
     nombre: str = Field(..., description="Identificador del concepto")
     monto: float = Field(..., ge=0, description="Valor unitario en la moneda origen")
-    moneda: Moneda = Field(default=Moneda.ARS, description="Moneda en la que está expresado el monto")
+    moneda: Moneda = Field(
+        default=Moneda.ARS, description="Moneda en la que está expresado el monto"
+    )
     fecha: date = Field(
         default_factory=date.today,
         description="Fecha a la que corresponde el valor nominal",

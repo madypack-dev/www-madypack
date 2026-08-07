@@ -21,4 +21,3 @@ class ConfiguracionTarifas(BaseModel):
     model_config = {"frozen": True}
 
     tarifas: Tarifas
-

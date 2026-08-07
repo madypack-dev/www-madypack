@@ -18,3 +18,13 @@ class IErpGateway(ABC):
     async def obtener_datos_empresa(self) -> EmpresaERP:
         """Obtiene la información institucional de la empresa desde el ERP."""
         pass
+
+    async def proxy_request(
+        self,
+        method: str,
+        path: str,
+        params: dict | None = None,
+        json_data: dict | None = None,
+    ) -> dict | list:
+        """Realiza forwarding de peticiones hacia el ERP si el proveedor lo soporta."""
+        raise NotImplementedError("El proveedor actual no soporta proxy_request")

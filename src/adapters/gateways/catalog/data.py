@@ -57,4 +57,6 @@ ID_BASE_OTROS_COMPUESTOS = 3401
 
 SLUG_BOLSA_VISIBLE_CON_MANIJA = "bolsa-de-papel-marron-221030-base"
 SLUG_BOLSA_VISIBLE_IMPRESA_SIN_MANIJA = "bolsa-de-papel-impresa-marron-221030-base"
-SLUG_BOLSA_VISIBLE_IMPRESA_CON_MANIJA = "bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon"
+SLUG_BOLSA_VISIBLE_IMPRESA_CON_MANIJA = (
+    "bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon"
+)

@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 class CrearLeadRequest(BaseModel):
     """Esquema de validación para los datos enviados desde el formulario."""
+
     nombre: str
     empresa: str
     telefono: str
@@ -29,4 +30,3 @@ class CrearLeadRequest(BaseModel):
                 else:
                     clean = "+549" + clean
         return clean
-

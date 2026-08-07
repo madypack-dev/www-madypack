@@ -38,7 +38,9 @@ class CasoUsoActualizarCarrito:
                 if carrito.actualizar_cantidad(id_articulo, nueva_cantidad):
                     modificado = True
             except ValueError as err:
-                self.registrar_error(f"Error de validación al actualizar artículo {id_articulo}: {err}")
+                self.registrar_error(
+                    f"Error de validación al actualizar artículo {id_articulo}: {err}"
+                )
                 continue
 
         if modificado:
@@ -67,9 +69,7 @@ class CasoUsoAgregarAlCarrito:
         self.repositorio_catalogo = repositorio_catalogo
         self.registrar_error = registrar_error
 
-    def ejecutar(
-        self, producto_id: int, variacion_id: int | None, cantidad: int
-    ) -> None:
+    def ejecutar(self, producto_id: int, variacion_id: int | None, cantidad: int) -> None:
         producto = self.repositorio_catalogo.obtener_por_id(producto_id)
         if producto is None:
             self.registrar_error(f"Intento de agregar producto inexistente: {producto_id}")
@@ -117,9 +117,7 @@ class CasoUsoAgregarAlCarrito:
             )
             nombre = f"{producto.nombre} - {atributos_str}"
             gramaje = (
-                "80 gr/m²"
-                if "Sin Manija" in datos_variacion.atributos.values()
-                else "100 gr/m²"
+                "80 gr/m²" if "Sin Manija" in datos_variacion.atributos.values() else "100 gr/m²"
             )
             descripcion = f"Gramaje: {gramaje} | SKU: {datos_variacion.sku}"
 
@@ -171,7 +169,11 @@ class CasoUsoAgregarAlCarrito:
 
 
 class CasoUsoEliminarDelCarrito:
-    def __init__(self, repositorio: IRepositorioCarrito, registrar_error: Callable[[str], None] = lambda _: None):
+    def __init__(
+        self,
+        repositorio: IRepositorioCarrito,
+        registrar_error: Callable[[str], None] = lambda _: None,
+    ):
         self.repositorio = repositorio
         self.registrar_error = registrar_error
 
@@ -179,15 +181,16 @@ class CasoUsoEliminarDelCarrito:
         carrito = self.repositorio.obtener_carrito()
 
         if not carrito.eliminar_articulo(id_articulo):
-            self.registrar_error(f"Intento de eliminar artículo que no está en el carrito: {id_articulo}")
+            self.registrar_error(
+                f"Intento de eliminar artículo que no está en el carrito: {id_articulo}"
+            )
             raise ValueError("El artículo no está en el carrito.")
 
         self.repositorio.guardar_carrito(carrito)
 
 
 class ICotizador(Protocol):
-    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
-        ...
+    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float: ...
 
 
 @dataclass(frozen=True)

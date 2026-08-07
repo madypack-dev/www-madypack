@@ -26,11 +26,23 @@ class IHttpClient(ABC):
     """Interfaz abstracta para un cliente HTTP asíncrono."""
 
     @abstractmethod
+    async def get(
+        self,
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        """Realiza una petición GET asíncrona."""
+        pass
+
+    @abstractmethod
     async def post(
         self,
         url: str,
         headers: dict[str, str] | None = None,
         json: Any = None,
+        content: str | bytes | None = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
         """Realiza una petición POST asíncrona."""
@@ -44,4 +56,18 @@ class IHttpClient(ABC):
         timeout: float | None = None,
     ) -> IHttpResponse:
         """Realiza una petición HEAD asíncrona."""
+        pass
+
+    @abstractmethod
+    async def request(
+        self,
+        method: str,
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json: Any = None,
+        content: str | bytes | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        """Realiza una petición HTTP arbitraria (GET, POST, PUT, DELETE, etc.)."""
         pass

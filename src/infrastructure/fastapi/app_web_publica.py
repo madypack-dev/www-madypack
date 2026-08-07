@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-
 from src.infrastructure.config.settings import APP_TITLE
 from src.infrastructure.fastapi.errors.handlers import (
     global_exception_handler,

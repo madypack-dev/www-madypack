@@ -4,23 +4,22 @@ Este módulo ensambla las distintas familias de productos definidas en los
 módulos `bolsas`, `componentes`, `servicios` y `compuestos`.
 """
 
-from src.domain.comercio.catalog import VariacionProducto
-from src.domain.comercio.product import ProductoBien, ProductoServicio
-
-from .bolsas import crear_bolsas_base
-from .componentes import crear_bobina, crear_componentes
-from .compuestos import (
+from src.adapters.gateways.catalog.bolsas import crear_bolsas_base
+from src.adapters.gateways.catalog.componentes import crear_bobina, crear_componentes
+from src.adapters.gateways.catalog.compuestos import (
     crear_compuestos_impresos_con_manija_por_formato,
     crear_compuestos_impresos_por_formato,
     crear_compuestos_manija_por_formato,
     crear_compuestos_predefinidos,
 )
-from .data import (
+from src.adapters.gateways.catalog.data import (
     ID_BASE_COMPUESTOS_CON_MANIJA,
     ID_BASE_COMPUESTOS_IMPRESOS,
     ID_BASE_COMPUESTOS_IMPRESOS_CON_MANIJA,
 )
-from .servicios import crear_servicios
+from src.adapters.gateways.catalog.servicios import crear_servicios
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.product import ProductoBien, ProductoServicio
 
 
 def construir_catalogo() -> tuple[
@@ -57,7 +56,9 @@ def construir_catalogo() -> tuple[
     variaciones.update(variaciones_bobina)
 
     pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas = crear_servicios()
-    servicios = {s.id: s for s in [pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas]}
+    servicios = {
+        s.id: s for s in [pegado, impresion, confeccion, corte_bobinas, confeccion_cuerdas]
+    }
 
     variacion_bolsa_base = variaciones[1][1]
     producto_bolsa_base = variaciones[1][0]

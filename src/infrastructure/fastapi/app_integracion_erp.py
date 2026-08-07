@@ -2,13 +2,16 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
 from fastapi.exceptions import HTTPException
-
-from src.application.erp.use_cases import CasoUsoObtenerEmpresaERP, CasoUsoVerificarConexionERP
-from src.domain.erp.entities import EmpresaERP, EstadoConexionERP
+from src.application.erp.use_cases import CasoUsoVerificarConexionERP
+from src.domain.erp.entities import EstadoConexionERP
 from src.infrastructure.config.settings import APP_TITLE
 from src.infrastructure.fastapi.dependencies import get_erp_gateway
-from src.infrastructure.fastapi.errors.handlers import global_exception_handler, http_exception_handler
+from src.infrastructure.fastapi.errors.handlers import (
+    global_exception_handler,
+    http_exception_handler,
+)
 from src.infrastructure.fastapi.middleware.request_id import request_id_middleware
+from src.infrastructure.fastapi.routes.xubio_replica import router as xubio_replica_router
 from src.infrastructure.structlog.logger import configurar_logging, get_logger
 
 configurar_logging()
@@ -46,11 +49,7 @@ async def verificar_conexion_erp(erp_gateway=Depends(get_erp_gateway)):
     return await caso_uso.ejecutar()
 
 
-@app_erp.get("/api/v1/erp/empresa", response_model=EmpresaERP, tags=["ERP"])
-async def obtener_empresa_erp(erp_gateway=Depends(get_erp_gateway)):
-    caso_uso = CasoUsoObtenerEmpresaERP(erp_gateway)
-    return await caso_uso.ejecutar()
-
+app_erp.include_router(xubio_replica_router)
 
 # Alias
 app_private = app_erp

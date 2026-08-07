@@ -22,3 +22,13 @@ class NullErpGateway(IErpGateway):
             identificacion_tributaria="30-00000000-0",
             email="contacto@madypack.local",
         )
+
+    async def proxy_request(
+        self,
+        method: str,
+        path: str,
+        params: dict | None = None,
+        json_data: dict | None = None,
+    ) -> dict | list:
+        _ = (method, params)
+        return {"status": "ok", "mock": True, "path": path, "body": json_data}

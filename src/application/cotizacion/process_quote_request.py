@@ -78,7 +78,9 @@ class ProcesarSolicitudPresupuesto:
             )
             self.quote_repository.guardar(lead.codigo_referencia, presupuesto)
         except Exception as err:
-            self.registrar_error(f"Error al guardar presupuesto local para ref {lead.codigo_referencia}: {err}")
+            self.registrar_error(
+                f"Error al guardar presupuesto local para ref {lead.codigo_referencia}: {err}"
+            )
 
         return lead
 

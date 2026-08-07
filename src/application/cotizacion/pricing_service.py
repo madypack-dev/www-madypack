@@ -41,9 +41,7 @@ class CotizadorServicio:
         conceptos_ars = self._conceptos_en_ars()
         try:
             if articulo.calculo is not None:
-                return self._calculador.calcular(
-                    articulo.calculo, conceptos_ars, articulo.cantidad
-                )
+                return self._calculador.calcular(articulo.calculo, conceptos_ars, articulo.cantidad)
 
             if self.catalogo is None:
                 raise ValueError(
@@ -95,9 +93,7 @@ class CotizadorServicio:
     ) -> float:
         if componente.medidas is not None:
             kg_necesarios = (
-                componente.medidas.kg_por_unidad(
-                    componente.gramaje, solap_cm=self._bolsa_solap_cm
-                )
+                componente.medidas.kg_por_unidad(componente.gramaje, solap_cm=self._bolsa_solap_cm)
                 * cantidad
                 * componente.cantidad
             )

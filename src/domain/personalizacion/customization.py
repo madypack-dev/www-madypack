@@ -13,7 +13,9 @@ class EspecificacionBolsa(BaseModel):
     ancho_cm: float = Field(..., gt=0, description="Ancho del frente de la bolsa en cm")
     alto_cm: float = Field(..., gt=0, description="Alto de la bolsa en cm")
     fuelle_cm: float = Field(..., ge=0, description="Fuelle/lateral de la bolsa en cm")
-    color_papel: str = Field(default="#D2B48C", description="Color de papel (Kraft Marrón por defecto)")
+    color_papel: str = Field(
+        default="#D2B48C", description="Color de papel (Kraft Marrón por defecto)"
+    )
     color_tinta: str = Field(default="#000000", description="Color Hex de impresión de tinta")
     tipo_manija: Literal["sin_manija", "manija_plana", "manija_retorcida"] = Field(
         default="manija_retorcida", description="Tipo de manija de la bolsa"

@@ -8,8 +8,7 @@ from src.domain.cotizacion.quote import LineaPresupuesto
 
 
 class ICotizador(Protocol):
-    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
-        ...
+    def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float: ...
 
 
 def construir_lineas_presupuesto(
@@ -26,9 +25,7 @@ def construir_lineas_presupuesto(
             registrar_error(f"Error calculando precio para artículo {articulo.id}: {err}")
             subtotal = 0.0
 
-        precio_unitario = (
-            subtotal / articulo.cantidad if articulo.cantidad > 0 else 0.0
-        )
+        precio_unitario = subtotal / articulo.cantidad if articulo.cantidad > 0 else 0.0
         lineas.append(
             LineaPresupuesto(
                 id_articulo=articulo.id,

@@ -40,9 +40,7 @@ def crear_componentes(
                 atributos={"tipo": "Plana"},
                 imagen="bolsas-con-m.svg",
                 cantidad_por_defecto=1000,
-                calculo=CalculoArticulo(
-                    tipo="suma_por_unidad", conceptos=["manija_plana"]
-                ),
+                calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["manija_plana"]),
             )
         ],
         componentes=[],
@@ -72,7 +70,10 @@ def crear_componentes(
         descripcion="Manija cordón de papel kraft para pegado manual o automático.",
         slug="manija-cordon",
         imagen="manija-cordon.svg",
-        atributos_posibles={"tipo": ["Cordón"], "formato": [f.etiqueta for f in _FORMATOS_MANIJA_CORDON]},
+        atributos_posibles={
+            "tipo": ["Cordón"],
+            "formato": [f.etiqueta for f in _FORMATOS_MANIJA_CORDON],
+        },
         variaciones=variaciones_manija_cordon,
         componentes=[],
         visible=False,

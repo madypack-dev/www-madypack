@@ -27,8 +27,7 @@ class InMemoryCatalogRepository(ICatalogRepository):
         return [
             p
             for p in self._productos
-            if query_filtrada in p.nombre.lower()
-            or query_filtrada in p.descripcion.lower()
+            if query_filtrada in p.nombre.lower() or query_filtrada in p.descripcion.lower()
         ]
 
     def obtener_variacion_por_id(

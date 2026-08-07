@@ -15,13 +15,13 @@ class MedidasBolsa(BaseModel):
 
     model_config = {"frozen": True}
 
-    ancho: float   # cm
+    ancho: float  # cm
     fuelle: float  # cm
-    alto: float    # cm
+    alto: float  # cm
 
     def kg_por_unidad(
         self,
-        gramaje: int = 100,      # gr/m²
+        gramaje: int = 100,  # gr/m²
         solap_cm: float = 3.5,
         rendimiento: float = 0.9,
     ) -> float:

@@ -7,6 +7,7 @@ from pydantic import BaseModel, EmailStr
 
 class Lead(BaseModel):
     """Entidad de dominio Lead."""
+
     id: str | None = None  # ID de contacto devuelto por Chatwoot (nulo antes de persistir)
     codigo_referencia: str  # COT-YYYYMMDD-XXXX
     nombre: str
@@ -85,7 +86,9 @@ class Lead(BaseModel):
     ) -> "Lead":
         fecha_eval = fecha or datetime.now()
         fecha_str = fecha_eval.strftime("%Y%m%d")
-        sufijo_aleatorio = sufijo or secrets.token_hex(2).upper()  # 4 caracteres alfanuméricos en mayúsculas
+        sufijo_aleatorio = (
+            sufijo or secrets.token_hex(2).upper()
+        )  # 4 caracteres alfanuméricos en mayúsculas
         return cls(
             codigo_referencia=f"{prefijo}-{fecha_str}-{sufijo_aleatorio}",
             nombre=nombre,
@@ -93,4 +96,3 @@ class Lead(BaseModel):
             telefono=telefono,
             email=email,
         )
-

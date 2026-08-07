@@ -1,16 +1,15 @@
 """Builders para bienes compuestos del catálogo."""
 
-from src.domain.comercio.catalog import VariacionProducto
-from src.domain.comercio.manija import FormatoManija, formato_manija_para_ancho
-from src.domain.comercio.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
-
-from .builders import construir_nombre_bolsa
-from .data import (
+from src.adapters.gateways.catalog.builders import construir_nombre_bolsa
+from src.adapters.gateways.catalog.data import (
     SLUG_BOLSA_VISIBLE_CON_MANIJA,
     SLUG_BOLSA_VISIBLE_IMPRESA_CON_MANIJA,
     SLUG_BOLSA_VISIBLE_IMPRESA_SIN_MANIJA,
     FormatoBolsa,
 )
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.manija import FormatoManija, formato_manija_para_ancho
+from src.domain.comercio.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
 
 
 def _variacion_manija_para_formato(
@@ -22,9 +21,7 @@ def _variacion_manija_para_formato(
     for variacion in manija_cordon.variaciones:
         if variacion.atributos.get("formato") == etiqueta:
             return variacion
-    raise ValueError(
-        f"No se encontró variación de manija cordón para formato {etiqueta}"
-    )
+    raise ValueError(f"No se encontró variación de manija cordón para formato {etiqueta}")
 
 
 def _slug_impreso_desde_bolsa_base(producto: ProductoBien, sufijo: str = "") -> str:
@@ -64,9 +61,7 @@ def crear_compuestos_predefinidos(
         impresion="Lisa (sin impresión)",
     )
     formato_manija_base = formato_manija_para_ancho(formato_base.ancho)
-    variacion_manija_base = _variacion_manija_para_formato(
-        manija_cordon, formato_manija_base
-    )
+    variacion_manija_base = _variacion_manija_para_formato(manija_cordon, formato_manija_base)
     bolsa_con_manija = ProductoBien(
         tipo="bien",
         id=3001,
@@ -132,12 +127,14 @@ def crear_compuestos_predefinidos(
         ],
     )
 
-    nombre_bolsa_impresa_foto = f"{construir_nombre_bolsa(
-        formato=formato_base,
-        color=color_base,
-        manija='Sin Manija',
-        impresion='Impresa 1 o 2 colores',
-    )} con Fotopolímero"
+    nombre_bolsa_impresa_foto = f"{
+        construir_nombre_bolsa(
+            formato=formato_base,
+            color=color_base,
+            manija='Sin Manija',
+            impresion='Impresa 1 o 2 colores',
+        )
+    } con Fotopolímero"
     bolsa_impresa_foto = ProductoBien(
         tipo="bien",
         id=3003,
@@ -303,12 +300,14 @@ def crear_compuestos_impresos_por_formato(
 
         # Impreso con fotopolímero
         slug = _slug_impreso_desde_bolsa_base(producto, "con-fotopolimero")
-        nombre = f"{construir_nombre_bolsa(
-            formato=formato,
-            color=color,
-            manija='Sin Manija',
-            impresion='Impresa 1 o 2 colores',
-        )} con Fotopolímero"
+        nombre = f"{
+            construir_nombre_bolsa(
+                formato=formato,
+                color=color,
+                manija='Sin Manija',
+                impresion='Impresa 1 o 2 colores',
+            )
+        } con Fotopolímero"
         compuestos.append(
             ProductoBien(
                 tipo="bien",
@@ -366,9 +365,7 @@ def crear_compuestos_impresos_con_manija_por_formato(
         variacion_base = variacion_base_por_producto[producto.id]
         formato, color = datos_por_producto[producto.id]
         formato_manija = formato_manija_para_ancho(formato.ancho)
-        variacion_manija = _variacion_manija_para_formato(
-            manija_cordon, formato_manija
-        )
+        variacion_manija = _variacion_manija_para_formato(manija_cordon, formato_manija)
 
         # Impreso con manija cordón, sin fotopolímero
         slug = _slug_impreso_desde_bolsa_base(producto, "con-manija-cordon")
@@ -422,12 +419,14 @@ def crear_compuestos_impresos_con_manija_por_formato(
 
         # Impreso con manija cordón y fotopolímero
         slug = _slug_impreso_desde_bolsa_base(producto, "con-manija-cordon-y-fotopolimero")
-        nombre = f"{construir_nombre_bolsa(
-            formato=formato,
-            color=color,
-            manija='Manija Cordón',
-            impresion='Impresa 1 o 2 colores',
-        )} con Fotopolímero"
+        nombre = f"{
+            construir_nombre_bolsa(
+                formato=formato,
+                color=color,
+                manija='Manija Cordón',
+                impresion='Impresa 1 o 2 colores',
+            )
+        } con Fotopolímero"
         compuestos.append(
             ProductoBien(
                 tipo="bien",
@@ -495,9 +494,7 @@ def crear_compuestos_manija_por_formato(
         variacion_base = variacion_base_por_producto[producto.id]
         formato, color = datos_por_producto[producto.id]
         formato_manija = formato_manija_para_ancho(formato.ancho)
-        variacion_manija = _variacion_manija_para_formato(
-            manija_cordon, formato_manija
-        )
+        variacion_manija = _variacion_manija_para_formato(manija_cordon, formato_manija)
         nombre_compuesto = construir_nombre_bolsa(
             formato=formato,
             color=color,

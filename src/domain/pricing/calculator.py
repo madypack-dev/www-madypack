@@ -23,8 +23,7 @@ class IEstrategiaCalculoPrecio(Protocol):
         calculo: IConfiguracionCalculo,
         conceptos: dict[str, float],
         cantidad: int,
-    ) -> float:
-        ...
+    ) -> float: ...
 
 
 class EstrategiaSumaPorUnidad:

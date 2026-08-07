@@ -1,16 +1,13 @@
 """Builders para bolsas de papel simples y sus variaciones."""
 
-from src.domain.comercio.catalog import VariacionProducto
-from src.domain.comercio.product import ProductoBien
-
-from .builders import (
+from src.adapters.gateways.catalog.builders import (
     calculo_articulo_para_bolsa,
     construir_nombre_bolsa,
     construir_sku_bolsa,
     imagen_para_manija,
     moq_para_impresion,
 )
-from .data import (
+from src.adapters.gateways.catalog.data import (
     COLORES_BOLSA,
     FORMATOS_BOLSA,
     ID_INICIAL_PRODUCTO_BOLSA,
@@ -19,6 +16,8 @@ from .data import (
     MANIJAS_BOLSA,
     FormatoBolsa,
 )
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.product import ProductoBien
 
 
 def _crear_variaciones_de_bolsa(

@@ -1,9 +1,8 @@
 """Helpers puros para construir partes del catálogo."""
 
+from src.adapters.gateways.catalog.data import FormatoBolsa
 from src.domain.comercio.cart import CalculoArticulo
 from src.domain.comercio.manija import formato_manija_para_ancho
-
-from .data import FormatoBolsa
 
 
 def construir_sku_bolsa(
