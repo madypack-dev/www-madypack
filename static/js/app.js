@@ -1,5 +1,6 @@
 import { LocalStorageConsentRepository } from './src/adapters/LocalStorageConsentRepository.js';
 import { GoogleTagManagerTracker, GoogleAnalyticsTracker } from './src/adapters/GoogleTrackers.js';
+import { MicrosoftClarityTracker } from './src/adapters/MicrosoftClarityTracker.js';
 import { ConsentService } from './src/application/ConsentService.js';
 import { CookieBanner } from './src/ui/CookieBanner.js';
 import { MobileMenu } from './src/ui/MobileMenu.js';
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
     const gtmId = html.dataset.gtmId;
     const gaId = html.dataset.gaId;
+    const clarityId = html.dataset.clarityId;
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     // 2. Instanciar dependencias de trackers (Adapter Layer)
@@ -19,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (gaId) {
         trackers.push(new GoogleAnalyticsTracker(gaId, isLocalhost));
+    }
+    if (clarityId) {
+        trackers.push(new MicrosoftClarityTracker(clarityId, isLocalhost));
     }
 
     // 3. Inicializar Caso de Uso / Servicio de Consentimiento (Application Layer)

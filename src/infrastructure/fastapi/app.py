@@ -15,6 +15,7 @@ from src.infrastructure.fastapi.routes.cart import router as carrito_router
 from src.infrastructure.fastapi.routes.infrastructure import router as infraestructura_router
 from src.infrastructure.fastapi.routes.pages import router as paginas_router
 from src.infrastructure.fastapi.routes.quote import router as presupuesto_router
+from src.infrastructure.fastapi.routes.seo import router as seo_router
 
 configurar_logging()
 logger = get_logger()
@@ -44,7 +45,7 @@ app = FastAPI(title=APP_TITLE, lifespan=lifespan, redirect_slashes=False)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(TrailingSlashMiddleware)
 app.middleware("http")(request_id_middleware)
-app.add_exception_handler(HTTPException, http_exception_handler)
+app.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore[arg-type]
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Servir archivos estáticos directamente desde static/
@@ -54,3 +55,4 @@ app.include_router(infraestructura_router)
 app.include_router(paginas_router)
 app.include_router(carrito_router)
 app.include_router(presupuesto_router)
+app.include_router(seo_router)

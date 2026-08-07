@@ -15,6 +15,7 @@ QUOTE_FORM_FIELD_NAMES = frozenset({"name", "company", "email", "phone", "messag
 class AnalyticsConfig(BaseModel):
     gtm_id: str
     ga_id: str
+    clarity_id: str = ""
 
 
 # ---------- whatsapp ----------

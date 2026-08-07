@@ -37,6 +37,7 @@ from src.infrastructure.fastapi.dependencies import (
     get_registro_fallback,
     get_caso_uso_generar_pdf,
     get_quote_repo,
+    get_caso_uso_obtener_resumen_carrito,
 )
 
 logger = get_logger()
@@ -116,6 +117,8 @@ async def generar_presupuesto(
     request: Request,
     caso_uso: ProcesarSolicitudPresupuesto = Depends(get_caso_uso_presupuesto),
     site: SiteConfig = Depends(load_site),
+    cotizador: CotizadorServicio = Depends(get_cotizador),
+    caso_uso_resumen: CasoUsoObtenerResumenCarrito = Depends(get_caso_uso_obtener_resumen_carrito),
 ):
     """Procesa los datos de contacto y retorna la vista de confirmación."""
     form_data = await request.form()
@@ -186,10 +189,16 @@ async def generar_presupuesto(
         lead_emergencia.id = f"ERR-{uuid.uuid4()}"
         response = presentador.presentar_emergencia(lead_emergencia, ref_code)
 
+    resumen_carrito = None
+    try:
+        resumen_carrito = caso_uso_resumen.ejecutar(carrito, cotizador)
+    except Exception:
+        pass
+
     return templates.TemplateResponse(
         request=request,
         name="pages/confirmacion_presupuesto.html",
-        context={"site": site, "response": response},
+        context={"site": site, "response": response, "resumen_carrito": resumen_carrito},
     )
 
 

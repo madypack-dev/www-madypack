@@ -57,5 +57,15 @@
     </div>
 </section>
 
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        event: 'generate_lead',
+        transaction_id: '{{ response.codigo_referencia }}',
+        value: {{ resumen_carrito.precio_total if resumen_carrito else 0 }},
+        currency: 'ARS',
+        total_items: {{ resumen_carrito.total_bolsas if resumen_carrito else 0 }}
+    });
+</script>
 <script type="module" src="{{ url_for('static', path='js/pages/confirmacion_presupuesto.js') }}"></script>
 {% endblock %}
