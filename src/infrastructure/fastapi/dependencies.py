@@ -28,7 +28,10 @@ from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
 from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.domain.cotizacion.quote_repository import IQuoteRepository
+from src.domain.erp.ports import IErpGateway
+from src.application.erp.use_cases import CasoUsoVerificarConexionERP
 from src.domain.lead.http_client import IHttpClient
+
 from src.infrastructure.config.settings import (
     BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
@@ -181,3 +184,25 @@ def get_caso_uso_personalizacion():
         generador_mockup=GeneradorMockupBolsaSVGAdapter(),
         registrar_error=logger.error,
     )
+
+
+def get_erp_gateway(
+    http_client: httpx.AsyncClient = Depends(get_http_client),
+) -> IErpGateway:
+    """Inyecta la implementación de IErpGateway según settings.XUBIO_PROVIDER."""
+    from src.adapters.gateways.null_erp_gateway import NullErpGateway
+    from src.adapters.gateways.xubio_client import XubioErpGateway
+    from src.infrastructure.config import settings
+
+    if settings.XUBIO_PROVIDER == "xubio":
+        return XubioErpGateway(client=http_client)
+    return NullErpGateway()
+
+
+def get_caso_uso_verificar_conexion_erp(
+    erp_gateway: IErpGateway = Depends(get_erp_gateway),
+) -> CasoUsoVerificarConexionERP:
+    """Inyecta el caso de uso para verificar la conexión al ERP."""
+    return CasoUsoVerificarConexionERP(erp_gateway=erp_gateway)
+
+
