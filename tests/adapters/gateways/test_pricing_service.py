@@ -8,15 +8,15 @@ from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryC
 from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
 from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
 from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
-from src.application.quote.pricing_service import CotizadorServicio
-from src.domain.commerce.cart import ArticuloCarrito, CalculoArticulo
-from src.domain.commerce.catalog_repository import ICatalogRepository
-from src.domain.commerce.product import (
+from src.application.cotizacion.pricing_service import CotizadorServicio
+from src.domain.comercio.cart import ArticuloCarrito, CalculoArticulo
+from src.domain.comercio.catalog_repository import ICatalogRepository
+from src.domain.comercio.product import (
     ComponenteBien,
     ProductoBien,
     ProductoServicio,
 )
-from src.domain.commerce.catalog import VariacionProducto
+from src.domain.comercio.catalog import VariacionProducto
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.moneda import Moneda
 from src.domain.pricing.proveedor_ipc import IProveedorIPC

@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.domain.commerce.cart import CalculoArticulo
+from src.domain.comercio.cart import CalculoArticulo
 from src.domain.pricing.calculator import CalculadorPrecio
 
 

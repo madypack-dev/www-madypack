@@ -6,7 +6,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
 
 from src.infrastructure.config.settings import CHATWOOT_URL
-from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.infrastructure.fastapi.dependencies import get_http_client_adapter, get_repositorio_catalogo
 from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.structlog.logger import get_logger

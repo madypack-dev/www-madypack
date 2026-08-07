@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from src.infrastructure.fastapi.routes.base import templates, load_site, logger
 from src.infrastructure.pyyaml.models import SiteConfig
 from src.infrastructure.fastapi.dependencies import get_caso_uso_personalizacion
-from src.application.customization.generate_customization import (
+from src.application.personalizacion.generate_customization import (
     CasoUsoGenerarPersonalizacion,
     SolicitudPersonalizacionDTO,
 )

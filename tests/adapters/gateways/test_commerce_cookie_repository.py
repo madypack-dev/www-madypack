@@ -1,7 +1,7 @@
 import json
 from unittest.mock import MagicMock
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.domain.commerce.cart import Carrito, ArticuloCarrito
+from src.domain.comercio.cart import Carrito, ArticuloCarrito
 
 def test_repositorio_carrito_cookie_vacio():
     cookies = {}

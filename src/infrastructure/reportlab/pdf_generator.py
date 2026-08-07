@@ -13,9 +13,9 @@ from reportlab.platypus import Paragraph, Table, TableStyle
 from reportlab.graphics import renderPDF
 from svglib.svglib import svg2rlg
 
-from src.domain.quote.visual_identity import IdentidadVisual
-from src.domain.quote.quote import LineaPresupuesto, Presupuesto
-from src.domain.quote.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.cotizacion.quote import LineaPresupuesto, Presupuesto
+from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 
 
 class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):

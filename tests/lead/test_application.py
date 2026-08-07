@@ -2,15 +2,15 @@ import pytest
 from pydantic import ValidationError
 from unittest.mock import AsyncMock, MagicMock
 
-from src.domain.commerce.cart import Carrito, ArticuloCarrito
+from src.domain.comercio.cart import Carrito, ArticuloCarrito
 from src.application.lead.lead_dtos import CrearLeadRequest
 from src.domain.lead.lead_repository import ILeadRepository
-from src.application.quote.process_quote_request import (
+from src.application.cotizacion.process_quote_request import (
     ProcesarSolicitudPresupuesto,
 )
-from src.domain.quote.fallback_registry import IRegistroFallbackLead
-from src.domain.quote.quote_repository import IQuoteRepository
-from src.application.quote.quote_helpers import ICotizador
+from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
+from src.domain.cotizacion.quote_repository import IQuoteRepository
+from src.application.cotizacion.quote_helpers import ICotizador
 
 
 def test_crear_lead_request_telefono_normalization():

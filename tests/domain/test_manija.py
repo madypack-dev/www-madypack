@@ -1,6 +1,6 @@
 """Tests para las reglas de dominio de manijas de papel."""
 
-from src.domain.commerce.manija import FormatoManija, formato_manija_para_ancho
+from src.domain.comercio.manija import FormatoManija, formato_manija_para_ancho
 
 
 class TestFormatoManija:

@@ -5,7 +5,7 @@ from src.adapters.gateways.catalog.builders import (
 )
 from src.adapters.gateways.catalog.catalog_seed import construir_catalogo
 from src.adapters.gateways.catalog.data import FormatoBolsa
-from src.domain.commerce.product import ProductoBien, ProductoServicio
+from src.domain.comercio.product import ProductoBien, ProductoServicio
 
 
 _FORMATO_EJEMPLO = FormatoBolsa("120819", "12x8x19 cm", "para Farmacia y Joyería")

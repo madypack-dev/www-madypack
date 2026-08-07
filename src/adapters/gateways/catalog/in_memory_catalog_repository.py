@@ -1,6 +1,6 @@
-from src.domain.commerce.catalog import VariacionProducto
-from src.domain.commerce.catalog_repository import ICatalogRepository
-from src.domain.commerce.product import ComponenteBien, Producto, ProductoBien, ProductoServicio
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.catalog_repository import ICatalogRepository
+from src.domain.comercio.product import ComponenteBien, Producto, ProductoBien, ProductoServicio
 
 from src.adapters.gateways.catalog.catalog_seed import construir_catalogo
 

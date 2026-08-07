@@ -5,12 +5,12 @@ from typing import Callable
 
 import pytest
 
-from src.application.quote.generate_quote_pdf import (
+from src.application.cotizacion.generate_quote_pdf import (
     CasoUsoGenerarPresupuestoPDF,
 )
-from src.domain.quote.visual_identity import IdentidadVisual
-from src.domain.quote.quote import DatosSolicitante, LineaPresupuesto
-from src.domain.quote.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.cotizacion.quote import DatosSolicitante, LineaPresupuesto
+from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 
 
 class GeneradorPDFFake(IGeneradorDocumentoPresupuesto):

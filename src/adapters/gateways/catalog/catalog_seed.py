@@ -4,8 +4,8 @@ Este módulo ensambla las distintas familias de productos definidas en los
 módulos `bolsas`, `componentes`, `servicios` y `compuestos`.
 """
 
-from src.domain.commerce.catalog import VariacionProducto
-from src.domain.commerce.product import ProductoBien, ProductoServicio
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.product import ProductoBien, ProductoServicio
 
 from .bolsas import crear_bolsas_base
 from .componentes import crear_bobina, crear_componentes

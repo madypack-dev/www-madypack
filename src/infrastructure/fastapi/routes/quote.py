@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from pydantic import EmailStr, ValidationError
 
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.application.commerce.cart_use_cases import CasoUsoObtenerResumenCarrito
+from src.application.comercio.cart_use_cases import CasoUsoObtenerResumenCarrito
 from src.infrastructure.pyyaml.models import SiteConfig
 
 from src.infrastructure.estaticos import resolver_archivo_estatico
@@ -19,18 +19,18 @@ from src.application.lead.lead_dtos import CrearLeadRequest
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
 
 from src.domain.lead.lead import Lead
-from src.application.quote.pricing_service import CotizadorServicio
+from src.application.cotizacion.pricing_service import CotizadorServicio
 from src.adapters.presenters.quote_confirmation_presenter import PresentadorConfirmacionPresupuesto
-from src.application.quote.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
+from src.application.cotizacion.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
 
-from src.application.quote.process_quote_request import ProcesarSolicitudPresupuesto
+from src.application.cotizacion.process_quote_request import ProcesarSolicitudPresupuesto
 
-from src.application.quote.quote_helpers import construir_lineas_presupuesto
-from src.domain.quote.visual_identity import IdentidadVisual
-from src.domain.quote.quote import DatosSolicitante
-from src.domain.quote.quote_repository import IQuoteRepository
+from src.application.cotizacion.quote_helpers import construir_lineas_presupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.cotizacion.quote import DatosSolicitante
+from src.domain.cotizacion.quote_repository import IQuoteRepository
 
-from src.domain.cart.cart_repository import IRepositorioCarrito
+from src.domain.comercio.cart_repository import IRepositorioCarrito
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
 from src.infrastructure.fastapi.dependencies import (
     get_chatwoot_repo,

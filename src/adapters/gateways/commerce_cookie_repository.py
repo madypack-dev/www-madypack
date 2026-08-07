@@ -1,7 +1,7 @@
 import json
 from typing import Callable
-from src.domain.commerce.cart import Carrito, ArticuloCarrito
-from src.domain.commerce.cart_repository import IRepositorioCarrito
+from src.domain.comercio.cart import Carrito, ArticuloCarrito
+from src.domain.comercio.cart_repository import IRepositorioCarrito
 
 
 class RepositorioCarritoCookie(IRepositorioCarrito):

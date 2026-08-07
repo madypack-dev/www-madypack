@@ -1,8 +1,8 @@
 """Builders para bolsas de papel simples y sus variaciones."""
 
-from src.domain.commerce.cart import CalculoArticulo
-from src.domain.commerce.catalog import VariacionProducto
-from src.domain.commerce.product import ProductoBien
+from src.domain.comercio.cart import CalculoArticulo
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.product import ProductoBien
 
 from .builders import (
     calculo_articulo_para_bolsa,

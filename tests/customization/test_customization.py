@@ -6,18 +6,18 @@ from PIL import Image
 from fastapi.testclient import TestClient
 
 from src.infrastructure.fastapi.app import app
-from src.domain.customization.customization import (
+from src.domain.personalizacion.customization import (
     EspecificacionBolsa,
     ImagenDiseno,
     PersonalizacionBolsa,
 )
-from src.adapters.gateways.customization.generador_fotopolimero_pillow import (
+from src.adapters.gateways.personalizacion.generador_fotopolimero_pillow import (
     GeneradorFotopolimeroPillowAdapter,
 )
-from src.adapters.gateways.customization.generador_mockup_svg import (
+from src.adapters.gateways.personalizacion.generador_mockup_svg import (
     GeneradorMockupBolsaSVGAdapter,
 )
-from src.application.customization.generate_customization import (
+from src.application.personalizacion.generate_customization import (
     CasoUsoGenerarPersonalizacion,
     SolicitudPersonalizacionDTO,
 )

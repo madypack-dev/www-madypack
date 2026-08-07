@@ -5,8 +5,8 @@ from datetime import date
 import pytest
 from pydantic import ValidationError
 
-from src.domain.quote.visual_identity import IdentidadVisual
-from src.domain.quote.quote import (
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.cotizacion.quote import (
     DatosSolicitante,
     LineaPresupuesto,
     Presupuesto,

@@ -1,7 +1,7 @@
 """Helpers puros para construir partes del catálogo."""
 
-from src.domain.commerce.cart import CalculoArticulo
-from src.domain.commerce.manija import formato_manija_para_ancho
+from src.domain.comercio.cart import CalculoArticulo
+from src.domain.comercio.manija import formato_manija_para_ancho
 
 from .data import FormatoBolsa
 

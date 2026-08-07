@@ -1,7 +1,7 @@
 """Builders para servicios del catálogo."""
 
-from src.domain.commerce.cart import CalculoArticulo
-from src.domain.commerce.product import ProductoServicio
+from src.domain.comercio.cart import CalculoArticulo
+from src.domain.comercio.product import ProductoServicio
 
 
 def crear_servicios() -> tuple[

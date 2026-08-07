@@ -7,7 +7,7 @@ Convierte entidades de dominio en un objeto listo para ser renderizado.
 import urllib.parse
 from dataclasses import dataclass
 
-from src.domain.commerce.cart import Carrito
+from src.domain.comercio.cart import Carrito
 from src.domain.lead.lead import Lead
 
 

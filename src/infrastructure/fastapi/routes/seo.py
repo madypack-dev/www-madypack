@@ -1,7 +1,7 @@
 """Rutas de SEO técnico: sitemap.xml y robots.txt."""
 
 from fastapi import APIRouter, Depends, Response, Request
-from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.infrastructure.fastapi.dependencies import get_repositorio_catalogo
 from src.infrastructure.fastapi.routes.base import load_site
 from src.infrastructure.pyyaml.models import SiteConfig

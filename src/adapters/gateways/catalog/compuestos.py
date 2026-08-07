@@ -1,8 +1,8 @@
 """Builders para bienes compuestos del catálogo."""
 
-from src.domain.commerce.catalog import VariacionProducto
-from src.domain.commerce.manija import FormatoManija, formato_manija_para_ancho
-from src.domain.commerce.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.manija import FormatoManija, formato_manija_para_ancho
+from src.domain.comercio.product import ComponenteBien, MedidasBolsa, ProductoBien, ProductoServicio
 
 from .builders import construir_nombre_bolsa
 from .data import (

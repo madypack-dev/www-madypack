@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from src.domain.commerce.manija import FormatoManija
+from src.domain.comercio.manija import FormatoManija
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.moneda import Moneda
 from src.domain.pricing.proveedor_tarifas import IProveedorTarifas

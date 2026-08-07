@@ -1,9 +1,9 @@
 import pytest
 from pydantic import ValidationError
 
-from src.domain.commerce.cart import Carrito, ArticuloCarrito, CalculoArticulo
-from src.domain.commerce.catalog import VariacionProducto
-from src.domain.commerce.product import (
+from src.domain.comercio.cart import Carrito, ArticuloCarrito, CalculoArticulo
+from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.product import (
     ComponenteBien,
     MedidasBolsa,
     ProductoBien,

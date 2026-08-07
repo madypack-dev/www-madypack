@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from src.domain.lead.lead import Lead
-from src.domain.quote.fallback_registry import IRegistroFallbackLead
+from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
 
 
 class RegistroFallbackArchivo(IRegistroFallbackLead):

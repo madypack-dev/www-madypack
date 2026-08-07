@@ -3,18 +3,18 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.infrastructure.fastapi.routes.base import templates, logger
 from src.infrastructure.pyyaml.loaders import cargar_site
-from src.domain.commerce.cart_repository import IRepositorioCarrito
-from src.domain.commerce.catalog_repository import ICatalogRepository
+from src.domain.comercio.cart_repository import IRepositorioCarrito
+from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.application.commerce.cart_use_cases import (
+from src.application.comercio.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
     CasoUsoObtenerResumenCarrito,
 )
-from src.application.quote.pricing_service import CotizadorServicio
+from src.application.cotizacion.pricing_service import CotizadorServicio
 from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
-from src.domain.commerce.product import ProductoBien, ProductoServicio
+from src.domain.comercio.product import ProductoBien, ProductoServicio
 from src.infrastructure.fastapi.dependencies import (
     get_repositorio_carrito,
     get_repositorio_catalogo,

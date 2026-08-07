@@ -1,7 +1,7 @@
 import tempfile
 from datetime import date
 
-from src.domain.quote.quote import Presupuesto, DatosSolicitante, LineaPresupuesto
+from src.domain.cotizacion.quote import Presupuesto, DatosSolicitante, LineaPresupuesto
 from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
 
 
