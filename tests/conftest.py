@@ -2,24 +2,28 @@ import os
 import sys
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if os.path.basename(root_dir) == "mutants":
+_en_mutants = os.path.basename(root_dir) == "mutants"
+if _en_mutants:
     root_dir = os.path.abspath(os.path.join(root_dir, ".."))
 
 if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+    if _en_mutants:
+        # En modo mutmut, insertar la raíz real DESPUÉS de mutants/src/
+        # para que el código mutado tenga prioridad sobre el original.
+        sys.path.append(root_dir)
+    else:
+        sys.path.insert(0, root_dir)
 
 try:
     import src
+
     real_src_dir = os.path.join(root_dir, "src")
     if hasattr(src, "__path__") and real_src_dir not in src.__path__:
         src.__path__.append(real_src_dir)
 except ImportError:
     pass
 
-import pytest
-
-
-
+import pytest  # noqa: E402
 
 
 @pytest.fixture(autouse=True, scope="session")
