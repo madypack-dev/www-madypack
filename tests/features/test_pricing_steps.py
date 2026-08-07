@@ -15,20 +15,24 @@ class StubProveedorIPC(IProveedorIPC):
     def __init__(self, factor: Decimal):
         self.factor = factor
 
-    def obtener_factor(self, fecha_desde: date, fecha_hasta: date) -> Decimal:
+    def obtener_factor(self, desde: date, hasta: date) -> Decimal:
         return self.factor
 
 
-@given(parsers.parse('un valor de tarifa base de {monto:f} ARS registrado en fecha "{fecha}"'), target_fixture="dinero_base")
+@given(
+    parsers.parse('un valor de tarifa base de {monto:f} ARS registrado en fecha "{fecha}"'),
+    target_fixture="dinero_base",
+)
 def dinero_base(monto: float, fecha: str) -> Dinero:
     return Dinero(
-        monto=Decimal(str(monto)),
-        moneda=Moneda.ARS,
-        fecha_referencia=date.fromisoformat(fecha)
+        monto=Decimal(str(monto)), moneda=Moneda.ARS, fecha_referencia=date.fromisoformat(fecha)
     )
 
 
-@given(parsers.parse('un factor IPC acumulado de {factor:f} hasta la fecha "{fecha_fin}"'), target_fixture="ipc_context")
+@given(
+    parsers.parse('un factor IPC acumulado de {factor:f} hasta la fecha "{fecha_fin}"'),
+    target_fixture="ipc_context",
+)
 def ipc_context(factor: float, fecha_fin: str) -> tuple[Decimal, date]:
     return Decimal(str(factor)), date.fromisoformat(fecha_fin)
 
@@ -41,7 +45,7 @@ def calcular_monto_actualizado(dinero_base: Dinero, ipc_context: tuple[Decimal, 
     return actualizador.actualizar(dinero_base, fecha_fin)
 
 
-@then(parsers.parse('el precio unitario resultante debe ser {esperado:f} ARS'))
+@then(parsers.parse("el precio unitario resultante debe ser {esperado:f} ARS"))
 def verificar_precio_unitario(monto_actualizado: Dinero, esperado: float) -> None:
     assert monto_actualizado.monto == Decimal(str(esperado))
     assert monto_actualizado.moneda == Moneda.ARS

@@ -15,7 +15,9 @@ from src.domain.lead.lead_repository import ILeadRepository
 
 
 def test_crear_lead_request_telefono_normalization():
-    req = CrearLeadRequest(nombre="A", empresa="B", telefono="+5491112345678", email="a@example.com")
+    req = CrearLeadRequest(
+        nombre="A", empresa="B", telefono="+5491112345678", email="a@example.com"
+    )
     assert req.telefono == "+5491112345678"
 
     req = CrearLeadRequest(nombre="A", empresa="B", telefono="5491112345678", email="a@example.com")
@@ -93,7 +95,9 @@ async def test_procesar_solicitud_presupuesto_fallback():
 
     lead = await caso_uso.ejecutar(request, carrito=carrito)
 
+    assert lead.id is not None
     assert lead.id.startswith("FALLBACK-")
+    assert lead.codigo_referencia is not None
     assert lead.codigo_referencia.startswith("COT-")
     registrar_error.assert_called_once()
     registro_fallback.guardar.assert_called_once()

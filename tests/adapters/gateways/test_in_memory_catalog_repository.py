@@ -23,11 +23,15 @@ def test_in_memory_catalog_repository_operations():
     assert len(productos[0].variaciones) == 6
 
     # Obtener por id
-    assert repo.obtener_por_id(1001).nombre == "Bolsa 12x8x19 cm Marrón sin Manija Lisa 100g"
+    producto = repo.obtener_por_id(1001)
+    assert producto is not None
+    assert producto.nombre == "Bolsa 12x8x19 cm Marrón sin Manija Lisa 100g"
     assert repo.obtener_por_id(99) is None
 
     # Obtener por slug
-    assert repo.obtener_por_slug("bolsa-de-papel-marron-221030").id == 3004
+    prod_slug = repo.obtener_por_slug("bolsa-de-papel-marron-221030")
+    assert prod_slug is not None
+    assert prod_slug.id == 3004
     assert repo.obtener_por_slug("no-existe") is None
 
     # Buscar por texto
@@ -81,7 +85,9 @@ def test_in_memory_catalog_repository_operations():
     assert bobina.nombre == "Bobina de Papel"
     assert bobina.unidad == "kg"
     assert bobina.variaciones[0].cantidad_por_defecto == 100
-    assert bobina.variaciones[0].calculo.conceptos == ["bobina_kg"]
+    calculo_bobina = bobina.variaciones[0].calculo
+    assert calculo_bobina is not None
+    assert calculo_bobina.conceptos == ["bobina_kg"]
 
     # Servicio de confección visible
     confeccion = repo.obtener_por_id(2003)
@@ -93,7 +99,11 @@ def test_in_memory_catalog_repository_operations():
     assert isinstance(manija_cordon, ProductoBien)
     assert not manija_cordon.visible
     assert len(manija_cordon.variaciones) == 3
-    assert {v.atributos["formato"] for v in manija_cordon.variaciones} == {"114mm", "152mm", "190mm"}
+    assert {v.atributos["formato"] for v in manija_cordon.variaciones} == {
+        "114mm",
+        "152mm",
+        "190mm",
+    }
     pegado = repo.obtener_por_id(2001)
     assert isinstance(pegado, ProductoServicio)
     assert pegado.visible
@@ -141,7 +151,9 @@ def test_in_memory_catalog_repository_operations():
     assert "Impresa" in compuesto_impreso_manija_visible.nombre
     assert "Manija Cordón" in compuesto_impreso_manija_visible.nombre
     assert any(c.nombre == "Impresión" for c in compuesto_impreso_manija_visible.componentes)
-    assert any(c.nombre == "Pegado de Manijas" for c in compuesto_impreso_manija_visible.componentes)
+    assert any(
+        c.nombre == "Pegado de Manijas" for c in compuesto_impreso_manija_visible.componentes
+    )
 
     # Los demás compuestos impresos con manija permanecen ocultos
     compuesto_impreso_manija_oculto = repo.obtener_por_id(3301)
@@ -154,9 +166,7 @@ def test_in_memory_catalog_repository_operations():
     assert bolsa_visible.visible
     assert bolsa_visible.es_compuesto
     assert bolsa_visible.nombre == "Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g"
-    componente_bobina = next(
-        c for c in bolsa_visible.componentes if c.nombre == "Bobina de Papel"
-    )
+    componente_bobina = next(c for c in bolsa_visible.componentes if c.nombre == "Bobina de Papel")
     assert componente_bobina.medidas is not None
     assert componente_bobina.medidas.ancho == 22
     assert componente_bobina.gramaje == 100
@@ -176,7 +186,9 @@ def test_calculo_articulo_para_bolsa_sin_personalizacion():
 
 
 def test_calculo_articulo_para_bolsa_con_manija_y_personalizacion():
-    calculo = calculo_articulo_para_bolsa("Manija Cordón", "Impresa 1 o 2 colores", _FORMATO_EJEMPLO)
+    calculo = calculo_articulo_para_bolsa(
+        "Manija Cordón", "Impresa 1 o 2 colores", _FORMATO_EJEMPLO
+    )
     assert calculo.tipo == "suma_por_unidad_mas_fijo"
     assert calculo.conceptos == ["base", "manija_cordon_114", "personalizacion"]
     assert calculo.concepto_fijo == "fijo_matriz"
