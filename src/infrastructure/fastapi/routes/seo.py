@@ -23,6 +23,7 @@ def sitemap_xml(
         f"{base_url}/productos/",
         f"{base_url}/quienes-somos/",
         f"{base_url}/cotizacion/",
+        f"{base_url}/personalizar/",
         f"{base_url}/contacto/",
     ]
     

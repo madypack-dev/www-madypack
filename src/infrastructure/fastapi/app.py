@@ -16,6 +16,7 @@ from src.infrastructure.fastapi.routes.infrastructure import router as infraestr
 from src.infrastructure.fastapi.routes.pages import router as paginas_router
 from src.infrastructure.fastapi.routes.quote import router as presupuesto_router
 from src.infrastructure.fastapi.routes.seo import router as seo_router
+from src.infrastructure.fastapi.routes.customization import router as personalizacion_router
 
 configurar_logging()
 logger = get_logger()
@@ -56,3 +57,4 @@ app.include_router(paginas_router)
 app.include_router(carrito_router)
 app.include_router(presupuesto_router)
 app.include_router(seo_router)
+app.include_router(personalizacion_router)

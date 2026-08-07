@@ -47,6 +47,8 @@ header:
       url: "/quienes-somos/"
     - label: Cotización
       url: "/cotizacion/"
+    - label: Personalizar
+      url: "/personalizar/"
     - label: Contacto
       url: "/contacto/"
   actions:

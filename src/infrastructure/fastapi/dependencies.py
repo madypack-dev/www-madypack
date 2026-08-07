@@ -167,3 +167,16 @@ def get_http_client_adapter(
 def get_quote_repo() -> IQuoteRepository:
     """Inyecta el repositorio de presupuestos (JSON local)."""
     return JsonQuoteRepository()
+
+
+def get_caso_uso_personalizacion():
+    """Inyecta el caso de uso para generar la personalización de la bolsa y el fotopolímero."""
+    from src.application.customization.generate_customization import CasoUsoGenerarPersonalizacion
+    from src.adapters.gateways.customization.generador_fotopolimero_pillow import GeneradorFotopolimeroPillowAdapter
+    from src.adapters.gateways.customization.generador_mockup_svg import GeneradorMockupBolsaSVGAdapter
+
+    return CasoUsoGenerarPersonalizacion(
+        generador_fotopolimero=GeneradorFotopolimeroPillowAdapter(),
+        generador_mockup=GeneradorMockupBolsaSVGAdapter(),
+        registrar_error=logger.error,
+    )

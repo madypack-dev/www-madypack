@@ -1,0 +1,124 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Personalizador de Bolsas & Fotopolímero | {{ site.site.brand }}{% endblock %}
+{% block meta_description %}Diseña tu bolsa de papel sustentable a medida, simula colores, manijas y descarga el archivo SVG de fotopolímero para imprenta.{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Personalizador Visual de Bolsas</h1>
+            <p style="color: #666666; font-size: 1.1rem;">Elige las dimensiones, tipo de manija, color de papel y sube tu logo para generar el fotopolímero industrial en SVG.</p>
+        </div>
+
+        {% if error %}
+        <div style="background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <strong>Atención:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;">
+            <!-- Formulario de Configuración -->
+            <div style="background: #ffffff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;">
+                <h2 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: #111827;">1. Especificaciones de la Bolsa</h2>
+                <form action="/personalizar/procesar" method="post" enctype="multipart/form-data">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Ancho (cm)</label>
+                            <input type="number" step="0.5" min="5" name="ancho_cm" value="{{ ancho_cm or 20 }}" required style="width: 100%; padding: 0.6rem; border: 1px solid #d1d5db; border-radius: 6px;" />
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Alto (cm)</label>
+                            <input type="number" step="0.5" min="5" name="alto_cm" value="{{ alto_cm or 30 }}" required style="width: 100%; padding: 0.6rem; border: 1px solid #d1d5db; border-radius: 6px;" />
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Fuelle (cm)</label>
+                            <input type="number" step="0.5" min="0" name="fuelle_cm" value="{{ fuelle_cm or 10 }}" required style="width: 100%; padding: 0.6rem; border: 1px solid #d1d5db; border-radius: 6px;" />
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Tipo de Manija</label>
+                        <select name="tipo_manija" style="width: 100%; padding: 0.68rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                            <option value="manija_retorcida" {% if tipo_manija == 'manija_retorcida' %}selected{% endif %}>Manija Retorcida (Estándar)</option>
+                            <option value="manija_plana" {% if tipo_manija == 'manija_plana' %}selected{% endif %}>Manija Plana</option>
+                            <option value="sin_manija" {% if tipo_manija == 'sin_manija' %}selected{% endif %}>Sin Manija (Sobre / Panadería)</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Color de Papel</label>
+                            <select name="color_papel" style="width: 100%; padding: 0.68rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                                <option value="#D2B48C" {% if color_papel == '#D2B48C' %}selected{% endif %}>Kraft Marrón (Ecológico)</option>
+                                <option value="#FFFFFF" {% if color_papel == '#FFFFFF' %}selected{% endif %}>Kraft Blanco</option>
+                                <option value="#222222" {% if color_papel == '#222222' %}selected{% endif %}>Negro Premium</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Color de Tinta</label>
+                            <input type="color" name="color_tinta" value="{{ color_tinta or '#000000' }}" style="width: 100%; height: 42px; padding: 2px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;" />
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.75rem;">
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem;">Subir Logo / Diseño (PNG, JPG, SVG)</label>
+                        <input type="file" name="diseno" accept="image/*" required style="width: 100%; padding: 0.6rem; border: 1px dashed #4b5563; border-radius: 6px; background: #f9fafb;" />
+                    </div>
+
+                    <button type="submit" style="width: 100%; background: #059669; color: white; padding: 0.9rem; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s;">
+                        Generar Vista Previa & Fotopolímero
+                    </button>
+                </form>
+            </div>
+
+            <!-- Panel de Resultados y Previsualización -->
+            <div style="background: #ffffff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; min-height: 480px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                {% if resultado %}
+                    <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: #111827;">Previsualización 2D de Bolsa</h2>
+                    <div style="width: 100%; max-width: 360px; height: 380px; margin-bottom: 1.5rem;">
+                        {{ resultado.svg_mockup | safe }}
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; width: 100%;">
+                        <button onclick="descargarSVG('svg-fotopolimero-data', 'fotopolimero_madypack.svg')" style="flex: 1; background: #2563eb; color: white; padding: 0.75rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                            Descargar SVG Fotopolímero
+                        </button>
+                    </div>
+
+                    <!-- Div oculto con el SVG del fotopolímero para descarga directa -->
+                    <div id="svg-fotopolimero-data" style="display: none;">
+                        {{ resultado.svg_fotopolimero | safe }}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; color: #9ca3af;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <p style="font-size: 1rem;">Configura los parámetros y sube tu logo para generar la previsualización 2D y el archivo fotopolímero SVG.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function descargarSVG(elementId, nombreArchivo) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const contenido = el.innerHTML.trim();
+    const blob = new Blob([contenido], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

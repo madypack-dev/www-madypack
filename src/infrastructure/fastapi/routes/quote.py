@@ -30,6 +30,7 @@ from src.domain.quote.visual_identity import IdentidadVisual
 from src.domain.quote.quote import DatosSolicitante
 from src.domain.quote.quote_repository import IQuoteRepository
 
+from src.domain.cart.cart_repository import IRepositorioCarrito
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
 from src.infrastructure.fastapi.dependencies import (
     get_chatwoot_repo,
@@ -38,6 +39,7 @@ from src.infrastructure.fastapi.dependencies import (
     get_caso_uso_generar_pdf,
     get_quote_repo,
     get_caso_uso_obtener_resumen_carrito,
+    get_repositorio_carrito,
 )
 
 logger = get_logger()
@@ -86,16 +88,12 @@ async def read_cotizacion(
     request: Request,
     site: SiteConfig = Depends(load_site),
     cotizador: CotizadorServicio = Depends(get_cotizador),
+    repositorio_carrito: IRepositorioCarrito = Depends(get_repositorio_carrito),
+    caso_uso_resumen: CasoUsoObtenerResumenCarrito = Depends(get_caso_uso_obtener_resumen_carrito),
 ):
     """Muestra el formulario de cotización junto con el resumen del carrito."""
-    repositorio = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
-    carrito = repositorio.obtener_carrito()
-
-    caso_uso = CasoUsoObtenerResumenCarrito(registrar_error=logger.warning)
-    resumen = caso_uso.ejecutar(carrito, cotizador)
+    carrito = repositorio_carrito.obtener_carrito()
+    resumen = caso_uso_resumen.ejecutar(carrito, cotizador)
 
     return templates.TemplateResponse(
         request=request,
@@ -118,6 +116,7 @@ async def generar_presupuesto(
     caso_uso: ProcesarSolicitudPresupuesto = Depends(get_caso_uso_presupuesto),
     site: SiteConfig = Depends(load_site),
     cotizador: CotizadorServicio = Depends(get_cotizador),
+    repositorio_carrito: IRepositorioCarrito = Depends(get_repositorio_carrito),
     caso_uso_resumen: CasoUsoObtenerResumenCarrito = Depends(get_caso_uso_obtener_resumen_carrito),
 ):
     """Procesa los datos de contacto y retorna la vista de confirmación."""
@@ -155,10 +154,6 @@ async def generar_presupuesto(
         )
         return RedirectResponse(url="/cotizacion/?error=datos_invalidos", status_code=303)
 
-    repositorio_carrito = RepositorioCarritoCookie(
-        cookies=request.cookies,
-        registrar_error=logger.error,
-    )
     carrito = repositorio_carrito.obtener_carrito()
 
     presentador = PresentadorConfirmacionPresupuesto(
