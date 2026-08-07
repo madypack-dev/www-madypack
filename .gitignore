@@ -5,3 +5,4 @@ logs/failed_leads.log
 *bundle.css
 data/presupuestos/*.json
 .env
+mutants/

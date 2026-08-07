@@ -48,7 +48,9 @@ if [ "$1" == "--fast" ]; then
     echo -e "${COLOR_WARN}⏩ Omisión de Mutation Testing (--fast activado)${COLOR_RESET}"
 else
     log_stage "Paso 6: Mutation Testing en Capa de Dominio (Mutmut)..."
-    $MUTMUT_BIN run --paths-to-mutate=src/domain/pricing/
+    $MUTMUT_BIN run src/domain/pricing/
+
+
 fi
 
 echo -e "\n${COLOR_SUCCESS}👑 ¡CÓDIGO PERFECTO! El gauntlet del Tío Bob fue superado exitosamente.${COLOR_RESET}\n"

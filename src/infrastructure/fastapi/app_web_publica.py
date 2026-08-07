@@ -49,7 +49,11 @@ app_web.middleware("http")(request_id_middleware)
 app_web.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore[arg-type]
 app_web.add_exception_handler(Exception, global_exception_handler)
 
-app_web.mount("/static", StaticFiles(directory="static"), name="static")
+_BASE_DIR = Path(__file__).resolve().parents[3]
+_STATIC_DIR = _BASE_DIR / "static" if (_BASE_DIR / "static").exists() else Path("static").resolve()
+
+app_web.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+
 
 app_web.include_router(infraestructura_router)
 app_web.include_router(paginas_router)
