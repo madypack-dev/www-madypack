@@ -50,7 +50,8 @@ adapters**:
 │   ├── ipc.yml                   # Índices IPC intermensuales (opcional)
 │   └── presupuestos/             # Presupuestos generados en JSON (ignorados por git)
 ├── docs/
-│   └── DUDAS.md                  # Registro de dudas arquitectónicas resueltas/pendientes
+│   ├── DUDAS.md                  # Registro de dudas arquitectónicas resueltas/pendientes
+│   └── SEO_SEM_ANALYTICS.md     # Guía técnica de SEO dinámico, GA4, GTM y Clarity
 ├── logs/
 │   └── failed_leads.log          # Leads fallidos (JSON Lines, ignorado por git)
 ├── src/
