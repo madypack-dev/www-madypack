@@ -1,6 +1,7 @@
 import json
-from typing import Callable
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
+from collections.abc import Callable
+
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
 from src.domain.comercio.cart_repository import IRepositorioCarrito
 
 
@@ -30,7 +31,7 @@ class RepositorioCarritoCookie(IRepositorioCarrito):
                 return Carrito(articulos=articulos)
             except Exception as err:
                 self.registrar_error(f"Error al deserializar cookie de carrito: {err}")
-                
+
         # Si no hay cookie, devolvemos un carrito vacío
         return Carrito(articulos=[])
 

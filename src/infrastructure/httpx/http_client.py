@@ -1,4 +1,5 @@
-from typing import Any, Dict
+from typing import Any
+
 import httpx
 from src.domain.lead.http_client import IHttpClient, IHttpResponse
 
@@ -29,7 +30,7 @@ class HttpxClientAdapter(IHttpClient):
     async def post(
         self,
         url: str,
-        headers: Dict[str, str] | None = None,
+        headers: dict[str, str] | None = None,
         json: Any = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
@@ -48,7 +49,7 @@ class HttpxClientAdapter(IHttpClient):
     async def head(
         self,
         url: str,
-        headers: Dict[str, str] | None = None,
+        headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
         kwargs = {}

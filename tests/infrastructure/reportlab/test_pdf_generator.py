@@ -2,17 +2,14 @@
 
 from datetime import date
 
-import pytest
-
-from src.domain.comercio.cart import CalculoArticulo
-from src.infrastructure.reportlab.pdf_generator import (
-    GeneradorPresupuestoPDFReportLab,
-)
-from src.domain.cotizacion.visual_identity import IdentidadVisual
 from src.domain.cotizacion.quote import (
     DatosSolicitante,
     LineaPresupuesto,
     Presupuesto,
+)
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.infrastructure.reportlab.pdf_generator import (
+    GeneradorPresupuestoPDFReportLab,
 )
 
 

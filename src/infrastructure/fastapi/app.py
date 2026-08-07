@@ -1,22 +1,24 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-
 from src.infrastructure.config.settings import APP_TITLE
-from src.infrastructure.pyyaml.loaders import cargar_site
-from fastapi.exceptions import HTTPException
-from src.infrastructure.fastapi.errors.handlers import global_exception_handler, http_exception_handler
-from src.infrastructure.structlog.logger import configurar_logging, get_logger
+from src.infrastructure.fastapi.errors.handlers import (
+    global_exception_handler,
+    http_exception_handler,
+)
 from src.infrastructure.fastapi.middleware.request_id import request_id_middleware
 from src.infrastructure.fastapi.middleware.trailing_slash import TrailingSlashMiddleware
 from src.infrastructure.fastapi.routes.cart import router as carrito_router
+from src.infrastructure.fastapi.routes.customization import router as personalizacion_router
 from src.infrastructure.fastapi.routes.infrastructure import router as infraestructura_router
 from src.infrastructure.fastapi.routes.pages import router as paginas_router
 from src.infrastructure.fastapi.routes.quote import router as presupuesto_router
 from src.infrastructure.fastapi.routes.seo import router as seo_router
-from src.infrastructure.fastapi.routes.customization import router as personalizacion_router
+from src.infrastructure.pyyaml.loaders import cargar_site
+from src.infrastructure.structlog.logger import configurar_logging, get_logger
 
 configurar_logging()
 logger = get_logger()

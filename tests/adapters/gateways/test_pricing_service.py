@@ -1,22 +1,22 @@
 from datetime import date
 from decimal import Decimal
+from unittest.mock import MagicMock
 
 import pytest
-from unittest.mock import MagicMock
 
 from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
-from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
 from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
+from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
 from src.application.cotizacion.pricing_service import CotizadorServicio
 from src.domain.comercio.cart import ArticuloCarrito, CalculoArticulo
+from src.domain.comercio.catalog import VariacionProducto
 from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.comercio.product import (
     ComponenteBien,
     ProductoBien,
     ProductoServicio,
 )
-from src.domain.comercio.catalog import VariacionProducto
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.moneda import Moneda
 from src.domain.pricing.proveedor_ipc import IProveedorIPC
@@ -198,16 +198,6 @@ def test_cotizador_servicio_con_catalogo_mock():
         imagen="img.png",
         cantidad_por_defecto=100,
         calculo=CalculoArticulo(tipo="suma_por_unidad", conceptos=["base"]),
-    )
-    simple = ProductoBien(
-        tipo="bien",
-        id=1001,
-        nombre="Simple",
-        descripcion="",
-        imagen="img.png",
-        atributos_posibles={},
-        variaciones=[variacion],
-        componentes=[],
     )
     servicio_model = ProductoServicio(
         tipo="servicio",

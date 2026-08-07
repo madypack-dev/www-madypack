@@ -3,8 +3,6 @@
 from datetime import date
 from decimal import Decimal
 
-import pytest
-
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.conversor_moneda import ConversorMoneda
 from src.domain.pricing.dinero import Dinero

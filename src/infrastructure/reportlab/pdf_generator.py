@@ -4,18 +4,18 @@ from datetime import timedelta
 from io import BytesIO
 from pathlib import Path
 
+from svglib.svglib import svg2rlg
+
+from reportlab.graphics import renderPDF
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Table, TableStyle
-from reportlab.graphics import renderPDF
-from svglib.svglib import svg2rlg
-
-from src.domain.cotizacion.visual_identity import IdentidadVisual
-from src.domain.cotizacion.quote import LineaPresupuesto, Presupuesto
 from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.quote import LineaPresupuesto, Presupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
 
 
 class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):

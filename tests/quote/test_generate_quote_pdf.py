@@ -1,16 +1,14 @@
 """Tests para el caso de uso GenerarPresupuestoPDF."""
 
-from datetime import date
-from typing import Callable
 
 import pytest
 
 from src.application.cotizacion.generate_quote_pdf import (
     CasoUsoGenerarPresupuestoPDF,
 )
-from src.domain.cotizacion.visual_identity import IdentidadVisual
-from src.domain.cotizacion.quote import DatosSolicitante, LineaPresupuesto
 from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.quote import DatosSolicitante, LineaPresupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
 
 
 class GeneradorPDFFake(IGeneradorDocumentoPresupuesto):

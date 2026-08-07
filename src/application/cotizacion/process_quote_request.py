@@ -1,17 +1,17 @@
 """Caso de uso: procesar una solicitud de presupuesto (con o sin carrito)."""
 
 import uuid
-from datetime import date
 from collections.abc import Callable
+from datetime import date
 
-from src.domain.comercio.cart import Carrito
+from src.application.cotizacion.quote_helpers import ICotizador, construir_lineas_presupuesto
 from src.application.lead.lead_dtos import CrearLeadRequest
+from src.domain.comercio.cart import Carrito
+from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
+from src.domain.cotizacion.quote import DatosSolicitante, Presupuesto
+from src.domain.cotizacion.quote_repository import IQuoteRepository
 from src.domain.lead.lead import Lead
 from src.domain.lead.lead_repository import ILeadRepository
-from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
-from src.domain.cotizacion.quote import Presupuesto, DatosSolicitante
-from src.domain.cotizacion.quote_repository import IQuoteRepository
-from src.application.cotizacion.quote_helpers import construir_lineas_presupuesto, ICotizador
 
 
 class ProcesarSolicitudPresupuesto:
@@ -38,10 +38,11 @@ class ProcesarSolicitudPresupuesto:
         request: CrearLeadRequest,
         carrito: Carrito,
         validez_dias: int = 15,
-        condiciones_comerciales: list[str] = [],
+        condiciones_comerciales: list[str] | None = None,
     ) -> Lead:
+        condiciones = condiciones_comerciales or []
         if carrito.articulos:
-            return await self._procesar_con_carrito(request, carrito, validez_dias, condiciones_comerciales)
+            return await self._procesar_con_carrito(request, carrito, validez_dias, condiciones)
         return await self._procesar_cotizacion_general(request)
 
     async def _procesar_con_carrito(

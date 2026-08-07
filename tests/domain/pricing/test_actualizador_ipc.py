@@ -6,7 +6,6 @@ from decimal import Decimal
 from src.domain.pricing.actualizador_ipc import ActualizadorIPC
 from src.domain.pricing.dinero import Dinero
 from src.domain.pricing.moneda import Moneda
-from src.domain.pricing.proveedor_ipc import IProveedorIPC
 
 
 class _ProveedorIPCFijo:

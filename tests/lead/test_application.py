@@ -1,16 +1,17 @@
-import pytest
-from pydantic import ValidationError
 from unittest.mock import AsyncMock, MagicMock
 
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
-from src.application.lead.lead_dtos import CrearLeadRequest
-from src.domain.lead.lead_repository import ILeadRepository
+import pytest
+from pydantic import ValidationError
+
 from src.application.cotizacion.process_quote_request import (
     ProcesarSolicitudPresupuesto,
 )
+from src.application.cotizacion.quote_helpers import ICotizador
+from src.application.lead.lead_dtos import CrearLeadRequest
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
 from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
 from src.domain.cotizacion.quote_repository import IQuoteRepository
-from src.application.cotizacion.quote_helpers import ICotizador
+from src.domain.lead.lead_repository import ILeadRepository
 
 
 def test_crear_lead_request_telefono_normalization():
@@ -35,7 +36,7 @@ async def test_procesar_solicitud_presupuesto_con_carrito_success():
     repo = AsyncMock(spec=ILeadRepository)
     repo.guardar.return_value = "chatwoot-contact-123"
     registro_fallback = MagicMock(spec=IRegistroFallbackLead)
-    
+
     mock_quote_repo = MagicMock(spec=IQuoteRepository)
     mock_cotizador = MagicMock(spec=ICotizador)
     mock_cotizador.calcular_precio_estimado.return_value = 500.0

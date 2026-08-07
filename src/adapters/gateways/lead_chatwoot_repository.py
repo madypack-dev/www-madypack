@@ -1,10 +1,11 @@
+from src.domain.lead.http_client import IHttpClient
 from src.domain.lead.lead import Lead
 from src.domain.lead.lead_repository import ILeadRepository
-from src.domain.lead.http_client import IHttpClient
+
 
 class ChatwootContactRepository(ILeadRepository):
     """Implementa la comunicación HTTP asíncrona con el backend de Chatwoot."""
-    
+
     def __init__(self, http_client: IHttpClient, base_url: str, account_id: int, api_token: str):
         self.client = http_client
         self.base_url = base_url.rstrip("/")
@@ -20,7 +21,7 @@ class ChatwootContactRepository(ILeadRepository):
             "api_access_token": self.api_token,
             "Content-Type": "application/json"
         }
-        
+
         # 1. Crear contacto
         contact_url = f"{self.base_url}/api/v1/accounts/{self.account_id}/contacts"
         contact_payload = {
@@ -33,16 +34,16 @@ class ChatwootContactRepository(ILeadRepository):
                 "codigo_referencia": lead.codigo_referencia
             }
         }
-        
+
         response = await self.client.post(contact_url, headers=headers, json=contact_payload, timeout=10.0)
         response.raise_for_status()
-        
+
         contact_data = response.json()
         contact_obj = contact_data.get("payload", {}).get("contact", {}) if "payload" in contact_data else contact_data
         contact_id = contact_obj.get("id")
         if not contact_id:
             contact_id = contact_data.get("id")
-            
+
         if not contact_id:
             raise ValueError(f"No se pudo obtener el contact ID de la respuesta de Chatwoot: {contact_data}")
 

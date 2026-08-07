@@ -1,12 +1,12 @@
+import subprocess
+
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
-
-from src.infrastructure.structlog.logger import get_logger
+from src.infrastructure.fastapi.dependencies import get_repositorio_carrito
 from src.infrastructure.pyyaml.loaders import cargar_site
 from src.infrastructure.pyyaml.models import SiteConfig
-from src.infrastructure.fastapi.dependencies import get_repositorio_carrito
+from src.infrastructure.structlog.logger import get_logger
 
-import subprocess
 
 def _get_git_commit() -> str:
     try:

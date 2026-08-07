@@ -1,14 +1,15 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from src.application.comercio.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
     CasoUsoEliminarDelCarrito,
 )
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
-from src.domain.comercio.catalog import VariacionProducto
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
 from src.domain.comercio.cart_repository import IRepositorioCarrito
+from src.domain.comercio.catalog import VariacionProducto
 from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.comercio.product import ComponenteBien, ProductoBien
 

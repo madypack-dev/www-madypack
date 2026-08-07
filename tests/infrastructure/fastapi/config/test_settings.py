@@ -1,6 +1,5 @@
 """Tests para la configuración de Madypack."""
 
-import pytest
 
 from src.infrastructure.config.settings import Settings
 

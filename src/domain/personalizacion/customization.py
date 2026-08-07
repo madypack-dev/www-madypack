@@ -1,6 +1,7 @@
 """Entidades y Value Objects del Bounded Context de Personalización Visual e Impresión."""
 
 from typing import Literal
+
 from pydantic import BaseModel, Field, field_validator
 
 

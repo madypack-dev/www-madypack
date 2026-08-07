@@ -1,10 +1,9 @@
-from typing import Callable
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Protocol
 
 from src.domain.comercio.cart import ArticuloCarrito, Carrito
 from src.domain.comercio.cart_repository import IRepositorioCarrito
-from src.domain.comercio.catalog import VariacionProducto
 from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.comercio.product import ProductoBien
 

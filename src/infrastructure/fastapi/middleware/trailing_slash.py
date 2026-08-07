@@ -1,8 +1,9 @@
 """Middleware para normalizar URLs con trailing slash."""
 
+from starlette.middleware.base import BaseHTTPMiddleware
+
 from fastapi import Request
 from fastapi.responses import RedirectResponse
-from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class TrailingSlashMiddleware(BaseHTTPMiddleware):

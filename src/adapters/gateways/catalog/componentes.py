@@ -5,7 +5,6 @@ from src.domain.comercio.catalog import VariacionProducto
 from src.domain.comercio.manija import FormatoManija
 from src.domain.comercio.product import ProductoBien
 
-
 _FORMATOS_MANIJA_CORDON = [
     FormatoManija(largo_mm=114),
     FormatoManija(largo_mm=152),

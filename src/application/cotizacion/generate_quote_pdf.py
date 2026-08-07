@@ -1,15 +1,15 @@
 """Caso de uso: generar el PDF de presupuesto a partir de líneas precalculadas."""
 
+from collections.abc import Callable
 from datetime import date
-from typing import Callable
 
-from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.domain.cotizacion.quote import (
     DatosSolicitante,
     LineaPresupuesto,
     Presupuesto,
 )
-from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.visual_identity import IdentidadVisual
 
 
 class CasoUsoGenerarPresupuestoPDF:

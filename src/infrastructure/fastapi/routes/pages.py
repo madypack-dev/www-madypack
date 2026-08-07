@@ -1,11 +1,11 @@
 from typing import Any
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
 
-from src.infrastructure.fastapi.routes.base import templates, load_site, logger
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from src.domain.lead.lead import Lead
-from src.infrastructure.fastapi.dependencies import get_chatwoot_repo
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
+from src.infrastructure.fastapi.dependencies import get_chatwoot_repo
+from src.infrastructure.fastapi.routes.base import load_site, logger, templates
 
 router = APIRouter()
 

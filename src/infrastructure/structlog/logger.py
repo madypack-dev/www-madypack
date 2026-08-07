@@ -6,8 +6,8 @@ Replica el formato de Uvicorn para mantener consistencia visual en los logs.
 import logging
 import os
 import sys
-import structlog
 
+import structlog
 from src.infrastructure.config.settings import LOG_LEVEL
 
 
@@ -15,15 +15,15 @@ def formateador_consola_uvicorn(logger, method_name, event_dict):
     """Procesador de renderizado para consola que replica el formato limpio de Uvicorn."""
     level = method_name.upper()
     level_padded = f"{level}:".ljust(10)
-    
+
     event = event_dict.get("event", "")
-    
+
     # Extraer variables de contexto extra
     extras = []
     for k, v in event_dict.items():
         if k not in ("event", "level", "timestamp", "logger", "request_id"):
             extras.append(f"{k}={v}")
-            
+
     context = f" | {' '.join(extras)}" if extras else ""
     return f"{level_padded}{event}{context}"
 

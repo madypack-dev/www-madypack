@@ -5,8 +5,8 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from src.domain.lead.lead import Lead
 from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
+from src.domain.lead.lead import Lead
 
 
 class RegistroFallbackArchivo(IRegistroFallbackLead):

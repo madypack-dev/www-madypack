@@ -1,12 +1,11 @@
-from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.adapters.gateways.catalog.builders import (
     calculo_articulo_para_bolsa,
     construir_sku_bolsa,
 )
 from src.adapters.gateways.catalog.catalog_seed import construir_catalogo
 from src.adapters.gateways.catalog.data import FormatoBolsa
+from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
 from src.domain.comercio.product import ProductoBien, ProductoServicio
-
 
 _FORMATO_EJEMPLO = FormatoBolsa("120819", "12x8x19 cm", "para Farmacia y Joyería")
 

@@ -4,8 +4,31 @@ from datetime import date
 from pathlib import Path
 
 import httpx
-from fastapi import Request, Depends
 
+from fastapi import Depends, Request
+from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
+from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
+from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
+from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
+from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
+from src.adapters.gateways.proveedor_ipc_yaml import ProveedorIPCYaml
+from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
+from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
+from src.adapters.gateways.quote_fallback_repository import RegistroFallbackArchivo
+from src.application.comercio.cart_use_cases import (
+    CasoUsoActualizarCarrito,
+    CasoUsoAgregarAlCarrito,
+    CasoUsoEliminarDelCarrito,
+    CasoUsoObtenerResumenCarrito,
+)
+from src.application.cotizacion.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
+from src.application.cotizacion.pricing_service import CotizadorServicio
+from src.domain.comercio.cart_repository import IRepositorioCarrito
+from src.domain.comercio.catalog_repository import ICatalogRepository
+from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
+from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
+from src.domain.cotizacion.quote_repository import IQuoteRepository
+from src.domain.lead.http_client import IHttpClient
 from src.infrastructure.config.settings import (
     BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
@@ -13,35 +36,9 @@ from src.infrastructure.config.settings import (
     CHATWOOT_URL,
     IPC_DATA_PATH,
 )
-from src.adapters.gateways.lead_chatwoot_repository import ChatwootContactRepository
 from src.infrastructure.httpx.http_client import HttpxClientAdapter
-from src.domain.lead.http_client import IHttpClient
-
-
-from src.domain.comercio.cart_repository import IRepositorioCarrito
-from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.domain.comercio.catalog_repository import ICatalogRepository
-from src.adapters.gateways.catalog.in_memory_catalog_repository import InMemoryCatalogRepository
-from src.infrastructure.structlog.logger import get_logger
-from src.domain.cotizacion.quote_repository import IQuoteRepository
-from src.adapters.gateways.json_quote_repository import JsonQuoteRepository
-
-from src.application.cotizacion.pricing_service import CotizadorServicio
-from src.adapters.gateways.proveedor_tarifas_default import ProveedorTarifasDefault
-from src.adapters.gateways.proveedor_tasa_cambio_default import ProveedorTasaCambioDefault
-from src.adapters.gateways.proveedor_ipc_default import ProveedorIPCDefault
-from src.adapters.gateways.proveedor_ipc_yaml import ProveedorIPCYaml
 from src.infrastructure.reportlab.pdf_generator import GeneradorPresupuestoPDFReportLab
-from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
-from src.adapters.gateways.quote_fallback_repository import RegistroFallbackArchivo
-from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
-from src.application.cotizacion.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
-from src.application.comercio.cart_use_cases import (
-    CasoUsoActualizarCarrito,
-    CasoUsoAgregarAlCarrito,
-    CasoUsoEliminarDelCarrito,
-    CasoUsoObtenerResumenCarrito,
-)
+from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()
 
@@ -171,9 +168,13 @@ def get_quote_repo() -> IQuoteRepository:
 
 def get_caso_uso_personalizacion():
     """Inyecta el caso de uso para generar la personalización de la bolsa y el fotopolímero."""
+    from src.adapters.gateways.personalizacion.generador_fotopolimero_pillow import (
+        GeneradorFotopolimeroPillowAdapter,
+    )
+    from src.adapters.gateways.personalizacion.generador_mockup_svg import (
+        GeneradorMockupBolsaSVGAdapter,
+    )
     from src.application.personalizacion.generate_customization import CasoUsoGenerarPersonalizacion
-    from src.adapters.gateways.personalizacion.generador_fotopolimero_pillow import GeneradorFotopolimeroPillowAdapter
-    from src.adapters.gateways.personalizacion.generador_mockup_svg import GeneradorMockupBolsaSVGAdapter
 
     return CasoUsoGenerarPersonalizacion(
         generador_fotopolimero=GeneradorFotopolimeroPillowAdapter(),

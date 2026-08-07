@@ -1,7 +1,9 @@
 import secrets
 import uuid
 from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
+
 
 class Lead(BaseModel):
     """Entidad de dominio Lead."""

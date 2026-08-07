@@ -2,7 +2,6 @@
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-
 # Conjunto de nombres de campo HTML permitidos en el formulario de cotización.
 # Estos valores deben coincidir con los nombres que espera el endpoint POST
 # /presupuesto/ en src.infrastructure.fastapi.routes.quote. El YAML

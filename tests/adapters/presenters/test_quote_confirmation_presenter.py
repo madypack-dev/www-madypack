@@ -2,11 +2,11 @@ import urllib.parse
 
 import pytest
 
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
-from src.domain.lead.lead import Lead
 from src.adapters.presenters.quote_confirmation_presenter import (
     PresentadorConfirmacionPresupuesto,
 )
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
+from src.domain.lead.lead import Lead
 
 
 class TestPresentadorConfirmacionPresupuesto:

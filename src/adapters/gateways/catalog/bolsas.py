@@ -1,6 +1,5 @@
 """Builders para bolsas de papel simples y sus variaciones."""
 
-from src.domain.comercio.cart import CalculoArticulo
 from src.domain.comercio.catalog import VariacionProducto
 from src.domain.comercio.product import ProductoBien
 
@@ -14,11 +13,11 @@ from .builders import (
 from .data import (
     COLORES_BOLSA,
     FORMATOS_BOLSA,
-    FormatoBolsa,
     ID_INICIAL_PRODUCTO_BOLSA,
     ID_INICIAL_VARIACION,
     IMPRESIONES_BOLSA,
     MANIJAS_BOLSA,
+    FormatoBolsa,
 )
 
 
@@ -79,7 +78,7 @@ def crear_bolsas_base() -> tuple[
     var_id = ID_INICIAL_VARIACION
 
     for formato in FORMATOS_BOLSA:
-        for color, color_name, color_slug in COLORES_BOLSA:
+        for color, _color_name, color_slug in COLORES_BOLSA:
             slug = f"bolsa-de-papel-{color_slug}-{formato.codigo}"
             if formato.codigo == "221030" and color == "Marrón":
                 slug = f"{slug}-base"

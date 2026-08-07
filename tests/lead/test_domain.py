@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from src.domain.lead.lead import Lead
 
 

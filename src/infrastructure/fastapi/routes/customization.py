@@ -1,15 +1,14 @@
 """Rutas de infraestructura FastAPI para la personalización de bolsas y generación de fotopolímeros."""
 
-from fastapi import APIRouter, Depends, Form, File, UploadFile, Request, Response
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
-
-from src.infrastructure.fastapi.routes.base import templates, load_site, logger
-from src.infrastructure.pyyaml.models import SiteConfig
-from src.infrastructure.fastapi.dependencies import get_caso_uso_personalizacion
 from src.application.personalizacion.generate_customization import (
     CasoUsoGenerarPersonalizacion,
     SolicitudPersonalizacionDTO,
 )
+from src.infrastructure.fastapi.dependencies import get_caso_uso_personalizacion
+from src.infrastructure.fastapi.routes.base import load_site, logger, templates
+from src.infrastructure.pyyaml.models import SiteConfig
 
 router = APIRouter(tags=["Customization"])
 

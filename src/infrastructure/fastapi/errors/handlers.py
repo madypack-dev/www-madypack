@@ -5,7 +5,6 @@ from pathlib import Path
 from fastapi import Request
 from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
-
 from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()

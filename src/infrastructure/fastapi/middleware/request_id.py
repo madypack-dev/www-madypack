@@ -2,8 +2,8 @@ import time
 import uuid
 
 import structlog
-from fastapi import Request
 
+from fastapi import Request
 from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()

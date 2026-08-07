@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
 
+
 class CrearLeadRequest(BaseModel):
     """Esquema de validación para los datos enviados desde el formulario."""
     nombre: str
@@ -15,7 +16,7 @@ class CrearLeadRequest(BaseModel):
         clean = "".join(c for c in v if c.isdigit() or c == "+")
         if not clean:
             raise ValueError("El teléfono no contiene dígitos válidos.")
-        
+
         # Formatear a formato internacional E.164 (default Argentina +54)
         if not clean.startswith("+"):
             if clean.startswith("54"):

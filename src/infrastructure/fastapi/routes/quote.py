@@ -3,44 +3,39 @@
 import uuid
 from io import BytesIO
 
-from fastapi import APIRouter, Depends, Request
+from pydantic import ValidationError
 from starlette.datastructures import UploadFile
+
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
-from pydantic import EmailStr, ValidationError
-
-from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.application.comercio.cart_use_cases import CasoUsoObtenerResumenCarrito
-from src.infrastructure.pyyaml.models import SiteConfig
-
-from src.infrastructure.estaticos import resolver_archivo_estatico
-from src.infrastructure.structlog.logger import get_logger
-from src.infrastructure.fastapi.routes.base import load_site, templates
-from src.application.lead.lead_dtos import CrearLeadRequest
-from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
-
-from src.domain.lead.lead import Lead
-from src.application.cotizacion.pricing_service import CotizadorServicio
+from src.adapters.presenters.commerce_presentation_helper import (
+    formatear_precio,
+    formatear_unidades,
+)
 from src.adapters.presenters.quote_confirmation_presenter import PresentadorConfirmacionPresupuesto
+from src.application.comercio.cart_use_cases import CasoUsoObtenerResumenCarrito
 from src.application.cotizacion.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
-
+from src.application.cotizacion.pricing_service import CotizadorServicio
 from src.application.cotizacion.process_quote_request import ProcesarSolicitudPresupuesto
-
-from src.application.cotizacion.quote_helpers import construir_lineas_presupuesto
-from src.domain.cotizacion.visual_identity import IdentidadVisual
-from src.domain.cotizacion.quote import DatosSolicitante
-from src.domain.cotizacion.quote_repository import IQuoteRepository
-
+from src.application.lead.lead_dtos import CrearLeadRequest
 from src.domain.comercio.cart_repository import IRepositorioCarrito
+from src.domain.cotizacion.quote_repository import IQuoteRepository
+from src.domain.cotizacion.visual_identity import IdentidadVisual
+from src.domain.lead.lead import Lead
 from src.infrastructure.config.settings import CHATWOOT_INBOX_ID
+from src.infrastructure.estaticos import resolver_archivo_estatico
 from src.infrastructure.fastapi.dependencies import (
+    get_caso_uso_generar_pdf,
+    get_caso_uso_obtener_resumen_carrito,
     get_chatwoot_repo,
     get_cotizador,
-    get_registro_fallback,
-    get_caso_uso_generar_pdf,
     get_quote_repo,
-    get_caso_uso_obtener_resumen_carrito,
+    get_registro_fallback,
     get_repositorio_carrito,
 )
+from src.infrastructure.fastapi.routes.base import load_site, templates
+from src.infrastructure.pyyaml.models import SiteConfig
+from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()
 

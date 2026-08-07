@@ -1,18 +1,17 @@
 """Servicio de aplicación que calcula precios estimados en valor presente."""
 
+from collections.abc import Callable
 from datetime import date
-from typing import Callable
 
+from src.domain.comercio.cart import ArticuloCarrito
+from src.domain.comercio.catalog_repository import ICatalogRepository
+from src.domain.comercio.product import ComponenteBien, ProductoBien
 from src.domain.pricing.actualizador_ipc import ActualizadorIPC
 from src.domain.pricing.calculator import CalculadorPrecio
 from src.domain.pricing.conversor_moneda import ConversorMoneda
 from src.domain.pricing.proveedor_ipc import IProveedorIPC
 from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
 from src.domain.pricing.proveedor_tasa_cambio import IProveedorTasaCambio
-
-from src.domain.comercio.cart import ArticuloCarrito
-from src.domain.comercio.catalog_repository import ICatalogRepository
-from src.domain.comercio.product import ProductoBien
 
 
 class CotizadorServicio:
@@ -92,7 +91,7 @@ class CotizadorServicio:
         return total
 
     def _calcular_componente(
-        self, componente, cantidad: int, conceptos_ars: dict[str, float]
+        self, componente: ComponenteBien, cantidad: int, conceptos_ars: dict[str, float]
     ) -> float:
         if componente.medidas is not None:
             kg_necesarios = (
@@ -102,7 +101,7 @@ class CotizadorServicio:
                 * cantidad
                 * componente.cantidad
             )
-            return kg_necesarios * conceptos_ars.get("bobina_kg", 0.0)
+            return float(kg_necesarios * conceptos_ars.get("bobina_kg", 0.0))
 
         if self.catalogo is None:
             raise ValueError("Se requiere un catálogo para resolver componentes.")

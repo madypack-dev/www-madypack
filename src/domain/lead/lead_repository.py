@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from src.domain.lead.lead import Lead
 
 

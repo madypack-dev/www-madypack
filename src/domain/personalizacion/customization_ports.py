@@ -1,6 +1,7 @@
 """Puertos de servicio para el Bounded Context de Personalización."""
 
 from abc import ABC, abstractmethod
+
 from src.domain.personalizacion.customization import PersonalizacionBolsa
 
 

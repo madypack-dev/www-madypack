@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 
 class IHttpResponse(ABC):
@@ -29,7 +29,7 @@ class IHttpClient(ABC):
     async def post(
         self,
         url: str,
-        headers: Dict[str, str] | None = None,
+        headers: dict[str, str] | None = None,
         json: Any = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
@@ -40,7 +40,7 @@ class IHttpClient(ABC):
     async def head(
         self,
         url: str,
-        headers: Dict[str, str] | None = None,
+        headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
         """Realiza una petición HEAD asíncrona."""

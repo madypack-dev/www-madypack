@@ -1,7 +1,9 @@
 import json
 from unittest.mock import MagicMock
+
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
+
 
 def test_repositorio_carrito_cookie_vacio():
     cookies = {}
@@ -53,10 +55,10 @@ def test_repositorio_carrito_cookie_guardar():
     carrito = Carrito()
     art = ArticuloCarrito(id=1, nombre="Bolsa A", descripcion="A", cantidad=100, imagen="img.png")
     carrito.agregar_articulo(art)
-    
+
     repo.guardar_carrito(carrito)
     serialized = repo.carrito_serializado
     assert serialized is not None
-    
+
     datos = json.loads(serialized)
     assert len(datos["articulos"]) == 1

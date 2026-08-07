@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
+
 from src.domain.cotizacion.quote import Presupuesto
 from src.domain.cotizacion.quote_repository import IQuoteRepository
+
 
 class JsonQuoteRepository(IQuoteRepository):
     """Implementación de IQuoteRepository para guardar presupuestos en formato JSON de manera local."""

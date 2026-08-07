@@ -2,15 +2,17 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
-
-from src.infrastructure.config.settings import CHATWOOT_URL
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from src.domain.comercio.catalog_repository import ICatalogRepository
-from src.infrastructure.fastapi.dependencies import get_http_client_adapter, get_repositorio_catalogo
-from src.infrastructure.estaticos import resolver_archivo_estatico
-from src.infrastructure.structlog.logger import get_logger
 from src.domain.lead.http_client import IHttpClient
+from src.infrastructure.config.settings import CHATWOOT_URL
+from src.infrastructure.estaticos import resolver_archivo_estatico
+from src.infrastructure.fastapi.dependencies import (
+    get_http_client_adapter,
+    get_repositorio_catalogo,
+)
+from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()
 router = APIRouter()

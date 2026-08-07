@@ -1,7 +1,7 @@
 """Caso de uso de aplicación para procesar la personalización de bolsa (Fotopolímero + Mockup)."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from src.domain.personalizacion.customization import (
     EspecificacionBolsa,

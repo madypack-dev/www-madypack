@@ -1,9 +1,9 @@
 """Value object de moneda soportada por el cotizador."""
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Moneda(str, Enum):
+class Moneda(StrEnum):
     """Monedas reconocidas para referenciar costos."""
 
     ARS = "ARS"

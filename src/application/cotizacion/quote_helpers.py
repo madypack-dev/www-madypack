@@ -1,8 +1,9 @@
 """Helpers de aplicación para el bounded context de presupuesto."""
 
-from typing import Callable, Protocol
+from collections.abc import Callable
+from typing import Protocol
 
-from src.domain.comercio.cart import Carrito, ArticuloCarrito
+from src.domain.comercio.cart import ArticuloCarrito, Carrito
 from src.domain.cotizacion.quote import LineaPresupuesto
 
 

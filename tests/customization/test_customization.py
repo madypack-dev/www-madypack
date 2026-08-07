@@ -1,27 +1,23 @@
 """Tests unitarios e integrados para el Bounded Context de Personalización Visual y Fotopolímero."""
 
-import pytest
 from io import BytesIO
-from PIL import Image
-from fastapi.testclient import TestClient
 
-from src.infrastructure.fastapi.app import app
-from src.domain.personalizacion.customization import (
-    EspecificacionBolsa,
-    ImagenDiseno,
-    PersonalizacionBolsa,
-)
+import pytest
+from fastapi.testclient import TestClient
+from PIL import Image
+
 from src.adapters.gateways.personalizacion.generador_fotopolimero_pillow import (
     GeneradorFotopolimeroPillowAdapter,
 )
 from src.adapters.gateways.personalizacion.generador_mockup_svg import (
     GeneradorMockupBolsaSVGAdapter,
 )
-from src.application.personalizacion.generate_customization import (
-    CasoUsoGenerarPersonalizacion,
-    SolicitudPersonalizacionDTO,
+from src.domain.personalizacion.customization import (
+    EspecificacionBolsa,
+    ImagenDiseno,
+    PersonalizacionBolsa,
 )
-
+from src.infrastructure.fastapi.app import app
 
 client = TestClient(app)
 

@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Request, Form, HTTPException, Depends
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-
-from src.infrastructure.fastapi.routes.base import templates, logger
-from src.infrastructure.pyyaml.loaders import cargar_site
-from src.domain.comercio.cart_repository import IRepositorioCarrito
-from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.adapters.gateways.commerce_cookie_repository import RepositorioCarritoCookie
+from src.adapters.presenters.commerce_presentation_helper import (
+    formatear_precio,
+    formatear_unidades,
+)
 from src.application.comercio.cart_use_cases import (
     CasoUsoActualizarCarrito,
     CasoUsoAgregarAlCarrito,
@@ -13,18 +12,20 @@ from src.application.comercio.cart_use_cases import (
     CasoUsoObtenerResumenCarrito,
 )
 from src.application.cotizacion.pricing_service import CotizadorServicio
-from src.adapters.presenters.commerce_presentation_helper import formatear_precio, formatear_unidades
+from src.domain.comercio.cart_repository import IRepositorioCarrito
+from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.comercio.product import ProductoBien, ProductoServicio
 from src.infrastructure.fastapi.dependencies import (
-    get_repositorio_carrito,
-    get_repositorio_catalogo,
-    get_cotizador,
+    get_caso_uso_actualizar_carrito,
     get_caso_uso_agregar_carrito,
     get_caso_uso_eliminar_carrito,
-    get_caso_uso_actualizar_carrito,
     get_caso_uso_obtener_resumen_carrito,
+    get_cotizador,
+    get_repositorio_carrito,
+    get_repositorio_catalogo,
 )
-
+from src.infrastructure.fastapi.routes.base import logger, templates
+from src.infrastructure.pyyaml.loaders import cargar_site
 
 router = APIRouter()
 
