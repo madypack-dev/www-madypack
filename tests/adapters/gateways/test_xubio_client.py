@@ -1,10 +1,10 @@
-import os
-import pytest
 import httpx
+import pytest
 
 from src.adapters.gateways.xubio_client import XubioErpGateway
 from src.domain.erp.entities import EmpresaERP, EstadoConexionERP
 from src.infrastructure.config import settings
+from src.infrastructure.httpx.http_client import HttpxClientAdapter
 
 
 @pytest.mark.asyncio
@@ -29,11 +29,12 @@ async def test_xubio_gateway_mock_token_y_miempresa():
 
     mock_transport = httpx.MockTransport(mock_handler)
     async with httpx.AsyncClient(transport=mock_transport) as client:
+        http_adapter = HttpxClientAdapter(client)
         gateway = XubioErpGateway(
+            client=http_adapter,
             client_id="test_client",
             secret_id="test_secret",
             base_url="https://xubio.com/API/1.1",
-            client=client,
         )
 
         empresa = await gateway.obtener_datos_empresa()
@@ -51,11 +52,12 @@ async def test_xubio_gateway_mock_error_token():
 
     mock_transport = httpx.MockTransport(mock_handler)
     async with httpx.AsyncClient(transport=mock_transport) as client:
+        http_adapter = HttpxClientAdapter(client)
         gateway = XubioErpGateway(
+            client=http_adapter,
             client_id="bad_client",
             secret_id="bad_secret",
             base_url="https://xubio.com/API/1.1",
-            client=client,
         )
 
         estado = await gateway.verificar_conexion()
@@ -77,16 +79,18 @@ async def test_xubio_conexion_real_produccion():
     if not client_id or not secret_id:
         pytest.skip("No hay credenciales de Xubio configuradas en el entorno")
 
-    gateway = XubioErpGateway(client_id=client_id, secret_id=secret_id)
+    async with httpx.AsyncClient() as client:
+        http_adapter = HttpxClientAdapter(client)
+        gateway = XubioErpGateway(client=http_adapter, client_id=client_id, secret_id=secret_id)
 
-    estado = await gateway.verificar_conexion()
-    print("\n[Xubio Real Test] Estado de Conexión:", estado)
+        estado = await gateway.verificar_conexion()
+        print("\n[Xubio Real Test] Estado de Conexión:", estado)
 
-    assert estado.activo is True, f"Fallo al conectar con Xubio real: {estado.mensaje}"
-    assert estado.proveedor == "Xubio"
+        assert estado.activo is True, f"Fallo al conectar con Xubio real: {estado.mensaje}"
+        assert estado.proveedor == "Xubio"
 
-    empresa = await gateway.obtener_datos_empresa()
-    print("[Xubio Real Test] Datos de Empresa obtenidos:", empresa)
+        empresa = await gateway.obtener_datos_empresa()
+        print("[Xubio Real Test] Datos de Empresa obtenidos:", empresa)
 
-    assert empresa.id is not None
-    assert len(empresa.nombre) > 0
+        assert empresa.id is not None
+        assert len(empresa.nombre) > 0

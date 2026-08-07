@@ -1,6 +1,5 @@
 """Tests para la configuración de Madypack."""
 
-
 from src.infrastructure.config.settings import Settings
 
 

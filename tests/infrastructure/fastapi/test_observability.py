@@ -11,15 +11,20 @@ from src.infrastructure.fastapi.dependencies import get_http_client_adapter
 def client():
     return TestClient(app)
 
+
 def test_request_id_middleware(client):
     response = client.get("/robots.txt", headers={"host": "localhost:8000"})
     assert response.status_code == 200
     assert "X-Request-ID" in response.headers
 
+
 def test_chrome_devtools_silent_route(client):
-    response = client.get("/.well-known/appspecific/com.chrome.devtools.json", headers={"host": "localhost:8000"})
+    response = client.get(
+        "/.well-known/appspecific/com.chrome.devtools.json", headers={"host": "localhost:8000"}
+    )
     assert response.status_code == 200
     assert response.json() == {}
+
 
 def test_health_check_endpoint(client):
     mock_client = AsyncMock()

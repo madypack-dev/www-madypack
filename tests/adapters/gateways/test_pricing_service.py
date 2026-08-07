@@ -270,7 +270,9 @@ def test_cotizador_servicio_usa_solapa_configurable():
 def test_cotizador_servicio_concepto_usd_se_convierte_a_ars():
     tasa = TasaCambio(fecha=date(2024, 6, 1), ars_por_usd=1000.0, fuente="BNA")
     tarifas = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
+        "base": ConceptoTarifa(
+            nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)
+        ),
     }
     servicio = _cotizador_default(
         proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
@@ -294,7 +296,9 @@ def test_cotizador_servicio_concepto_usd_se_convierte_a_ars():
 def test_cotizador_servicio_sin_proveedor_tasa_asume_paridad_para_usd():
     """Sin proveedor de tasa explícito, se usa la tasa default (paridad 1:1)."""
     tarifas = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
+        "base": ConceptoTarifa(
+            nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)
+        ),
     }
     servicio = _cotizador_default(
         proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
@@ -316,7 +320,9 @@ def test_cotizador_servicio_sin_proveedor_tasa_asume_paridad_para_usd():
 def test_cotizador_servicio_actualiza_concepto_ars_por_ipc():
     """Una tarifa ARS de fecha anterior con IPC acumulado se actualiza a valor presente."""
     tarifas = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.ARS, fecha=date(2024, 1, 1)),
+        "base": ConceptoTarifa(
+            nombre="base", monto=0.10, moneda=Moneda.ARS, fecha=date(2024, 1, 1)
+        ),
     }
     servicio = _cotizador_default(
         proveedor_tarifas=_ProveedorTarifasFijo(tarifas),
@@ -341,7 +347,9 @@ def test_cotizador_servicio_actualiza_concepto_ars_por_ipc():
 def test_cotizador_servicio_no_actualiza_usd_por_ipc():
     """Los conceptos en USD se convierten al tipo de cambio y no se reescalan por IPC."""
     tarifas = {
-        "base": ConceptoTarifa(nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)),
+        "base": ConceptoTarifa(
+            nombre="base", monto=0.10, moneda=Moneda.USD, fecha=date(2024, 1, 1)
+        ),
     }
     tasa = TasaCambio(fecha=date(2024, 6, 1), ars_por_usd=1000.0, fuente="BNA")
     servicio = _cotizador_default(

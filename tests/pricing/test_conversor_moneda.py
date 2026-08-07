@@ -17,7 +17,11 @@ class TestConversorMoneda:
         conversor = ConversorMoneda(tasa)
 
         resultado = conversor.convertir_conceptos(
-            {"base": ConceptoTarifa(nombre="base", monto=0.15, moneda=Moneda.ARS, fecha=fecha_tarifa)}
+            {
+                "base": ConceptoTarifa(
+                    nombre="base", monto=0.15, moneda=Moneda.ARS, fecha=fecha_tarifa
+                )
+            }
         )
 
         assert resultado["base"] == Dinero(

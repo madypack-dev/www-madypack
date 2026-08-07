@@ -85,6 +85,7 @@ class TestPresupuestoEndpoints:
 
         # Extraer el código de referencia generado de la URL del PDF
         import re
+
         match = re.search(r'/presupuesto/descargar/\?ref=([^"]+)', post_response.text)
         assert match is not None
         ref_code = match.group(1)
@@ -145,4 +146,3 @@ class TestPresupuestoEndpoints:
         )
         assert response.status_code == 303
         assert "/cotizacion/?error=datos_invalidos" in response.headers["location"]
-

@@ -26,6 +26,38 @@ def inspect_dependencies(domain_path: Path) -> list[str]:
     return violations
 
 
-@then(parsers.parse('no debe detectarse ninguna importación proveniente de "{item1}", "{item2}" ni "{item3}"'))
+@then(
+    parsers.parse(
+        'no debe detectarse ninguna importación proveniente de "{item1}", "{item2}" ni "{item3}"'
+    )
+)
 def verify_no_forbidden_imports(violations: list[str], item1: str, item2: str, item3: str) -> None:
     assert len(violations) == 0, f"Se detectaron violaciones en el dominio: {violations}"
+
+
+def test_no_relative_imports_in_src():
+    """Garantiza que no existan importaciones relativas (from .import ...) en src/."""
+    src_dir = Path.cwd() / "src"
+    relative_import_violations = []
+    for py_file in src_dir.rglob("*.py"):
+        violations = check_file(py_file, ())
+        for v in violations:
+            if "Prohibida importación relativa" in v:
+                relative_import_violations.append(v)
+
+    assert len(relative_import_violations) == 0, (
+        f"Se encontraron importaciones relativas en src/: {relative_import_violations}"
+    )
+
+
+def test_empty_init_py_files_in_src():
+    """Garantiza que todos los archivos __init__.py en src/ estén 100% vacíos (0 bytes)."""
+    src_dir = Path.cwd() / "src"
+    non_empty_inits = []
+    for py_file in src_dir.rglob("__init__.py"):
+        if py_file.stat().st_size > 0:
+            non_empty_inits.append(str(py_file.relative_to(Path.cwd())))
+
+    assert len(non_empty_inits) == 0, (
+        f"Se encontraron archivos __init__.py no vacíos en src/: {non_empty_inits}"
+    )

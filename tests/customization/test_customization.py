@@ -73,7 +73,9 @@ class TestCustomizationAdapters:
         assert "data:image/png;base64," in svg
 
     def test_generador_mockup_svg(self):
-        esp = EspecificacionBolsa(ancho_cm=20.0, alto_cm=30.0, fuelle_cm=10.0, tipo_manija="manija_plana")
+        esp = EspecificacionBolsa(
+            ancho_cm=20.0, alto_cm=30.0, fuelle_cm=10.0, tipo_manija="manija_plana"
+        )
         diseno = ImagenDiseno(contenido_bytes=_crear_imagen_test_bytes(), mime_type="image/png")
         pers = PersonalizacionBolsa(especificacion=esp, diseno=diseno)
 

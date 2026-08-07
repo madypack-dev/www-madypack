@@ -49,9 +49,7 @@ class TestValidacionCamposQuoteForm:
                 required_abbreviation="req",
                 details=[],
                 fields=[
-                    QuoteFormFieldConfig(
-                        name="telefono", label="Tel", type="tel", required=True
-                    )
+                    QuoteFormFieldConfig(name="telefono", label="Tel", type="tel", required=True)
                 ],
             )
         assert "telefono" in str(exc_info.value)
@@ -70,18 +68,10 @@ class TestValidacionCamposQuoteForm:
             required_abbreviation="req",
             details=[],
             fields=[
-                QuoteFormFieldConfig(
-                    name="name", label="Nombre", type="text", required=True
-                ),
-                QuoteFormFieldConfig(
-                    name="company", label="Empresa", type="text", required=True
-                ),
-                QuoteFormFieldConfig(
-                    name="email", label="Email", type="email", required=True
-                ),
-                QuoteFormFieldConfig(
-                    name="phone", label="Tel", type="tel", required=True
-                ),
+                QuoteFormFieldConfig(name="name", label="Nombre", type="text", required=True),
+                QuoteFormFieldConfig(name="company", label="Empresa", type="text", required=True),
+                QuoteFormFieldConfig(name="email", label="Email", type="email", required=True),
+                QuoteFormFieldConfig(name="phone", label="Tel", type="tel", required=True),
                 QuoteFormFieldConfig(
                     name="message",
                     label="Mensaje",

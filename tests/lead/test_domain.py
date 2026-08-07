@@ -11,7 +11,7 @@ def test_crear_lead_entidad():
         telefono="+5491125794649",
         email="john@example.com",
         fecha=fecha_fija,
-        sufijo="ABCD"
+        sufijo="ABCD",
     )
     assert lead.nombre == "John Doe"
     assert lead.empresa == "Company Inc"
@@ -29,7 +29,7 @@ def test_crear_cotizacion_general():
         telefono="+5491125794649",
         email="jane@example.com",
         fecha=fecha_fija,
-        sufijo="EFGH"
+        sufijo="EFGH",
     )
     assert lead.codigo_referencia == "COT-GEN-20260710-EFGH"
 
@@ -42,7 +42,7 @@ def test_crear_contacto():
         telefono="+5491125794649",
         email="john@example.com",
         fecha=fecha_fija,
-        sufijo="IJKL"
+        sufijo="IJKL",
     )
     assert lead.codigo_referencia == "CON-20260710-IJKL"
 
@@ -53,7 +53,6 @@ def test_crear_emergencia():
         empresa="Company Inc",
         telefono="+5491125794649",
         email="john@example.com",
-        sufijo="MNOP"
+        sufijo="MNOP",
     )
     assert lead.codigo_referencia == "COT-ERR-MNOP"
-

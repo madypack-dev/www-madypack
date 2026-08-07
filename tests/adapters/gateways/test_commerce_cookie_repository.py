@@ -11,6 +11,7 @@ def test_repositorio_carrito_cookie_vacio():
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 0
 
+
 def test_repositorio_carrito_cookie_lista():
     datos = [
         {"id": 1, "nombre": "Bolsa A", "descripcion": "Desc A", "cantidad": 200, "imagen": "a.png"}
@@ -22,10 +23,17 @@ def test_repositorio_carrito_cookie_lista():
     assert carrito.articulos[0].id == 1
     assert carrito.articulos[0].cantidad == 200
 
+
 def test_repositorio_carrito_cookie_diccionario():
     datos = {
         "articulos": [
-            {"id": 2, "nombre": "Bolsa B", "descripcion": "Desc B", "cantidad": 300, "imagen": "b.png"}
+            {
+                "id": 2,
+                "nombre": "Bolsa B",
+                "descripcion": "Desc B",
+                "cantidad": 300,
+                "imagen": "b.png",
+            }
         ]
     }
     cookies = {"articulos_carrito": json.dumps(datos)}
@@ -35,6 +43,7 @@ def test_repositorio_carrito_cookie_diccionario():
     assert carrito.articulos[0].id == 2
     assert carrito.articulos[0].cantidad == 300
 
+
 def test_repositorio_carrito_cookie_invalido():
     cookies = {"articulos_carrito": "invalid-json"}
     registrar_error = MagicMock()
@@ -43,11 +52,13 @@ def test_repositorio_carrito_cookie_invalido():
     assert len(carrito.articulos) == 0
     registrar_error.assert_called_once()
 
+
 def test_repositorio_carrito_cookie_otro_tipo():
     cookies = {"articulos_carrito": json.dumps("no-es-lista-ni-dicc")}
     repo = RepositorioCarritoCookie(cookies)
     carrito = repo.obtener_carrito()
     assert len(carrito.articulos) == 0
+
 
 def test_repositorio_carrito_cookie_guardar():
     cookies = {}

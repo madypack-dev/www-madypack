@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from src.infrastructure.fastapi.app_integracion_erp import app_erp

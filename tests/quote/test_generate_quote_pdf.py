@@ -1,6 +1,5 @@
 """Tests para el caso de uso GenerarPresupuestoPDF."""
 
-
 import pytest
 
 from src.application.cotizacion.generate_quote_pdf import (
@@ -75,6 +74,7 @@ class TestCasoUsoGenerarPresupuestoPDF:
         assert generador.ultimo_presupuesto.total_estimado == 2250.0
         assert len(generador.ultimo_presupuesto.lineas) == 2
         assert generador.ultimo_presupuesto.datos_solicitante.email == "juan@example.com"
+        assert generador.ultima_identidad is not None
         assert generador.ultima_identidad.brand == "Madypack"
 
     def test_lanza_error_si_lineas_esta_vacio(self):

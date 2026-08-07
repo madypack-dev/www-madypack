@@ -8,6 +8,7 @@ from src.infrastructure.fastapi.app import app
 def client():
     return TestClient(app)
 
+
 class TestPaginasEndpoints:
     def test_get_root(self, client):
         response = client.get("/", headers={"host": "localhost:8000"})
@@ -18,7 +19,7 @@ class TestPaginasEndpoints:
             "/",
             data={"email": "newsletter@example.com"},
             headers={"host": "localhost:8000"},
-            follow_redirects=False
+            follow_redirects=False,
         )
         assert response.status_code == 303
         assert response.headers["location"] == "/?success=newsletter"
@@ -28,7 +29,7 @@ class TestPaginasEndpoints:
             "/",
             data={"phone": "123456789", "email": "quote@example.com"},
             headers={"host": "localhost:8000"},
-            follow_redirects=False
+            follow_redirects=False,
         )
         assert response.status_code == 303
         assert response.headers["location"] == "/?success=quote"
@@ -55,14 +56,16 @@ class TestPaginasEndpoints:
         # Verificar contenido general
         assert "Catálogo de" in response.text
         # Verificar marcado estructurado JSON-LD
-        assert 'application/ld+json' in response.text
+        assert "application/ld+json" in response.text
         assert '"@type": "ItemList"' in response.text
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
         assert '"image":' in response.text
 
     def test_get_tienda_redirects_to_productos(self, client):
-        response = client.get("/tienda/", headers={"host": "localhost:8000"}, follow_redirects=False)
+        response = client.get(
+            "/tienda/", headers={"host": "localhost:8000"}, follow_redirects=False
+        )
         assert response.status_code == 301
         assert response.headers["location"] == "/productos/"
 

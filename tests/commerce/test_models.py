@@ -20,11 +20,7 @@ def test_calculo_articulo():
 
 def test_articulo_carrito_valido():
     articulo = ArticuloCarrito(
-        id=1,
-        nombre="Bolsa",
-        descripcion="Bolsa de papel",
-        cantidad=100,
-        imagen="imagen.png"
+        id=1, nombre="Bolsa", descripcion="Bolsa de papel", cantidad=100, imagen="imagen.png"
     )
     assert articulo.id == 1
     assert articulo.cantidad == 100
@@ -33,11 +29,7 @@ def test_articulo_carrito_valido():
 def test_articulo_carrito_cantidad_invalida_no_multiplo():
     with pytest.raises(ValidationError) as exc_info:
         ArticuloCarrito(
-            id=1,
-            nombre="Bolsa",
-            descripcion="Bolsa de papel",
-            cantidad=150,
-            imagen="imagen.png"
+            id=1, nombre="Bolsa", descripcion="Bolsa de papel", cantidad=150, imagen="imagen.png"
         )
     assert "La cantidad debe ser múltiplo de 100." in str(exc_info.value)
 
@@ -45,11 +37,7 @@ def test_articulo_carrito_cantidad_invalida_no_multiplo():
 def test_articulo_carrito_cantidad_invalida_menor_que_100():
     with pytest.raises(ValidationError):
         ArticuloCarrito(
-            id=1,
-            nombre="Bolsa",
-            descripcion="Bolsa de papel",
-            cantidad=50,
-            imagen="imagen.png"
+            id=1, nombre="Bolsa", descripcion="Bolsa de papel", cantidad=50, imagen="imagen.png"
         )
 
 

@@ -21,7 +21,9 @@ class TestPresentadorConfirmacionPresupuesto:
         lead.id = "chatwoot-contact-123"
         carrito = Carrito()
         carrito.agregar_articulo(
-            ArticuloCarrito(id=1, nombre="Bolsa", descripcion="Desc", cantidad=100, imagen="img.png")
+            ArticuloCarrito(
+                id=1, nombre="Bolsa", descripcion="Desc", cantidad=100, imagen="img.png"
+            )
         )
 
         response = presentador.presentar(lead, carrito)

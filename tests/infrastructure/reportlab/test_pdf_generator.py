@@ -59,9 +59,7 @@ class TestGeneradorPresupuestoPDFReportLab:
         presupuesto = Presupuesto(
             fecha_emision=date.today(),
             validez_dias=10,
-            datos_solicitante=DatosSolicitante(
-                email="a@example.com", telefono="5491112345678"
-            ),
+            datos_solicitante=DatosSolicitante(email="a@example.com", telefono="5491112345678"),
             lineas=[
                 LineaPresupuesto(
                     id_articulo=2,

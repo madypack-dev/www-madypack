@@ -14,10 +14,7 @@ async def test_chatwoot_contact_repository_guardar_success():
 
     mock_response1 = MagicMock(spec=httpx.Response)
     mock_response1.status_code = 201
-    mock_response1.json.return_value = {
-        "id": 12345,
-        "name": "John Doe"
-    }
+    mock_response1.json.return_value = {"id": 12345, "name": "John Doe"}
 
     mock_response2 = MagicMock(spec=httpx.Response)
     mock_response2.status_code = 200
@@ -28,10 +25,7 @@ async def test_chatwoot_contact_repository_guardar_success():
     http_client = HttpxClientAdapter(client)
 
     repo = ChatwootContactRepository(
-        http_client=http_client,
-        base_url="https://chatwoot.com",
-        account_id=1,
-        api_token="token"
+        http_client=http_client, base_url="https://chatwoot.com", account_id=1, api_token="token"
     )
 
     lead = Lead(
@@ -39,10 +33,9 @@ async def test_chatwoot_contact_repository_guardar_success():
         nombre="John Doe",
         empresa="Company",
         telefono="+549",
-        email="john@example.com"
+        email="john@example.com",
     )
 
     lead_id = await repo.guardar(lead, inbox_id=9)
     assert lead_id == "12345"
     assert client.post.call_count == 2
-

@@ -28,7 +28,9 @@ class TestTrailingSlashMiddleware:
         assert response.headers["location"] == "/quienes-somos/"
 
     def test_preserves_query_parameters_on_redirect(self, client):
-        response = client.get("/productos?success=1&cat=industrial", headers={"host": "localhost:8000"})
+        response = client.get(
+            "/productos?success=1&cat=industrial", headers={"host": "localhost:8000"}
+        )
         assert response.status_code == 301
         assert response.headers["location"] == "/productos/?success=1&cat=industrial"
 

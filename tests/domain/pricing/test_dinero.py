@@ -12,7 +12,9 @@ from src.domain.pricing.moneda import Moneda
 
 class TestDinero:
     def test_crea_dinero_ars(self):
-        dinero = Dinero(monto=Decimal("150.50"), moneda=Moneda.ARS, fecha_referencia=date(2024, 1, 1))
+        dinero = Dinero(
+            monto=Decimal("150.50"), moneda=Moneda.ARS, fecha_referencia=date(2024, 1, 1)
+        )
 
         assert dinero.monto == Decimal("150.50")
         assert dinero.moneda == Moneda.ARS

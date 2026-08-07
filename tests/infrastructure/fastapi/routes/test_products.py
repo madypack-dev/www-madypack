@@ -14,7 +14,9 @@ def client():
 class TestProductosEndpoints:
     def test_get_producto_visible_retorna_200_con_schema(self, client):
         # Producto visible: compuesto Bolsa 22x10x30 cm Marrón sin Manija Lisa 100g
-        response = client.get("/productos/bolsa-de-papel-marron-221030/", headers={"host": "localhost:8000"})
+        response = client.get(
+            "/productos/bolsa-de-papel-marron-221030/", headers={"host": "localhost:8000"}
+        )
         assert response.status_code == 200
 
         # Verificar que se renderiza la información del producto
@@ -27,16 +29,20 @@ class TestProductosEndpoints:
         assert "Productos" in response.text
 
         # Verificar marcado estructurado de tipo Product
-        assert 'application/ld+json' in response.text
+        assert "application/ld+json" in response.text
         assert '"@type": "Product"' in response.text
         assert '"name":' in response.text
 
     def test_get_variante_simple_no_visible_retorna_404(self, client):
-        response = client.get("/productos/bolsa-de-papel-marron-221030-base/", headers={"host": "localhost:8000"})
+        response = client.get(
+            "/productos/bolsa-de-papel-marron-221030-base/", headers={"host": "localhost:8000"}
+        )
         assert response.status_code == 404
 
     def test_get_servicio_visible_retorna_200(self, client):
-        response = client.get("/productos/confeccion-de-bolsas/", headers={"host": "localhost:8000"})
+        response = client.get(
+            "/productos/confeccion-de-bolsas/", headers={"host": "localhost:8000"}
+        )
         assert response.status_code == 200
         assert "Confección de Bolsas de Papel" in response.text
 
@@ -113,7 +119,10 @@ class TestProductosEndpoints:
         assert "application/xml" in response.headers["content-type"]
 
         # Debe contener URLs de productos/servicios visibles
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030/</loc>" in response.text
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030/</loc>"
+            in response.text
+        )
         assert "<loc>http://localhost:8000/productos/bobina-de-papel/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/fotopolimero/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/impresion/</loc>" in response.text
@@ -121,16 +130,43 @@ class TestProductosEndpoints:
         assert "<loc>http://localhost:8000/productos/manija-cordon/</loc>" not in response.text
         assert "<loc>http://localhost:8000/productos/pegado-de-manijas/</loc>" in response.text
         assert "<loc>http://localhost:8000/productos/corte-de-bobinas/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/confeccion-de-cuerdas-de-papel-retorcidas/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon/</loc>" in response.text
-        assert "<loc>http://localhost:8000/productos/cuerdas-de-papel-retorcidas/</loc>" in response.text
+        assert (
+            "<loc>http://localhost:8000/productos/confeccion-de-cuerdas-de-papel-retorcidas/</loc>"
+            in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-221030-base-con-manija-cordon/</loc>"
+            in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base/</loc>"
+            in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-221030-base-con-manija-cordon/</loc>"
+            in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/cuerdas-de-papel-retorcidas/</loc>"
+            in response.text
+        )
         # No debe contener productos no visibles
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>" not in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819-con-manija-cordon/</loc>" not in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819/</loc>" not in response.text
-        assert "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819-con-manija-cordon/</loc>" not in response.text
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-blanco-221030/</loc>"
+            not in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-marron-120819-con-manija-cordon/</loc>"
+            not in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819/</loc>"
+            not in response.text
+        )
+        assert (
+            "<loc>http://localhost:8000/productos/bolsa-de-papel-impresa-marron-120819-con-manija-cordon/</loc>"
+            not in response.text
+        )
 
     def test_search_productos_returns_filtered_results_with_noindex(self, client):
         # Búsqueda con coincidencia en producto/servicio visible
@@ -142,7 +178,9 @@ class TestProductosEndpoints:
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
 
         # El canonical URL debe seguir apuntando a la tienda limpia sin parámetros de query
-        assert '<link rel="canonical" href="https://www.madypack.com.ar/productos/">' in response.text
+        assert (
+            '<link rel="canonical" href="https://www.madypack.com.ar/productos/">' in response.text
+        )
 
     def test_search_productos_no_query_does_not_contain_noindex(self, client):
         # Búsqueda vacía / sin parámetro de query
@@ -155,7 +193,9 @@ class TestProductosEndpoints:
 
     def test_search_productos_sin_resultados_muestra_mensaje(self, client):
         # Búsqueda que no coincide con nada
-        response = client.get("/productos/?q=inexistente_total_query", headers={"host": "localhost:8000"})
+        response = client.get(
+            "/productos/?q=inexistente_total_query", headers={"host": "localhost:8000"}
+        )
         assert response.status_code == 200
         assert "No se encontraron productos que coincidan con la búsqueda" in response.text
         assert '<meta name="robots" content="noindex, nofollow">' in response.text
