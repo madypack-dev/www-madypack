@@ -29,6 +29,7 @@ from src.infrastructure.pyyaml.loaders import cargar_site
 
 router = APIRouter()
 
+
 @router.get("/tienda/", response_class=RedirectResponse, include_in_schema=False)
 @router.get("/tienda", response_class=RedirectResponse, include_in_schema=False)
 async def redirigir_tienda():
@@ -80,7 +81,9 @@ async def ver_producto(
         relacionados = [
             p
             for p in repositorio_catalogo.obtener_todos()
-            if isinstance(p, (ProductoBien, ProductoServicio)) and p.visible and p.id != producto_encontrado.id
+            if isinstance(p, (ProductoBien, ProductoServicio))
+            and p.visible
+            and p.id != producto_encontrado.id
         ][:3]
         return templates.TemplateResponse(
             request=request,
@@ -105,6 +108,7 @@ async def ver_producto(
     variacion_inicial = None
     if not producto_encontrado.es_compuesto:
         import json
+
         visible_variaciones = [v for v in producto_encontrado.variaciones if v.visible]
         if not visible_variaciones:
             raise HTTPException(status_code=404, detail="Producto no encontrado")
@@ -152,7 +156,11 @@ def _atributos_desde_variaciones(
             valores_usados.setdefault(attr, set()).add(valor)
 
     return {
-        attr: [valor for valor in atributos_posibles.get(attr, []) if valor in valores_usados.get(attr, set())]
+        attr: [
+            valor
+            for valor in atributos_posibles.get(attr, [])
+            if valor in valores_usados.get(attr, set())
+        ]
         for attr in atributos_posibles
     }
 
@@ -168,9 +176,7 @@ async def agregar_al_carrito(
 ):
     try:
         caso_uso.ejecutar(producto_id, variacion_id, cantidad)
-        logger.info(
-            f"Producto {producto_id} agregado al carrito con cantidad {cantidad}"
-        )
+        logger.info(f"Producto {producto_id} agregado al carrito con cantidad {cantidad}")
     except ValueError as err:
         logger.error(f"Error al agregar producto {producto_id} al carrito: {err}")
         return RedirectResponse(url="/productos/?error=cantidad_invalida", status_code=303)

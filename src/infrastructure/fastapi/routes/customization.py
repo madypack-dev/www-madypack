@@ -43,7 +43,10 @@ async def procesar_personalizacion(
         return templates.TemplateResponse(
             request=request,
             name="pages/personalizar.html",
-            context={"site": site, "error": "Debes seleccionar un archivo de imagen o logo válido."},
+            context={
+                "site": site,
+                "error": "Debes seleccionar un archivo de imagen o logo válido.",
+            },
         )
 
     solicitud = SolicitudPersonalizacionDTO(

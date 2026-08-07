@@ -8,12 +8,12 @@ from src.infrastructure.pyyaml.models import SiteConfig
 
 router = APIRouter(tags=["SEO"])
 
-@router.get("/sitemap.xml", response_class=Response)
 
+@router.get("/sitemap.xml", response_class=Response)
 def sitemap_xml(
     request: Request,
     catalog_repo: ICatalogRepository = Depends(get_repositorio_catalogo),
-    site: SiteConfig = Depends(load_site)
+    site: SiteConfig = Depends(load_site),
 ) -> Response:
     base_url = str(request.base_url).rstrip("/")
 
@@ -35,10 +35,16 @@ def sitemap_xml(
     except Exception:
         pass
 
-    urlset_xml = "".join([f"<url><loc>{url}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>" for url in urls])
+    urlset_xml = "".join(
+        [
+            f"<url><loc>{url}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>"
+            for url in urls
+        ]
+    )
     xml_content = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urlset_xml}\n</urlset>'
 
     return Response(content=xml_content, media_type="application/xml")
+
 
 @router.get("/robots.txt", response_class=Response)
 def robots_txt(request: Request) -> Response:

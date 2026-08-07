@@ -159,7 +159,9 @@ class QuoteFormConfig(BaseModel):
 
     @field_validator("fields")
     @classmethod
-    def validar_nombres_de_campos(cls, fields: list[QuoteFormFieldConfig]) -> list[QuoteFormFieldConfig]:
+    def validar_nombres_de_campos(
+        cls, fields: list[QuoteFormFieldConfig]
+    ) -> list[QuoteFormFieldConfig]:
         """Garantiza que los campos del formulario usen nombres HTML válidos.
 
         El atributo ``name`` de cada campo se renderiza directamente como
@@ -322,6 +324,3 @@ class SiteConfig(BaseModel):
     cart: CartConfig
     presupuesto: PresupuestoConfig
     schema_config: SchemaConfig = Field(alias="schema")
-
-
-

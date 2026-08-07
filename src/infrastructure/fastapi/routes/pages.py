@@ -44,7 +44,7 @@ async def read_contacto(request: Request, site: dict[str, Any] = Depends(load_si
         context={
             "site": site,
             "success": request.query_params.get("success"),
-            "error": request.query_params.get("error")
+            "error": request.query_params.get("error"),
         },
     )
 
@@ -52,7 +52,7 @@ async def read_contacto(request: Request, site: dict[str, Any] = Depends(load_si
 @router.post("/contacto/")
 async def post_contacto(
     request: Request,
-    repo = Depends(get_chatwoot_repo),
+    repo=Depends(get_chatwoot_repo),
 ):
     form_data = await request.form()
     nombre = form_data.get("wpforms[fields][0]")
@@ -69,12 +69,14 @@ async def post_contacto(
             nombre=str(nombre),
             empresa="Contacto Web",
             telefono=str(telefono),
-            email=str(email)  # type: ignore
+            email=str(email),  # type: ignore
         )
 
         try:
             await repo.guardar(lead, CHATWOOT_INBOX_ID)
-            logger.info(f"Contacto de {nombre} enviado a Chatwoot con referencia {lead.codigo_referencia}")
+            logger.info(
+                f"Contacto de {nombre} enviado a Chatwoot con referencia {lead.codigo_referencia}"
+            )
         except Exception as err:
             logger.error(f"Error de integración con Chatwoot en contacto: {err}")
 

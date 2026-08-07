@@ -23,15 +23,14 @@ from src.application.comercio.cart_use_cases import (
 )
 from src.application.cotizacion.generate_quote_pdf import CasoUsoGenerarPresupuestoPDF
 from src.application.cotizacion.pricing_service import CotizadorServicio
+from src.application.erp.use_cases import CasoUsoVerificarConexionERP
 from src.domain.comercio.cart_repository import IRepositorioCarrito
 from src.domain.comercio.catalog_repository import ICatalogRepository
 from src.domain.cotizacion.fallback_registry import IRegistroFallbackLead
 from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.domain.cotizacion.quote_repository import IQuoteRepository
 from src.domain.erp.ports import IErpGateway
-from src.application.erp.use_cases import CasoUsoVerificarConexionERP
 from src.domain.lead.http_client import IHttpClient
-
 from src.infrastructure.config.settings import (
     BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
@@ -61,12 +60,17 @@ def get_http_client(request: Request) -> httpx.AsyncClient:
     return request.app.state.http_client
 
 
+def get_http_client_adapter(client: httpx.AsyncClient = Depends(get_http_client)) -> IHttpClient:
+    """Inyecta el adaptador HttpxClientAdapter como la interfaz IHttpClient."""
+    return HttpxClientAdapter(client)
+
+
 def get_chatwoot_repo(
-    http_client: httpx.AsyncClient = Depends(get_http_client),
+    http_client: IHttpClient = Depends(get_http_client_adapter),
 ) -> ChatwootContactRepository:
-    """Inyecta el cliente HTTP singleton para construir el repositorio de Chatwoot Contact."""
+    """Inyecta el puerto IHttpClient para construir el repositorio de Chatwoot Contact."""
     return ChatwootContactRepository(
-        http_client=HttpxClientAdapter(http_client),
+        http_client=http_client,
         base_url=CHATWOOT_URL,
         account_id=CHATWOOT_ACCOUNT_ID,
         api_token=CHATWOOT_API_TOKEN,
@@ -107,7 +111,7 @@ def get_registro_fallback() -> IRegistroFallbackLead:
 
 
 def get_caso_uso_generar_pdf(
-    generador_pdf: IGeneradorDocumentoPresupuesto = Depends(get_generador_pdf)
+    generador_pdf: IGeneradorDocumentoPresupuesto = Depends(get_generador_pdf),
 ) -> CasoUsoGenerarPresupuestoPDF:
     """Inyecta el caso de uso para generar PDF de presupuestos."""
     return CasoUsoGenerarPresupuestoPDF(
@@ -157,13 +161,6 @@ def get_caso_uso_obtener_resumen_carrito() -> CasoUsoObtenerResumenCarrito:
     )
 
 
-def get_http_client_adapter(
-    client: httpx.AsyncClient = Depends(get_http_client)
-) -> IHttpClient:
-    """Inyecta el adaptador HttpxClientAdapter como la interfaz IHttpClient."""
-    return HttpxClientAdapter(client)
-
-
 def get_quote_repo() -> IQuoteRepository:
     """Inyecta el repositorio de presupuestos (JSON local)."""
     return JsonQuoteRepository()
@@ -187,7 +184,7 @@ def get_caso_uso_personalizacion():
 
 
 def get_erp_gateway(
-    http_client: httpx.AsyncClient = Depends(get_http_client),
+    http_client: IHttpClient = Depends(get_http_client_adapter),
 ) -> IErpGateway:
     """Inyecta la implementación de IErpGateway según settings.XUBIO_PROVIDER."""
     from src.adapters.gateways.null_erp_gateway import NullErpGateway
@@ -195,7 +192,13 @@ def get_erp_gateway(
     from src.infrastructure.config import settings
 
     if settings.XUBIO_PROVIDER == "xubio":
-        return XubioErpGateway(client=http_client)
+        return XubioErpGateway(
+            client=http_client,
+            client_id=settings.XUBIO_CLIENT_ID,
+            secret_id=settings.XUBIO_SECRET_ID,
+            base_url=settings.XUBIO_API_URL,
+            logger=logger,
+        )
     return NullErpGateway()
 
 
@@ -204,5 +207,3 @@ def get_caso_uso_verificar_conexion_erp(
 ) -> CasoUsoVerificarConexionERP:
     """Inyecta el caso de uso para verificar la conexión al ERP."""
     return CasoUsoVerificarConexionERP(erp_gateway=erp_gateway)
-
-

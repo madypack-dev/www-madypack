@@ -10,14 +10,20 @@ from src.infrastructure.structlog.logger import get_logger
 
 def _get_git_commit() -> str:
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
-        ).decode("ascii").strip()
+        return (
+            subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
+            )
+            .decode("ascii")
+            .strip()
+        )
     except Exception:
         return "1.0.0"
 
+
 COMMIT_HASH = _get_git_commit()
 logger = get_logger()
+
 
 def inject_cart_count(request: Request) -> dict:
     """Inyecta el contador de líneas del carrito de compras en el contexto global de Jinja2."""
@@ -31,6 +37,7 @@ def inject_cart_count(request: Request) -> dict:
 
 def inject_versioned_url_for(request: Request) -> dict:
     """Sobrescribe url_for para inyectar automáticamente ?v={commit} en los estáticos."""
+
     def versioned_url_for(name: str, **path_params):
         url = request.url_for(name, **path_params)
         if name == "static" and "path" in path_params:
@@ -38,12 +45,12 @@ def inject_versioned_url_for(request: Request) -> dict:
                 return f"{url}&v={COMMIT_HASH}"
             return f"{url}?v={COMMIT_HASH}"
         return url
+
     return {"url_for": versioned_url_for}
 
 
 templates = Jinja2Templates(
-    directory="templates",
-    context_processors=[inject_cart_count, inject_versioned_url_for]
+    directory="templates", context_processors=[inject_cart_count, inject_versioned_url_for]
 )
 
 

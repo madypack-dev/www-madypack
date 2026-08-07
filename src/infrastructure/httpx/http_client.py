@@ -27,23 +27,39 @@ class HttpxClientAdapter(IHttpClient):
     def __init__(self, client: httpx.AsyncClient):
         self._client = client
 
+    async def get(
+        self,
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        kwargs: dict[str, Any] = {}
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+        if params is not None:
+            kwargs["params"] = params
+
+        response = await self._client.get(url, headers=headers, **kwargs)
+        return HttpxResponseAdapter(response)
+
     async def post(
         self,
         url: str,
         headers: dict[str, str] | None = None,
         json: Any = None,
+        content: str | bytes | None = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
-        kwargs = {}
+        kwargs: dict[str, Any] = {}
         if timeout is not None:
             kwargs["timeout"] = timeout
+        if content is not None:
+            kwargs["content"] = content
+        if json is not None:
+            kwargs["json"] = json
 
-        response = await self._client.post(
-            url,
-            headers=headers,
-            json=json,
-            **kwargs
-        )
+        response = await self._client.post(url, headers=headers, **kwargs)
         return HttpxResponseAdapter(response)
 
     async def head(
@@ -52,13 +68,32 @@ class HttpxClientAdapter(IHttpClient):
         headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> IHttpResponse:
-        kwargs = {}
+        kwargs: dict[str, Any] = {}
         if timeout is not None:
             kwargs["timeout"] = timeout
 
-        response = await self._client.head(
-            url,
-            headers=headers,
-            **kwargs
-        )
+        response = await self._client.head(url, headers=headers, **kwargs)
+        return HttpxResponseAdapter(response)
+
+    async def request(
+        self,
+        method: str,
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        json: Any = None,
+        content: str | bytes | None = None,
+        timeout: float | None = None,
+    ) -> IHttpResponse:
+        kwargs: dict[str, Any] = {}
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+        if params is not None:
+            kwargs["params"] = params
+        if json is not None:
+            kwargs["json"] = json
+        if content is not None:
+            kwargs["content"] = content
+
+        response = await self._client.request(method=method, url=url, headers=headers, **kwargs)
         return HttpxResponseAdapter(response)

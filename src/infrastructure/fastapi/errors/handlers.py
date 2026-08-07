@@ -28,7 +28,9 @@ async def global_exception_handler(request: Request, exc: Exception):
             logger.error(f"No se pudo leer el archivo CSS de error 500: {css_err}")
     except Exception as read_err:
         logger.error(f"No se pudo leer el template de error 500: {read_err}")
-        html_content = "<h1>Ha ocurrido un error inesperado</h1><p>Intente nuevamente más tarde.</p>"
+        html_content = (
+            "<h1>Ha ocurrido un error inesperado</h1><p>Intente nuevamente más tarde.</p>"
+        )
 
     return HTMLResponse(content=html_content, status_code=500)
 
@@ -45,7 +47,9 @@ async def http_exception_handler(request: Request, exc: HTTPException):
                 logger.error(f"No se pudo leer el archivo CSS de error 404: {css_err}")
         except Exception as read_err:
             logger.error(f"No se pudo leer el template de error 404: {read_err}")
-            html_content = "<h1>404 - Página no encontrada</h1><p>El recurso solicitado no existe.</p>"
+            html_content = (
+                "<h1>404 - Página no encontrada</h1><p>El recurso solicitado no existe.</p>"
+            )
         return HTMLResponse(content=html_content, status_code=404)
 
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})

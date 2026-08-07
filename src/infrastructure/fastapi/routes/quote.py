@@ -120,9 +120,15 @@ async def generar_presupuesto(
     # Soporte híbrido para wpforms (cotización general/checkout) y campos estándar (landing/tests)
     nombre = _str_field(form_data.get("wpforms[fields][3]")) or _str_field(form_data.get("name"))
     email = _str_field(form_data.get("wpforms[fields][11]")) or _str_field(form_data.get("email"))
-    telefono = _str_field(form_data.get("wpforms[fields][10]")) or _str_field(form_data.get("phone"))
-    empresa = _str_field(form_data.get("wpforms[fields][12]")) or _str_field(form_data.get("company"))
-    mensaje = _str_field(form_data.get("wpforms[fields][2]")) or _str_field(form_data.get("message"))
+    telefono = _str_field(form_data.get("wpforms[fields][10]")) or _str_field(
+        form_data.get("phone")
+    )
+    empresa = _str_field(form_data.get("wpforms[fields][12]")) or _str_field(
+        form_data.get("company")
+    )
+    mensaje = _str_field(form_data.get("wpforms[fields][2]")) or _str_field(
+        form_data.get("message")
+    )
 
     logger.debug(
         "Formulario de cotización recibido",
@@ -204,12 +210,12 @@ async def descargar_presupuesto(
     presupuesto = quote_repo.obtener_por_referencia(ref)
     if not presupuesto:
         logger.warning(f"Presupuesto {ref} no encontrado para descarga.")
-        return RedirectResponse(url=f"/cotizacion/?error=Presupuesto {ref} no encontrado", status_code=303)
+        return RedirectResponse(
+            url=f"/cotizacion/?error=Presupuesto {ref} no encontrado", status_code=303
+        )
 
     logo_src = site.header.logo.src
-    logo_path_obj = (
-        resolver_archivo_estatico(f"images/{logo_src}") if logo_src else None
-    )
+    logo_path_obj = resolver_archivo_estatico(f"images/{logo_src}") if logo_src else None
     logo_path = str(logo_path_obj) if logo_path_obj else None
 
     identidad_visual = IdentidadVisual(

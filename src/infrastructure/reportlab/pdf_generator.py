@@ -93,19 +93,29 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
         y -= h + 6 * mm
 
         # --- Datos del solicitante ---
-        y = self._dibujar_datos_solicitante(c, x, y, presupuesto, ancho, estilo_subtitulo, estilo_normal)
+        y = self._dibujar_datos_solicitante(
+            c, x, y, presupuesto, ancho, estilo_subtitulo, estilo_normal
+        )
 
         # --- Tabla de líneas ---
-        y = self._dibujar_tabla_lineas(c, x, y, presupuesto.lineas, ancho, estilo_normal, estilo_subtitulo)
+        y = self._dibujar_tabla_lineas(
+            c, x, y, presupuesto.lineas, ancho, estilo_normal, estilo_subtitulo
+        )
 
         # --- Total ---
         y -= 4 * mm
         c.setFont("Helvetica-Bold", 12)
-        c.drawRightString(ancho - self.MARGEN, y, f"TOTAL ESTIMADO: {self._formatear_moneda(presupuesto.total_estimado)}")
+        c.drawRightString(
+            ancho - self.MARGEN,
+            y,
+            f"TOTAL ESTIMADO: {self._formatear_moneda(presupuesto.total_estimado)}",
+        )
         y -= 8 * mm
 
         # --- Condiciones comerciales ---
-        y = self._dibujar_condiciones(c, x, y, presupuesto.condiciones_comerciales, ancho, estilo_subtitulo, estilo_normal)
+        y = self._dibujar_condiciones(
+            c, x, y, presupuesto.condiciones_comerciales, ancho, estilo_subtitulo, estilo_normal
+        )
 
         # --- Pie ---
         self._dibujar_pie(c, x, identidad_visual, ancho, estilo_pequeno)
@@ -222,29 +232,37 @@ class GeneradorPresupuestoPDFReportLab(IGeneradorDocumentoPresupuesto):
 
         for linea in lineas:
             nombre = Paragraph(f"<b>{linea.nombre}</b><br/>{linea.descripcion}", estilo_normal)
-            datos_tabla.append([
-                nombre,
-                Paragraph(f"{linea.cantidad:,} {linea.unidad}", estilo_normal),
-                Paragraph(self._formatear_moneda(linea.precio_unitario_estimado), estilo_normal),
-                Paragraph(self._formatear_moneda(linea.subtotal), estilo_normal),
-            ])
+            datos_tabla.append(
+                [
+                    nombre,
+                    Paragraph(f"{linea.cantidad:,} {linea.unidad}", estilo_normal),
+                    Paragraph(
+                        self._formatear_moneda(linea.precio_unitario_estimado), estilo_normal
+                    ),
+                    Paragraph(self._formatear_moneda(linea.subtotal), estilo_normal),
+                ]
+            )
 
-        tabla = Table(datos_tabla, colWidths=[col_producto, col_cantidad, col_unitario, col_subtotal])
+        tabla = Table(
+            datos_tabla, colWidths=[col_producto, col_cantidad, col_unitario, col_subtotal]
+        )
         tabla.setStyle(
-            TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), self.COLOR_FONDO_CABECERA),
-                ("TEXTCOLOR", (0, 0), (-1, 0), self.COLOR_PRINCIPAL),
-                ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
-                ("ALIGN", (0, 0), (0, -1), "LEFT"),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.lightgrey),
-                ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-            ])
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), self.COLOR_FONDO_CABECERA),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), self.COLOR_PRINCIPAL),
+                    ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                    ("ALIGN", (0, 0), (0, -1), "LEFT"),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 9),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.lightgrey),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
         )
 
         _, h = tabla.wrapOn(c, ancho_tabla, 200 * mm)
