@@ -18,6 +18,33 @@ class _DummyLogger:
         _ = (args, kwargs)
 
 
+class _LoggerAdapter:
+    """Adapta loggers de stdlib (logging.Logger) o structlog a la interfaz estructurada."""
+
+    def __init__(self, target_logger: Any):
+        self._target = target_logger or _DummyLogger()
+
+    def info(self, event: str, **kwargs: Any) -> None:
+        self._log("info", event, kwargs)
+
+    def warning(self, event: str, **kwargs: Any) -> None:
+        self._log("warning", event, kwargs)
+
+    def error(self, event: str, **kwargs: Any) -> None:
+        self._log("error", event, kwargs)
+
+    def _log(self, level: str, event: str, kwargs: dict[str, Any]) -> None:
+        method = getattr(self._target, level, None)
+        if not method:
+            return
+        try:
+            method(event, **kwargs)
+        except TypeError:
+            extra_str = " ".join(f"{k}={v}" for k, v in kwargs.items())
+            msg = f"{event} {extra_str}".strip() if extra_str else event
+            method(msg)
+
+
 class XubioErpGateway(IErpGateway):
     """Adaptador HTTP para la API v1.1 de Xubio.
 
@@ -39,8 +66,9 @@ class XubioErpGateway(IErpGateway):
         self._client_id = client_id
         self._secret_id = secret_id
         self._base_url = (base_url or "https://xubio.com/API/1.1").rstrip("/")
-        self._logger = logger or _DummyLogger()
+        self._logger = _LoggerAdapter(logger)
         self._access_token: str | None = None
+
 
     def _build_basic_auth_header(self) -> str:
         credentials = f"{self._client_id}:{self._secret_id}"
@@ -132,6 +160,7 @@ class XubioErpGateway(IErpGateway):
         url = f"{self._base_url}/miempresa"
         headers = {
             "Authorization": f"Bearer {token}",
+            "token": token,
             "Accept": "application/json",
         }
 
@@ -201,6 +230,7 @@ class XubioErpGateway(IErpGateway):
         url = f"{self._base_url}{path_clean}"
         headers = {
             "Authorization": f"Bearer {token}",
+            "token": token,
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
