@@ -4,10 +4,7 @@ Delega la presentación visual interactiva a la capa de infraestructura (src/inf
 """
 
 import asyncio
-import base64
 from typing import Any
-
-import httpx
 
 from src.adapters.gateways.null_erp_gateway import NullErpGateway
 from src.adapters.gateways.xubio_client import XubioErpGateway
@@ -30,32 +27,11 @@ from src.infrastructure.config.settings import (
     XUBIO_PROVIDER,
     XUBIO_SECRET_ID,
 )
-from src.infrastructure.httpx.http_client import HttpxClientAdapter
+from src.infrastructure.httpx.http_client import crear_cliente_http_async
 from src.infrastructure.pyyaml.loaders import cargar_configuracion_negocio
 from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()
-
-
-async def diagnosticar_autenticacion_xubio(http_client: httpx.AsyncClient) -> dict[str, str]:
-    """Diagnostica la respuesta exacta de /TokenEndpoint y aprueba los encabezados de red."""
-    credentials = f"{XUBIO_CLIENT_ID}:{XUBIO_SECRET_ID}"
-    encoded = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
-    token_url = f"{XUBIO_API_URL.rstrip('/')}/TokenEndpoint"
-
-    headers = {
-        "Authorization": f"Basic {encoded}",
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-    data = "scope=&grant_type=client_credentials"
-
-    res = await http_client.post(token_url, headers=headers, content=data)
-    if res.status_code != 200:
-        return {"Authorization": f"Basic {encoded}"}
-
-    body = res.json()
-    token = str(body.get("access_token"))
-    return {"Authorization": f"Bearer {token}", "token": token}
 
 
 async def _consultar_empresa(gateway: Any) -> dict[str, Any]:
@@ -69,6 +45,17 @@ async def _consultar_empresa(gateway: Any) -> dict[str, Any]:
     return {"nombreEmpresa": "Empresa Madygraf (Modo Test)", "cuit": "33-71465177-9"}
 
 
+def _normalizar_detalle_lista(detail: Any) -> list[dict[str, Any]]:
+    """Normaliza la respuesta de detalle de lista de precio a una lista de ítems."""
+    if isinstance(detail, dict) and "listaPrecioItem" in detail:
+        return detail["listaPrecioItem"]
+    if isinstance(detail, dict):
+        return [detail]
+    if isinstance(detail, list):
+        return detail
+    return []
+
+
 async def _consultar_listas_precio(gateway: Any) -> list[dict[str, Any]]:
     """Consulta las listas de precio e ítems de detalle desde Xubio."""
     try:
@@ -79,12 +66,7 @@ async def _consultar_listas_precio(gateway: Any) -> list[dict[str, Any]]:
             lid = item.get("listaPrecioID") or item.get("id")
             if lid:
                 detail = await gateway.proxy_request("GET", f"/listaPrecioBean/{lid}")
-                if isinstance(detail, dict) and "listaPrecioItem" in detail:
-                    item["listaPrecioItem"] = detail["listaPrecioItem"]
-                elif isinstance(detail, dict):
-                    item["listaPrecioItem"] = [detail]
-                elif isinstance(detail, list):
-                    item["listaPrecioItem"] = detail
+                item["listaPrecioItem"] = _normalizar_detalle_lista(detail)
         return res
     except Exception:
         return []
@@ -127,10 +109,8 @@ async def auditar_datos():
     config_negocio = cargar_configuracion_negocio()
     factor_k = config_negocio.anomalias_bobina.factor_k_mad
 
-    async with httpx.AsyncClient(timeout=10.0) as http_client:
-        adapter = HttpxClientAdapter(http_client)
+    async with crear_cliente_http_async(timeout=10.0) as adapter:
         if XUBIO_PROVIDER == "xubio":
-            await diagnosticar_autenticacion_xubio(http_client)
             gateway = XubioErpGateway(
                 client=adapter,
                 client_id=XUBIO_CLIENT_ID,

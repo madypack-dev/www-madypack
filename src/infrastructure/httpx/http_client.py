@@ -1,7 +1,16 @@
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from typing import Any
 
 import httpx
 from src.domain.lead.http_client import IHttpClient, IHttpResponse
+
+
+@asynccontextmanager
+async def crear_cliente_http_async(timeout: float = 10.0) -> AsyncGenerator[IHttpClient, None]:
+    """Context manager asíncrono que administra la sesión del cliente HTTP sin exponer httpx."""
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        yield HttpxClientAdapter(client)
 
 
 class HttpxResponseAdapter(IHttpResponse):
