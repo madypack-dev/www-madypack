@@ -28,7 +28,7 @@ async def test_proveedor_tarifas_xubio_exito():
 
 
 @pytest.mark.asyncio
-async def test_proveedor_tarifas_xubio_fallback_por_error():
+async def test_proveedor_tarifas_xubio_error_devuelve_vacio_sin_fallback():
     mock_gateway = AsyncMock()
     mock_gateway.proxy_request.side_effect = RuntimeError("Conexión rehusada")
 
@@ -36,9 +36,8 @@ async def test_proveedor_tarifas_xubio_fallback_por_error():
     proveedor = ProveedorTarifasXubio(erp_gateway=mock_gateway, logger=logger_mock)
     tarifas = await proveedor.cargar_tarifas_async()
 
-    # Debe devolver las tarifas por defecto de fallback
-    assert "bobina_kg" in tarifas
-    assert tarifas["bobina_kg"].monto == 1.0
+    # Al eliminar el fallback de $1.00, debe devolver un diccionario vacío si falla Xubio
+    assert tarifas == {}
     logger_mock.warning.assert_called_once()
 
 
@@ -48,4 +47,3 @@ def test_proveedor_tarifas_xubio_interfaz_sincronica():
     tarifas = proveedor.obtener_tarifas()
 
     assert isinstance(tarifas, dict)
-    assert "bobina_kg" in tarifas
