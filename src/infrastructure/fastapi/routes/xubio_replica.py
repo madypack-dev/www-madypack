@@ -1,12 +1,10 @@
-"""Router de replica directa para la API de Xubio v1.1 en el Servidor Privado ERP."""
-
-from typing import Any
+"""Router de réplica pasiva de SOLO LECTURA (GET) para la API de Xubio v1.1 en el Servidor Privado ERP."""
 
 from fastapi import APIRouter, Depends, Request
 from src.domain.erp.ports import IErpGateway
 from src.infrastructure.fastapi.dependencies import get_erp_gateway
 
-router = APIRouter(prefix="/api/v1/xubio", tags=["Xubio Proxy Réplica"])
+router = APIRouter(prefix="/api/v1/xubio", tags=["Xubio Proxy Réplica (Solo Lectura)"])
 
 
 @router.get("/miempresa")
@@ -24,14 +22,6 @@ async def replica_get_clientes(
     return await erp_gateway.proxy_request("GET", "/clienteBean", params=params)
 
 
-@router.post("/clienteBean")
-async def replica_post_cliente(
-    body: dict[str, Any], erp_gateway: IErpGateway = Depends(get_erp_gateway)
-):
-    """Réplica directa de POST /clienteBean de Xubio v1.1."""
-    return await erp_gateway.proxy_request("POST", "/clienteBean", json_data=body)
-
-
 @router.get("/presupuestoBean")
 async def replica_get_presupuestos(
     request: Request, erp_gateway: IErpGateway = Depends(get_erp_gateway)
@@ -41,14 +31,6 @@ async def replica_get_presupuestos(
     return await erp_gateway.proxy_request("GET", "/presupuestoBean", params=params)
 
 
-@router.post("/presupuestoBean")
-async def replica_post_presupuesto(
-    body: dict[str, Any], erp_gateway: IErpGateway = Depends(get_erp_gateway)
-):
-    """Réplica directa de POST /presupuestoBean de Xubio v1.1."""
-    return await erp_gateway.proxy_request("POST", "/presupuestoBean", json_data=body)
-
-
 @router.get("/productoStock")
 async def replica_get_producto_stock(
     request: Request, erp_gateway: IErpGateway = Depends(get_erp_gateway)
@@ -56,11 +38,3 @@ async def replica_get_producto_stock(
     """Réplica directa de GET /productoStock de Xubio v1.1."""
     params = dict(request.query_params)
     return await erp_gateway.proxy_request("GET", "/productoStock", params=params)
-
-
-@router.post("/facturar")
-async def replica_post_facturar(
-    body: dict[str, Any], erp_gateway: IErpGateway = Depends(get_erp_gateway)
-):
-    """Réplica directa de POST /facturar de Xubio v1.1."""
-    return await erp_gateway.proxy_request("POST", "/facturar", json_data=body)

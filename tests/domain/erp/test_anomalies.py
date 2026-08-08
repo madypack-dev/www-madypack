@@ -1,6 +1,6 @@
-"""Tests unitarios para el script de detección estadística de anomalías de bobina de papel."""
+"""Tests unitarios para el análisis de anomalías (Mediana + MAD) en src/domain/erp/anomalies.py."""
 
-from scripts.detectar_anomalias_bobina import (
+from src.domain.erp.anomalies import (
     analizar_anomalias_items,
     calcular_mad,
     calcular_mediana,
@@ -19,7 +19,7 @@ def test_calcular_mad():
     mediana = calcular_mediana(valores)
     mad = calcular_mad(valores, mediana)
     assert mediana == 12.0
-    assert mad == 2.0  # |10-12|=2, |12-12|=0, |11-12|=1, |15-12|=3, |100-12|=88 -> mediana([2,0,1,3,88]) = 2.0
+    assert mad == 2.0
 
 
 def test_normalizar_unidad_a_kg():

@@ -85,6 +85,15 @@ def sanitizar_item_tarifa(raw_item: Any) -> ConceptoTarifa | None:
     if not codigo:
         return None
 
+    # Mapeo de alias oficiales de Xubio ERP al concepto de tarifa de dominio
+    codigo_upper = codigo.upper()
+    if (
+        codigo_upper == "BOBMAR100"
+        or "BOBINA PAPEL KRAFT MARRON" in codigo_upper
+        or "BOBINA KRAFT" in codigo_upper
+    ):
+        codigo = "bobina_kg"
+
     raw_precio = raw_item.get("precio") or raw_item.get("monto") or raw_item.get("precioUltCompra")
     monto = sanitizar_monto(raw_precio)
     moneda = sanitizar_moneda(raw_item.get("moneda"))

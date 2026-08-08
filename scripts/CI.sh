@@ -23,8 +23,9 @@ log_stage "Paso 0: Compilando CSS Bundle..."
 $PYTHON_BIN -m src.infrastructure.tailwindcss.css_bundle
 
 # 1. Clean Architecture Guard
-log_stage "Paso 1: Verificando Reglas de Arquitectura Limpia (AST Import Checker)..."
+log_stage "Paso 1: Verificando Reglas de Arquitectura Limpia (AST Import Checker y Read-Only Xubio)..."
 $PYTHON_BIN scripts/check_clean_architecture.py
+$PYTHON_BIN scripts/check_xubio_read_only.py
 
 # 2. Formatting, Linting y Complejidad Ciclomática (Ruff + McCabe <= 7)
 log_stage "Paso 2: Verificando Estilo y Complejidad (Ruff)..."
