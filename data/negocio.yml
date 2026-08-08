@@ -4,3 +4,7 @@ margen_comercial: 0.20 # 20% de margen de reventa sobre insumos y servicios
 xubio:
   lista_precio_id: 1
   modo_solo_lectura: true # Operaciones de lectura pasiva (GET únicamente)
+
+anomalias_bobina:
+  factor_k_mad: 2.5 # Multiplicador de Desviación Absoluta de la Mediana (MAD)
+  unidad_referencia: "kg" # Unidad base estandarizada

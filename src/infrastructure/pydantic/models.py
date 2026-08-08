@@ -16,6 +16,15 @@ class XubioNegocioConfig(BaseModel):
     modo_solo_lectura: bool = Field(default=True)
 
 
+class AnomaliasBobinaConfig(BaseModel):
+    """Configuración para la detección estadística de anomalías de la bobina de papel."""
+
+    model_config = ConfigDict(frozen=True)
+
+    factor_k_mad: float = Field(default=2.5, gt=0.0)
+    unidad_referencia: str = Field(default="kg")
+
+
 class NegocioConfig(BaseModel):
     """Configuración comercial y reglas de negocio de Madypack."""
 
@@ -23,6 +32,8 @@ class NegocioConfig(BaseModel):
 
     margen_comercial: float = Field(default=0.20, ge=0.0)
     xubio: XubioNegocioConfig = Field(default_factory=XubioNegocioConfig)
+    anomalias_bobina: AnomaliasBobinaConfig = Field(default_factory=AnomaliasBobinaConfig)
+
 
 
 # ---------- analytics ----------
