@@ -102,11 +102,32 @@ async def auditar_datos():
             logger.error(f"Error consultando /miempresa: {exc}")
 
         try:
-            logger.info("--- Auditando /listaPrecioBean ---")
+            logger.info("--- Auditando /listaPrecioBean (General) ---")
             lista_res = await gateway.proxy_request("GET", "/listaPrecioBean")
             logger.info(f"Respuesta cruda de /listaPrecioBean: {lista_res}")
+
+            if isinstance(lista_res, list):
+                for list_item in lista_res:
+                    list_id = list_item.get("listaPrecioID") or list_item.get("id")
+                    if list_id:
+                        logger.info(
+                            f"--- Auditando Detalle de Lista de Precio /listaPrecioBean/{list_id} ---"
+                        )
+                        detail_res = await gateway.proxy_request(
+                            "GET", f"/listaPrecioBean/{list_id}"
+                        )
+                        logger.info(
+                            f"Detalle de Lista de Precio {list_id} ({list_item.get('nombre')}): {detail_res}"
+                        )
         except Exception as exc:
             logger.error(f"Error consultando /listaPrecioBean: {exc}")
+
+        try:
+            logger.info("--- Auditando /ProductoVentaBean ---")
+            productos_venta = await gateway.proxy_request("GET", "/ProductoVentaBean")
+            logger.info(f"Respuesta cruda de /ProductoVentaBean: {productos_venta}")
+        except Exception as exc:
+            logger.error(f"Error consultando /ProductoVentaBean: {exc}")
 
         try:
             logger.info("--- Auditando /productoStock ---")

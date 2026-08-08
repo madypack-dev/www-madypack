@@ -1,0 +1,6919 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Si quieres saber como integrar la API de Xubio a tu sistema te invitamos a leer [Como integrar Xubio a tu sistema](#integrar-api).<br>Esta documentaci\u00f3n te permite interactuar con nuestra API, utilizando tu `client-id` y tu `secret-id`, para utilizarla correctamente te sugerimos leer [Como utilizar Xubio Documentation API](#utilizar-dapi)",
+    "version": "1.1",
+    "title": "Xubio API"
+  },
+  "host": "xubio.com:443",
+  "basePath": "/API/1.1",
+  "tags": [
+    {
+      "name": "cliente",
+      "description": "Operaciones sobre Clientes",
+      "externalDocs": {
+        "description": "Ver m\u00e1s...",
+        "url": ""
+      }
+    },
+    {
+      "name": "presupuesto",
+      "description": "Operaciones sobre Presupuestos",
+      "externalDocs": {
+        "description": "Ver m\u00e1s...",
+        "url": ""
+      }
+    },
+    {
+      "name": "miempresa"
+    },
+    {
+      "name": "ajusteStock"
+    },
+    {
+      "name": "asientoContableManual"
+    },
+    {
+      "name": "Banco"
+    },
+    {
+      "name": "categoriaCuenta"
+    },
+    {
+      "name": "categor\u00edaFiscal"
+    },
+    {
+      "name": "centroDeCosto"
+    },
+    {
+      "name": "circuitoContable"
+    },
+    {
+      "name": "cobranza"
+    },
+    {
+      "name": "comprobantesAsociados"
+    },
+    {
+      "name": "cuenta"
+    },
+    {
+      "name": "dep\u00f3sito"
+    },
+    {
+      "name": "enviarTransaccionPorMail"
+    },
+    {
+      "name": "ComprobanteDeCompra"
+    },
+    {
+      "name": "ComprobanteDeVenta"
+    },
+    {
+      "name": "facturar"
+    },
+    {
+      "name": "identificacionTributaria"
+    },
+    {
+      "name": "ImprimirPdf"
+    },
+    {
+      "name": "listaPrecio"
+    },
+    {
+      "name": "localidad"
+    },
+    {
+      "name": "moneda"
+    },
+    {
+      "name": "OrdenDePago"
+    },
+    {
+      "name": "ordenCompra"
+    },
+    {
+      "name": "pais"
+    },
+    {
+      "name": "percepcion"
+    },
+    {
+      "name": "productoCompra"
+    },
+    {
+      "name": "productoStock"
+    },
+    {
+      "name": "productoVenta"
+    },
+    {
+      "name": "proveedor"
+    },
+    {
+      "name": "provincia"
+    },
+    {
+      "name": "puntoVenta"
+    },
+    {
+      "name": "relacionFacturaNotaDeCredito"
+    },
+    {
+      "name": "remitoVenta"
+    },
+    {
+      "name": "retencion"
+    },
+    {
+      "name": "CAE"
+    },
+    {
+      "name": "sucursal"
+    },
+    {
+      "name": "talonario"
+    },
+    {
+      "name": "talonarioCobranza"
+    },
+    {
+      "name": "tasaImpositiva"
+    },
+    {
+      "name": "transporte"
+    },
+    {
+      "name": "unidadMedida"
+    },
+    {
+      "name": "vendedor"
+    }
+  ],
+  "paths": {
+    "/miempresa": {
+      "get": {
+        "tags": [
+          "miempresa"
+        ],
+        "summary": "Obtiene los datos de Mi Empresa.",
+        "description": "",
+        "operationId": "getEmpresaBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/EmpresaBean"
+            }
+          }
+        }
+      }
+    },
+    "/ajusteStockBean/{id}": {
+      "get": {
+        "tags": [
+          "ajusteStock"
+        ],
+        "summary": "Obtiene un Ajuste de Stock determinado",
+        "description": "",
+        "operationId": "getAjusteStockBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ajusteStock"
+        ],
+        "summary": "Actualiza un Ajuste de Stock determinado",
+        "description": "",
+        "operationId": "putAjusteStock",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ajusteStock"
+        ],
+        "summary": "Elimina un Ajuste de Stock determinado",
+        "description": "",
+        "operationId": "deleteAjusteStockBean",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/ajusteStockBean": {
+      "get": {
+        "tags": [
+          "ajusteStock"
+        ],
+        "summary": "Obtiene listado de Ajustes de Stock",
+        "description": "",
+        "operationId": "getAjusteStockBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ajusteStock"
+        ],
+        "summary": "Crea un nuevo Ajuste de Stock",
+        "description": "",
+        "operationId": "postAjusteStockBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto ajusteStock necesario para crear un nuevo ajusteStock",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AjusteStockBean"
+            }
+          }
+        }
+      }
+    },
+    "/asientoContableManualBean": {
+      "get": {
+        "tags": [
+          "asientoContableManual"
+        ],
+        "summary": "Obtiene listado de Asientos Contables Manuales",
+        "description": "",
+        "operationId": "getAsientoContableManualBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "asientoContableManual"
+        ],
+        "summary": "Crea un nuevo Asiento Contable Manual",
+        "description": "",
+        "operationId": "postAsientoContableManualBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto asientoContableManual necesario para crear un nuevo asientoContableManual",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        }
+      }
+    },
+    "/asientoContableManualBean/{id}": {
+      "get": {
+        "tags": [
+          "asientoContableManual"
+        ],
+        "summary": "Obtiene un Asiento Contable Manual determinado",
+        "description": "",
+        "operationId": "getAsientoContableManualBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "asientoContableManual"
+        ],
+        "summary": "Actualiza un Asiento Contable Manual determinado",
+        "description": "",
+        "operationId": "putAsientoContableManualBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AsientoContableManualBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "asientoContableManual"
+        ],
+        "summary": "Elimina un Asiento Contable Manual determinado",
+        "description": "",
+        "operationId": "deleteAsientoContableManualBean",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/banco": {
+      "get": {
+        "tags": [
+          "Banco"
+        ],
+        "summary": "Obtiene todos los Bancos",
+        "description": "Obtiene un array de Bancos. El par\u00e1metro opcional \"activo\" acepta 1 = true y 0 = false",
+        "operationId": "getCategoriasFiscales",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/BancoBean"
+            }
+          }
+        }
+      }
+    },
+    "/categoriaCuenta": {
+      "get": {
+        "tags": [
+          "categoriaCuenta"
+        ],
+        "summary": "Obtiene todas las categor\u00edas de cuentas",
+        "description": "Obtiene un array de CategoriaContable",
+        "operationId": "getCategoriasContables",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CategoriaContableBean"
+            }
+          }
+        }
+      }
+    },
+    "/categoriaFiscal": {
+      "get": {
+        "tags": [
+          "categor\u00edaFiscal"
+        ],
+        "summary": "Obtiene todos los tipos de Categor\u00eda Fiscal",
+        "description": "Obtiene un array de tipos de Categor\u00eda Fiscal. El par\u00e1metro opcional \"activo\" acepta 1 = true y 0 = false",
+        "operationId": "getCategoriasFiscales_1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CategoriaFiscalBean"
+            }
+          }
+        }
+      }
+    },
+    "/centroDeCostoBean": {
+      "get": {
+        "tags": [
+          "centroDeCosto"
+        ],
+        "summary": "Obtiene una Lista de Centro de costos",
+        "description": "Recibe un par\u00e1metro opcional para filtrar por activos e inactivos. Activo = 1. Inactivo = 0. En el caso de no utilizar el par\u00e1metro, se devolver\u00e1 los Activos e Inactivos",
+        "operationId": "getCentroDeCostoBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CentroDeCostoBean"
+            }
+          }
+        }
+      }
+    },
+    "/circuitoContableBean": {
+      "get": {
+        "tags": [
+          "circuitoContable"
+        ],
+        "summary": "Obtiene una Lista de Circuitos Contables",
+        "description": "Recibe un par\u00e1metro opcional para filtrar por activos e inactivos. Activo = 1. Inactivo = 0. En el caso de no utilizar el par\u00e1metro, se devolver\u00e1 los Activos e Inactivos",
+        "operationId": "getCircuitosContablesBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CircuitoContableBean"
+            }
+          }
+        }
+      }
+    },
+    "/clienteBean": {
+      "get": {
+        "tags": [
+          "cliente"
+        ],
+        "summary": "Obtiene todos los Clientes",
+        "description": "Obtiene un array de Clientes. Contiene par\u00e1metros opcionales.",
+        "operationId": "getClienteBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "esCliente",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tipoIdentificacion",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dummyexample",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "esclienteextranjero",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "numeroIdentificacion",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cliente"
+        ],
+        "summary": "Crea un nuevo Cliente",
+        "description": "",
+        "operationId": "postClienteBean",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Cliente necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        }
+      }
+    },
+    "/clienteBean/{id}": {
+      "get": {
+        "tags": [
+          "cliente"
+        ],
+        "summary": "Obtiene un Cliente determinado",
+        "description": "",
+        "operationId": "getClienteBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "cliente"
+        ],
+        "summary": "Actualiza un Cliente determinado",
+        "description": "",
+        "operationId": "putClienteBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ClienteBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cliente"
+        ],
+        "summary": "Elimina un Cliente determinado",
+        "description": "",
+        "operationId": "deleteClienteBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/cobranzaBean": {
+      "get": {
+        "tags": [
+          "cobranza"
+        ],
+        "summary": "Obtiene una Lista de Cobranzas",
+        "description": "Recibe un par\u00e1metro",
+        "operationId": "getCobranzaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CobranzaBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cobranza"
+        ],
+        "summary": "Crea una nueva cobranza",
+        "description": "",
+        "operationId": "postCobranzaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto CobranzaBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CobranzaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CobranzaBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "cobranza"
+        ],
+        "summary": "Actualiza una cobranza",
+        "description": "",
+        "operationId": "putCobranzaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto CobranzaBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CobranzaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CobranzaBean"
+            }
+          }
+        }
+      }
+    },
+    "/cobranzaBean/{id}": {
+      "delete": {
+        "tags": [
+          "cobranza"
+        ],
+        "summary": "Elimina una cobranza existente",
+        "description": "",
+        "operationId": "deleteCobranzaBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/comprobantesAsociados": {
+      "get": {
+        "tags": [
+          "comprobantesAsociados"
+        ],
+        "summary": "Obtiene una Lista de Comprobantes Asociados",
+        "description": "Recibe unos par\u00e1metros opcionales para filtrar los Comprobantes Asociados, clienteId(Obligatorio), tipoComprobante(Obligatorio) = 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6- Recibo, 10- Factura de Cr\u00e9dito MiPyME , 11- Nota de D\u00e9bito MiPyME, 12- Nota de Cr\u00e9dito MiPyME.",
+        "operationId": "getComprobantesAsociadosBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clienteId",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "tipoComprobante",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteAsociadoBean"
+            }
+          }
+        }
+      }
+    },
+    "/cuenta": {
+      "get": {
+        "tags": [
+          "cuenta"
+        ],
+        "summary": "Obtiene una Lista de Cuentas",
+        "description": "Recibe un par\u00e1metro opcional para filtrar por activos e inactivos. Activo = 1. Inactivo = 0. En el caso de no utilizar el par\u00e1metro, se devolver\u00e1 los Activos e Inactivos",
+        "operationId": "getCuentaContableBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "categoriaid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CuentaContableBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cuenta"
+        ],
+        "summary": "Crea una nueva Cuenta",
+        "description": "",
+        "operationId": "postCuentaCodigoBean",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Cuenta necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CuentaCodigoBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CuentaCodigoBean"
+            }
+          }
+        }
+      }
+    },
+    "/cuenta/{id}": {
+      "get": {
+        "tags": [
+          "cuenta"
+        ],
+        "summary": "Obtiene una Cuenta determinada",
+        "description": "",
+        "operationId": "getCuentaBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CuentaCodigoBean"
+            }
+          }
+        }
+      }
+    },
+    "/depositos": {
+      "get": {
+        "tags": [
+          "dep\u00f3sito"
+        ],
+        "summary": "Obtiene todos los Dep\u00f3sitos",
+        "description": "Obtiene un array de Dep\u00f3sitos. El par\u00e1metro opcional \"activo\" acepta 1 = true y 0 = false",
+        "operationId": "getDepositos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DepositoBean"
+            }
+          }
+        }
+      }
+    },
+    "/enviarTransaccionPorMail": {
+      "post": {
+        "tags": [
+          "enviarTransaccionPorMail"
+        ],
+        "summary": "Enviar una transacci\u00f3n por mail",
+        "description": "",
+        "operationId": "postEnviarTransaccionPorMailBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto necesario para enviar una transacci\u00f3n por mail",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EnviarTransaccionPorMailBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/EnviarTransaccionPorMailBean"
+            }
+          }
+        }
+      }
+    },
+    "/comprobanteCompraBean": {
+      "get": {
+        "tags": [
+          "ComprobanteDeCompra"
+        ],
+        "summary": "Obtiene listado de Facturas de Compra",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6 - Recibo, 99- Otros Comprobantes",
+        "operationId": "getFacturaCompraBeans",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ComprobanteDeCompra"
+        ],
+        "summary": "Crea una nueva Factura de Compra",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6 - Recibo, 99- Otros Comprobante.",
+        "operationId": "postFacturaCompraBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Factura de Compra necesario para crear una nueva factura de Compra",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        }
+      }
+    },
+    "/comprobanteCompraBean/{id}": {
+      "get": {
+        "tags": [
+          "ComprobanteDeCompra"
+        ],
+        "summary": "Obtiene una Factura determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6 - Recibo, 99- Otros Comprobante.",
+        "operationId": "getFacturaCompraBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ComprobanteDeCompra"
+        ],
+        "summary": "Actualiza una Factura de Compra determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6 - Recibo, 99- Otros Comprobante.",
+        "operationId": "putFacturaCompraBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteCompraBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ComprobanteDeCompra"
+        ],
+        "summary": "Elimina una Factura determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 6 - Recibo, 99- Otros Comprobante.",
+        "operationId": "deleteFacturaCompraBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/comprobanteVentaBean": {
+      "get": {
+        "tags": [
+          "ComprobanteDeVenta"
+        ],
+        "summary": "Obtiene listado de Facturas de Venta",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Recibo, 5- Informe Diario de Cierre. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.Las fechas son opcionaes. --header 'minimalVersion: true' Version minimalista del endpoint. --header 'lastTransactionID: Numero' es el ultimo id de la pagina q utilizamos para filtrar la sig. pagina(solo disponible en la minimalVersion). --header 'limit: Numero' limite de registros(solo disponible en la minimalVersion). ",
+        "operationId": "getFacturaVentaBeans",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ComprobanteDeVenta"
+        ],
+        "summary": "Crea una nueva Factura de Venta",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Recibo, 5- Informe Diario de Cierre. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.",
+        "operationId": "postFacturaVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Factura de Venta necesario para crear una nueva factura de venta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/comprobanteVentaBean/{id}": {
+      "get": {
+        "tags": [
+          "ComprobanteDeVenta"
+        ],
+        "summary": "Obtiene una Factura determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Recibo, 5- Informe Diario de Cierre. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.",
+        "operationId": "getFacturaVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ComprobanteDeVenta"
+        ],
+        "summary": "Actualiza una Factura de Venta determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Recibo, 5- Informe Diario de Cierre. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.",
+        "operationId": "putFacturaVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ComprobanteDeVenta"
+        ],
+        "summary": "Elimina una Factura determinada",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Recibo, 5- Informe Diario de Cierre. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.",
+        "operationId": "deleteFacturaVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/facturar": {
+      "post": {
+        "tags": [
+          "facturar"
+        ],
+        "summary": "Crea una nueva Factura de Venta",
+        "description": "tipo: 1- Factura, 2- Nota de D\u00e9bito, 3- Nota de Cr\u00e9dito, 4- Informe Diario de Cierre, 6-Recibo. Condici\u00f3n de Pago: 1- Cuenta Corriente, 2- Contado.",
+        "operationId": "postFacturaVentaBean_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Factura de Venta necesario para crear una nueva factura de venta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ComprobanteVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/identificacionTributaria": {
+      "get": {
+        "tags": [
+          "identificacionTributaria"
+        ],
+        "summary": "Obtiene todos los tipos de Identificaciones Tributarias",
+        "description": "Obtiene un array de tipos de Identificacion Tributaria. El par\u00e1metro opcional \"activo\" acepta 1 = true y 0 = false",
+        "operationId": "getIdentificacionesTributarias",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/IdentificacionTributariaBean"
+            }
+          }
+        }
+      }
+    },
+    "/imprimirPDF": {
+      "get": {
+        "tags": [
+          "ImprimirPdf"
+        ],
+        "summary": "Obtiene la url para descargar el pdf.",
+        "description": "Ambos par\u00e1metros son obligatorios.",
+        "operationId": "getUrlPdf",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "idtransaccion",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "tipoimpresion",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ImprimirPDFBean"
+            }
+          }
+        }
+      }
+    },
+    "/listaPrecioBean/{id}": {
+      "get": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Obtiene una Lista de Precio determinada",
+        "description": "",
+        "operationId": "getListaPrecioBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Actualiza una Lista de Precio determinada, exige todos los campos.",
+        "description": "",
+        "operationId": "putListaPrecioBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Elimina una Lista de Precios determinada",
+        "description": "",
+        "operationId": "deleteListaPrecioBean",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Actualiza una Lista de Precio determinada. Solo actualiza lo que se pasa.",
+        "description": "",
+        "operationId": "patchListaPrecioBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        }
+      }
+    },
+    "/listaPrecioBean": {
+      "get": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Obtiene todas las Listas de Precio",
+        "description": "Obtiene un array de Listas de Precio. Tipo: 1 -> Venta, 2 -> Compra. Activo: 1 -> Activo, 0 -> Inactivo",
+        "operationId": "getListaPrecioBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "listaPrecio"
+        ],
+        "summary": "Crea una nueva Lista de Precio",
+        "description": "",
+        "operationId": "postListaPrecioBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto listaPrecio necesario para crear un nuevo listaPrecio",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListaPrecioBean"
+            }
+          }
+        }
+      }
+    },
+    "/localidadBean": {
+      "get": {
+        "tags": [
+          "localidad"
+        ],
+        "summary": "Obtiene una Lista de Localidades.",
+        "description": "Recibe un par\u00e1metro opcional para buscar por Provincia_ID.",
+        "operationId": "getLocalidadBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provincia_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/LocalidadBean"
+            }
+          }
+        }
+      }
+    },
+    "/monedaBean": {
+      "get": {
+        "tags": [
+          "moneda"
+        ],
+        "summary": "Obtiene una Lista de Monedas",
+        "description": "Recibe un par\u00e1metro opcional para filtrar por activos e inactivos. Activo = 1. Inactivo = 0. En el caso de no utilizar el par\u00e1metro, se devolver\u00e1 los Activos e Inactivos",
+        "operationId": "getMonedaBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/MonedaBean"
+            }
+          }
+        }
+      }
+    },
+    "/pagoBean": {
+      "get": {
+        "tags": [
+          "OrdenDePago"
+        ],
+        "summary": "Obtiene listado de Pagos",
+        "description": "",
+        "operationId": "getFacturaCompraBeans_1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "description": "Formatos soportados: DD/MM/AAAA, DD-MM-AAAA o AAAA-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "description": "Formatos soportados: DD/MM/AAAA, DD-MM-AAAA o AAAA-MM-DD",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PagoBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OrdenDePago"
+        ],
+        "summary": "Crea una nueva Orden de Pago",
+        "description": "",
+        "operationId": "postOrdenCompraBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Orden de Pago necesario para crear un nuevo Pago",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PagoBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PagoBean"
+            }
+          }
+        }
+      }
+    },
+    "/ordenCompraBean": {
+      "get": {
+        "tags": [
+          "ordenCompra"
+        ],
+        "summary": "Obtiene listado de Ordenes de Compra",
+        "description": "",
+        "operationId": "getClienteBeans_1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ordenCompra"
+        ],
+        "summary": "Crea una nueva Orden de Compra",
+        "description": "",
+        "operationId": "postordenCompraVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto ordenCompra necesario para crear un nuevo ordenCompra de venta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        }
+      }
+    },
+    "/ordenCompraBean/{id}": {
+      "get": {
+        "tags": [
+          "ordenCompra"
+        ],
+        "summary": "Obtiene una Orden de Compra determinada",
+        "description": "",
+        "operationId": "getordenCompraBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ordenCompra"
+        ],
+        "summary": "Actualiza una Orden de Compra determinada",
+        "description": "",
+        "operationId": "putordenCompraVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OrdenCompraBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ordenCompra"
+        ],
+        "summary": "Elimina una Orden de Compra determinada",
+        "description": "",
+        "operationId": "deleteordenCompraVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/paisBean": {
+      "get": {
+        "tags": [
+          "pais"
+        ],
+        "summary": "Obtiene una Lista de Paises",
+        "description": "Obtiene un listado de todos los Paises.",
+        "operationId": "getPaisBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PaisBean"
+            }
+          }
+        }
+      }
+    },
+    "/percepcionBean": {
+      "get": {
+        "tags": [
+          "percepcion"
+        ],
+        "summary": "Obtiene una Lista de percepciones.",
+        "description": "Categor\u00edas disponibles: 10-Ingresos Brutos, 3-IVA, 8-Impuestos Internos, 13-Otros, 14-Ganancias.",
+        "operationId": "getPercepcionBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "categoriaId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PercepcionBean"
+            }
+          }
+        }
+      }
+    },
+    "/presupuestoBean": {
+      "get": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Obtiene listado de Presupuestos",
+        "description": "",
+        "operationId": "getClienteBeans_2",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Crea un nuevo Presupuesto de Venta",
+        "description": "",
+        "operationId": "postPresupuestoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto Presupuesto necesario para crear un nuevo presupuesto de venta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        }
+      }
+    },
+    "/presupuestoBean/{id}": {
+      "get": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Obtiene un Presupuesto determinado",
+        "description": "",
+        "operationId": "getPresupuestoBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Actualiza un Presupuesto determinado",
+        "description": "",
+        "operationId": "putPresupuestoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PresupuestoBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Elimina un Presupuesto determinado",
+        "description": "",
+        "operationId": "deletePresupuestoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/presupuestoBean/{id}/estado": {
+      "put": {
+        "tags": [
+          "presupuesto"
+        ],
+        "summary": "Actualiza el estado de un presupuesto",
+        "description": "Estados: \n* -3: Pendiente de Aprobar\n* -2: Aprobado\n* -7: Rechazado\n* -5: Facturado\n* -4: Remitido",
+        "operationId": "putPresupuestoVentaBeanStatus",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la transacci\u00f3n a mover de estado",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Objeto que representa el estado al que se movera el presupuesto",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EstadoBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/ProductoCompraBean": {
+      "get": {
+        "tags": [
+          "productoCompra"
+        ],
+        "summary": "Obtiene todos los Productos",
+        "description": "Obtiene un array de Productos",
+        "operationId": "gets",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoCompraBean"
+            }
+          }
+        }
+      }
+    },
+    "/productoStock": {
+      "get": {
+        "tags": [
+          "productoStock"
+        ],
+        "summary": "Obtiene listado de stock de los productos",
+        "description": "",
+        "operationId": "getProductosStockBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fecha",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "depositoid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limitePagina",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "incluirInactivos",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductosStockPaginadoBean"
+            }
+          }
+        }
+      }
+    },
+    "/productoStock/{productoId}": {
+      "get": {
+        "tags": [
+          "productoStock"
+        ],
+        "summary": "Obtiene el stock de un producto determinado.",
+        "description": "",
+        "operationId": "getProductoStockBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "productoId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "depositoid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoStockBean"
+            }
+          }
+        }
+      }
+    },
+    "/ProductoVentaBean": {
+      "get": {
+        "tags": [
+          "productoVenta"
+        ],
+        "summary": "Obtiene todos los Productos de venta",
+        "description": "Obtiene un array de Productos de venta.  --header 'minimalVersion: true' Version minimalista del endpoint.",
+        "operationId": "gets_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "usrcode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoriaProducto",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "tasaIVAProducto",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "dummyexample",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "productoVenta"
+        ],
+        "summary": "Crea un nuevo Producto de Venta",
+        "description": "",
+        "operationId": "postProductoVenta",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto ProductoVenta necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/ProductoVentaBean/{id}": {
+      "put": {
+        "tags": [
+          "productoVenta"
+        ],
+        "summary": "Actualiza un Producto de Venta determinado, exige todos los campos.",
+        "description": "",
+        "operationId": "putProductoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "productoVenta"
+        ],
+        "summary": "Elimina un Producto de Venta determinado",
+        "description": "",
+        "operationId": "deleteProductoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "productoVenta"
+        ],
+        "summary": "Actualiza un Producto de Venta determinado. Solo actualiza lo que se pasa.",
+        "description": "",
+        "operationId": "patchProductoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductoVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/ProveedorBean": {
+      "get": {
+        "tags": [
+          "proveedor"
+        ],
+        "summary": "Obtiene todos los Proveedores",
+        "description": "Obtiene un array de Proveedores",
+        "operationId": "getproveedorBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "numeroIdentificacion",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "proveedor"
+        ],
+        "summary": "Crea un nuevo Proveedor",
+        "description": "",
+        "operationId": "postproveedorBean",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto proveedor necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        }
+      }
+    },
+    "/ProveedorBean/{id}": {
+      "get": {
+        "tags": [
+          "proveedor"
+        ],
+        "summary": "Obtiene un proveedor determinado",
+        "description": "",
+        "operationId": "getproveedorBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "proveedor"
+        ],
+        "summary": "Actualiza un Proveedor determinado",
+        "description": "",
+        "operationId": "putproveedorBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProveedorBean"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "proveedor"
+        ],
+        "summary": "Elimina un Proveedor determinado",
+        "description": "",
+        "operationId": "deleteproveedorBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/provinciaBean": {
+      "get": {
+        "tags": [
+          "provincia"
+        ],
+        "summary": "Obtiene una Lista de Provincias",
+        "description": "Obtiene un listado de todas las Provincias.",
+        "operationId": "getProvinciaBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProvinciaBean"
+            }
+          }
+        }
+      }
+    },
+    "/puntoVentaBean": {
+      "get": {
+        "tags": [
+          "puntoVenta"
+        ],
+        "summary": "Obtiene listado de Puntos de Venta",
+        "description": "Obtiene una lista de Puntos de Ventas. Recibe parametros opcionales para filtrar: ModoNumeracion: automatico o editablesugerido. Activo: 0 = No Activo o 1 = Activo",
+        "operationId": "getPuntoVentaBeans",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "modonumeracion",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PuntoVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/relacionFacturaNotaDeCredito": {
+      "get": {
+        "tags": [
+          "relacionFacturaNotaDeCredito"
+        ],
+        "summary": "Obtiene una Lista de Relaciones de Facturas con Nota De Credito",
+        "description": "Obtiene un listado de todas las Facturas con Nota De Credito.",
+        "operationId": "getrelacionFacturaNotaDeCreditoBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clienteId",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "factura",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "notadecredito",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RelacionFacturaNotaDeCreditoBean"
+            }
+          }
+        }
+      }
+    },
+    "/remitoVentaBean": {
+      "get": {
+        "tags": [
+          "remitoVenta"
+        ],
+        "summary": "Obtiene una Lista de remitos de venta.",
+        "description": "Recibe par\u00e1metros opcionales para buscar por fecha, id, o ambos.",
+        "operationId": "getRemitoVentaBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "transaccionid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RemitoVentaBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "remitoVenta"
+        ],
+        "summary": "Crea una nueva remitoVenta",
+        "description": "",
+        "operationId": "postRemitoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto RemitoVentaBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RemitoVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RemitoVentaBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "remitoVenta"
+        ],
+        "summary": "Actualiza un remito de venta",
+        "description": "",
+        "operationId": "putRemitoVentaBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto RemitoVentaBean necesario para actualizar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RemitoVentaBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RemitoVentaBean"
+            }
+          }
+        }
+      }
+    },
+    "/remitoVentaBean/{id}": {
+      "delete": {
+        "tags": [
+          "remitoVenta"
+        ],
+        "summary": "Elimina un remito de venta existente",
+        "description": "",
+        "operationId": "deleteRemitoVentaBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/retencionBean": {
+      "get": {
+        "tags": [
+          "retencion"
+        ],
+        "summary": "Obtiene una Lista de retenciones.",
+        "description": "Categor\u00edas disponibles: 4-Ganancias, 5-Ingresos Brutos, 9-Retenciones Bancarias, 6-IVA, 7-Seguridad Social, 12-Otros.",
+        "operationId": "getRetencionBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "categoriaid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "retencionid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RetencionBean"
+            }
+          }
+        }
+      }
+    },
+    "/solicitarCAE": {
+      "post": {
+        "tags": [
+          "CAE"
+        ],
+        "summary": "Solicitar CAE para una factura de venta",
+        "description": "",
+        "operationId": "postSolicitarCAEBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto necesario para solicitar CAE",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolicitarCAEBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SolicitarCAEBean"
+            }
+          }
+        }
+      }
+    },
+    "/sucursalClienteBean": {
+      "get": {
+        "tags": [
+          "sucursal"
+        ],
+        "summary": "Obtiene una Lista de Sucursales.",
+        "description": "Recibe par\u00e1metros opcionales para buscar por cliente_id, sucursal_id \u00f3 ambos.",
+        "operationId": "getSucursalBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clienteid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "sucursalid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SucursalBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "sucursal"
+        ],
+        "summary": "Crea una nueva sucursal",
+        "description": "",
+        "operationId": "postSucursalBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto SucursalBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SucursalBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SucursalBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "sucursal"
+        ],
+        "summary": "Actualiza una sucursal",
+        "description": "",
+        "operationId": "putSucursalBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto SucursalBean necesario para actualizar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SucursalBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SucursalBean"
+            }
+          }
+        }
+      }
+    },
+    "/sucursalClienteBean/{id}": {
+      "delete": {
+        "tags": [
+          "sucursal"
+        ],
+        "summary": "Elimina una sucursal existente",
+        "description": "",
+        "operationId": "deleteSucursalBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/talonario": {
+      "get": {
+        "tags": [
+          "talonario"
+        ],
+        "summary": "Obtiene una Lista de Talonarios",
+        "description": "Recibe unos par\u00e1metros opcionales para filtrar los Talonarios, puntoDeVenta(Obligatorio) = 0001, 0002, etc , letraComprobante = A, B, C, etc, tipoComprobante = Facturas de Venta A, Facturas de Venta B, etc",
+        "operationId": "getTalonarioBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "puntoDeVenta",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "default": "0001"
+          },
+          {
+            "name": "letraComprobante",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tipoComprobante",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TalonarioBean"
+            }
+          }
+        }
+      }
+    },
+    "/talonarioCobranza": {
+      "get": {
+        "tags": [
+          "talonarioCobranza"
+        ],
+        "summary": "Obtiene una lista de los ultimos n\u00fameros del talonario utilizado en las cobranzas",
+        "description": "Recibe unos par\u00e1metros opcionales para filtrar los Talonarios, letraComprobante = A, B, C, etc, puntoDeVenta = 0001, 0002, etc , ultimoSugeridoUtilizado = puede ser 0 o 1",
+        "operationId": "getTalonarioCobranza",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "letraComprobante",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "puntoDeVenta",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ultimoSugeridoUtilizado",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TalonarioBean"
+            }
+          }
+        }
+      }
+    },
+    "/tasaImpositiva": {
+      "get": {
+        "tags": [
+          "tasaImpositiva"
+        ],
+        "summary": "Obtiene todas los tipos de Tasas Impositivas",
+        "description": "Recibe un par\u00e1metro opcional para filtrar por Tasas Impositivas Default. tasaDefault = 0: todas menos la default ; tasaDefault = 1: solo la default ; tasaDefault vac\u00edo: Todas las tasas.",
+        "operationId": "getTasasImpositivas",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tasaDefault",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TasaImpositivaBean"
+            }
+          }
+        }
+      }
+    },
+    "/transporteBean": {
+      "get": {
+        "tags": [
+          "transporte"
+        ],
+        "summary": "Obtiene una Lista de Transportes.",
+        "description": "Recibe par\u00e1metros opcionales para buscar por id, activo \u00f3 ambos.",
+        "operationId": "getTransporteBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "transporteid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TransporteBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "transporte"
+        ],
+        "summary": "Crea un nuevo transporte",
+        "description": "",
+        "operationId": "postTransporteBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto TransporteBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransporteBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TransporteBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "transporte"
+        ],
+        "summary": "Actualiza una transporte",
+        "description": "",
+        "operationId": "putTransporteBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto TransporteBean necesario para actualizar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransporteBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TransporteBean"
+            }
+          }
+        }
+      }
+    },
+    "/transporteBean/{id}": {
+      "delete": {
+        "tags": [
+          "transporte"
+        ],
+        "summary": "Elimina un transporte existente",
+        "description": "",
+        "operationId": "deleteTransporteBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/unidadMedida": {
+      "get": {
+        "tags": [
+          "unidadMedida"
+        ],
+        "summary": "Obtiene todas las Unidades de Medida",
+        "description": "Obtiene un array de Unidades de Medida",
+        "operationId": "getUnidadesMedida",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UnidadMedidaBean"
+            }
+          }
+        }
+      }
+    },
+    "/vendedorBean": {
+      "get": {
+        "tags": [
+          "vendedor"
+        ],
+        "summary": "Obtiene una Lista de Vendedores.",
+        "description": "Recibe par\u00e1metros opcionales para buscar por id, activo (1 o 0) \u00f3 ambos.",
+        "operationId": "getVendedorBean",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vendedorid",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "apellido",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VendedorBean"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "vendedor"
+        ],
+        "summary": "Crea una nuevo vendedor",
+        "description": "",
+        "operationId": "postVendedorBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto VendedorBean necesario para guardar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VendedorBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VendedorBean"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "vendedor"
+        ],
+        "summary": "Actualiza una vendedor",
+        "description": "",
+        "operationId": "putVendedorBean",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "El objeto VendedorBean necesario para actualizar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VendedorBean"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VendedorBean"
+            }
+          }
+        }
+      }
+    },
+    "/vendedorBean/{id}": {
+      "delete": {
+        "tags": [
+          "vendedor"
+        ],
+        "summary": "Elimina un vendedor existente",
+        "description": "",
+        "operationId": "deleteVendedorBean",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "security": [
+          {
+            "api_auth": []
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_auth": {
+      "type": "oauth2",
+      "tokenUrl": "https://xubio.com:443/API/1.1/TokenEndpoint",
+      "flow": "application"
+    }
+  },
+  "definitions": {
+    "EmpresaBean": {
+      "type": "object",
+      "properties": {
+        "nombreEmpresa": {
+          "type": "string"
+        },
+        "categoriaFiscal": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoDeCuenta": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ingresosBrutos": {
+          "type": "string"
+        },
+        "fechaInicioActividad": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-02-28"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "pais": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "provincia": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "localidad": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "telefono": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "facturam": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuit": {
+          "type": "string"
+        }
+      }
+    },
+    "AjusteStockBean": {
+      "type": "object",
+      "required": [
+        "descripcion",
+        "externalId",
+        "fecha",
+        "nombre",
+        "numeroDocumento"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ajusteStockItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AjusteStockItemBean"
+          }
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        }
+      }
+    },
+    "AjusteStockItemBean": {
+      "type": "object",
+      "properties": {
+        "producto": {
+          "$ref": "#/definitions/ProductoBean"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "cantidad": {
+          "type": "number"
+        },
+        "deposito": {
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CircuitoContableBeanSelect": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "default"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "DepositoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Dep\u00f3sito Universal"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProductoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Producto al 21%"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "AsientoContableManualBean": {
+      "type": "object",
+      "required": [
+        "descripcion",
+        "externalId",
+        "fecha",
+        "nombre",
+        "numeroDocumento"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "asientoContableManualItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AsientoContableManualItemBean"
+          }
+        },
+        "tipoAsiento": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        }
+      }
+    },
+    "AsientoContableManualItemBean": {
+      "type": "object",
+      "required": [
+        "cuenta",
+        "debeHaber"
+      ],
+      "properties": {
+        "cuenta": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "debeHaber": {
+          "type": "integer",
+          "format": "int32",
+          "example": "debeHaber: 1, debeHaber: -1, Donde el valor 1 representa DEBE y el valor -1 representa HABER",
+          "description": "Donde el valor 1 representa DEBE y el valor -1 representa HABER",
+          "enum": [
+            1,
+            -1
+          ]
+        },
+        "importe": {
+          "type": "number"
+        },
+        "organizacion": {
+          "$ref": "#/definitions/OrganizacionBeanSelector"
+        },
+        "centroCosto": {
+          "$ref": "#/definitions/CentroDeCostoBean"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CentroDeCostoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CuentaCodigoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "MonedaBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Pesos Argentinos"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "OrganizacionBeanSelector": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "BancoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CategoriaContableBean": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CategoriaFiscalBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CircuitoContableBean": {
+      "type": "object",
+      "properties": {
+        "circuitoContable_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        }
+      }
+    },
+    "ClienteBean": {
+      "type": "object",
+      "properties": {
+        "cliente_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "primerApellido": {
+          "type": "string"
+        },
+        "segundoApellido": {
+          "type": "string"
+        },
+        "primerNombre": {
+          "type": "string"
+        },
+        "otrosNombres": {
+          "type": "string"
+        },
+        "razonSocial": {
+          "type": "string"
+        },
+        "nombreComercial": {
+          "type": "string"
+        },
+        "identificacionTributaria": {
+          "$ref": "#/definitions/IdentificacionTributariaBean"
+        },
+        "digitoVerificacion": {
+          "type": "string"
+        },
+        "categoriaFiscal": {
+          "$ref": "#/definitions/CategoriaFiscalBean"
+        },
+        "provincia": {
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "telefono": {
+          "type": "string"
+        },
+        "codigoPostal": {
+          "type": "string"
+        },
+        "cuentaVenta_id": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "cuentaCompra_id": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "pais": {
+          "$ref": "#/definitions/PaisBean"
+        },
+        "localidad": {
+          "$ref": "#/definitions/LocalidadBean"
+        },
+        "usrCode": {
+          "type": "string"
+        },
+        "listaPrecioVenta": {
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "esclienteextranjero": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "esProveedor": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuit": {
+          "type": "string"
+        },
+        "tipoDeOrganizacion": {
+          "$ref": "#/definitions/TipoDeOrganizacionBean"
+        },
+        "responsabilidadOrganizacionItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResponsabilidadFiscalBean"
+          }
+        },
+        "CUIT": {
+          "type": "string"
+        }
+      }
+    },
+    "IdentificacionTributariaBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ListaDePrecioBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "LocalidadBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PaisBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProvinciaBean": {
+      "type": "object",
+      "properties": {
+        "provincia_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "pais": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponsabilidadFiscalBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TipoDeOrganizacionBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ClienteBeanSelector": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CobranzaBean": {
+      "type": "object",
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "cliente": {
+          "$ref": "#/definitions/ClienteBeanSelector"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-02-28"
+        },
+        "numeroRecibo": {
+          "type": "string"
+        },
+        "monedaCtaCte": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "utilizaMonedaExtranjera": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "observacion": {
+          "type": "string"
+        },
+        "transaccionInstrumentoDeCobro": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransaccionInstrumentoCobroBean"
+          }
+        },
+        "transaccionRetencionItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransaccionRetencionItemsBean"
+          }
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64",
+          "position": 1
+        }
+      }
+    },
+    "ConceptoRetencionBeanSelector": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TransaccionInstrumentoCobroBean": {
+      "type": "object",
+      "properties": {
+        "transaccionICId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuentaTipo": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuenta": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "importe": {
+          "type": "number"
+        },
+        "numCheque": {
+          "type": "string"
+        },
+        "vtoCheque": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "banco": {
+          "$ref": "#/definitions/BancoBean"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TransaccionRetencionItemsBean": {
+      "type": "object",
+      "properties": {
+        "transaccionRItemId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoRetencion": {
+          "type": "string"
+        },
+        "conceptoRetencion": {
+          "$ref": "#/definitions/ConceptoRetencionBeanSelector"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "numeroComprobante": {
+          "type": "string"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "importeISAR": {
+          "type": "number"
+        },
+        "importeRetenido": {
+          "type": "number"
+        },
+        "importeMonPpal": {
+          "type": "number"
+        },
+        "fechaComprobante": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-02-28"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ComprobanteAsociadoBean": {
+      "type": "object",
+      "properties": {
+        "idComprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoComprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numeroComprobante": {
+          "type": "string"
+        }
+      }
+    },
+    "CategoriaBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CodigoAgrupadorSatBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CuentaBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ForeignKeyVO": {
+      "type": "object",
+      "properties": {
+        "claveId": {
+          "type": "string"
+        },
+        "campoNombre": {
+          "type": "string"
+        },
+        "campoCodigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "entidad": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "entidadVO": {
+          "type": "string"
+        }
+      }
+    },
+    "CuentaContableBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Compra de Bienes"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "EnviarTransaccionPorMailBean": {
+      "type": "object",
+      "properties": {
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "destinatarios": {
+          "type": "string"
+        },
+        "copiaCon": {
+          "type": "string"
+        },
+        "copiaConOtro": {
+          "type": "string"
+        },
+        "asunto": {
+          "type": "string"
+        },
+        "cuerpo": {
+          "type": "string"
+        },
+        "tieneRetenciones": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ComprobanteCompraBean": {
+      "type": "object",
+      "required": [
+        "cbuinformada",
+        "condicionDePago",
+        "cotizacion",
+        "cotizacionListaDePrecio",
+        "deposito",
+        "descripcion",
+        "externalId",
+        "fecha",
+        "fechaComprobante",
+        "fechaVto",
+        "importeMonPrincipal",
+        "listaDePrecio",
+        "nombre",
+        "numeroDocumento",
+        "proveedor",
+        "provincia",
+        "tipo",
+        "transaccionOrdenPagoItems",
+        "transaccionPercepcionItems",
+        "transaccionProductoItems"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "comprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fechaFiscal": {
+          "type": "string",
+          "format": "date"
+        },
+        "cuentaBancaria": {
+          "$ref": "#/definitions/CuentaContableBean"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64",
+          "position": 5
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "tipo": {
+          "type": "integer",
+          "format": "int32",
+          "position": 15
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date",
+          "example": "2030-02-28",
+          "position": 25
+        },
+        "puntoVenta": {
+          "type": "string",
+          "example": "00001",
+          "position": 29
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "condicionDePago": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "position": 36,
+          "description": "Completar con el c\u00f3digo seg\u00fan el instrumento de Cobro.<br>1 = Cuenta Corriente<br>2 = Al Contado",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "deposito": {
+          "position": 37,
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "cotizacion": {
+          "type": "number",
+          "position": 49
+        },
+        "importeMonPrincipal": {
+          "type": "number",
+          "position": 51
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "provincia": {
+          "position": 56,
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "cotizacionListaDePrecio": {
+          "type": "number",
+          "position": 59
+        },
+        "listaDePrecio": {
+          "position": 60,
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "fechaComprobante": {
+          "type": "string",
+          "format": "date",
+          "position": 67
+        },
+        "proveedor": {
+          "position": 68,
+          "$ref": "#/definitions/ProveedorBeanSelector"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        },
+        "cbuinformada": {
+          "type": "boolean",
+          "position": 75
+        },
+        "transaccionProductoItems": {
+          "type": "array",
+          "position": 89,
+          "items": {
+            "$ref": "#/definitions/TransaccionProductoItems"
+          }
+        },
+        "transaccionPercepcionItems": {
+          "type": "array",
+          "position": 90,
+          "items": {
+            "$ref": "#/definitions/TransaccionPercepcionItems"
+          }
+        },
+        "transaccionOrdenPagoItems": {
+          "type": "array",
+          "position": 95,
+          "items": {
+            "$ref": "#/definitions/TransaccionOrdenPagoItems"
+          }
+        }
+      }
+    },
+    "PercepcionesBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "IVA"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProveedorBeanSelector": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TransaccionOrdenPagoItems": {
+      "type": "object",
+      "properties": {
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "itemId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuentaTipo": {
+          "type": "string"
+        },
+        "cuentaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacionMonTransaccion": {
+          "type": "number"
+        },
+        "importeMonPrincipal": {
+          "type": "number"
+        },
+        "importeMonTransaccion": {
+          "type": "number"
+        },
+        "chequeTerceros": {
+          "type": "string"
+        },
+        "chequePropios": {
+          "type": "string"
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "banco": {
+          "$ref": "#/definitions/BancoBean"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TransaccionPercepcionItems": {
+      "type": "object",
+      "required": [
+        "centroDeCosto",
+        "descripcion",
+        "importe"
+      ],
+      "properties": {
+        "transaccionCVItemId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "percepcionImpuesto": {
+          "$ref": "#/definitions/PercepcionesBean"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "centroDeCosto": {
+          "position": 20,
+          "$ref": "#/definitions/CentroDeCostoBean"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 30
+        },
+        "importe": {
+          "type": "number",
+          "position": 70
+        }
+      }
+    },
+    "TransaccionProductoItems": {
+      "type": "object",
+      "required": [
+        "cantidad",
+        "centroDeCosto",
+        "descripcion",
+        "importe",
+        "iva",
+        "montoExento",
+        "porcentajeDescuento",
+        "precio",
+        "producto",
+        "total"
+      ],
+      "properties": {
+        "transaccionCVItemId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "precioconivaincluido": {
+          "type": "number",
+          "example": 333.33
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "producto": {
+          "position": 10,
+          "$ref": "#/definitions/ProductoBean"
+        },
+        "centroDeCosto": {
+          "position": 20,
+          "$ref": "#/definitions/CentroDeCostoBean"
+        },
+        "deposito": {
+          "position": 25,
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 30
+        },
+        "cantidad": {
+          "type": "number",
+          "example": 10.0,
+          "position": 40
+        },
+        "precio": {
+          "type": "number",
+          "example": 333.33,
+          "position": 50
+        },
+        "iva": {
+          "type": "number",
+          "position": 60
+        },
+        "importe": {
+          "type": "number",
+          "position": 70
+        },
+        "total": {
+          "type": "number",
+          "position": 80
+        },
+        "montoExento": {
+          "type": "number",
+          "position": 85
+        },
+        "porcentajeDescuento": {
+          "type": "number",
+          "position": 86
+        }
+      }
+    },
+    "ComprobanteVentaBean": {
+      "type": "object",
+      "required": [
+        "cantComprobantesCancelados",
+        "cantComprobantesEmitidos",
+        "cbuinformada",
+        "cliente",
+        "condicionDePago",
+        "cotizacion",
+        "cotizacionListaDePrecio",
+        "deposito",
+        "descripcion",
+        "externalId",
+        "facturaNoExportacion",
+        "fecha",
+        "fechaVto",
+        "listaDePrecio",
+        "mailEstado",
+        "nombre",
+        "numeroDocumento",
+        "porcentajeComision",
+        "provincia",
+        "puntoVenta",
+        "tipo",
+        "transaccionCobranzaItems",
+        "transaccionPercepcionItems",
+        "transaccionProductoItems",
+        "vendedor"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "comprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "comprobanteAsociado": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fechaDesde": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-02-28"
+        },
+        "fechaHasta": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "tienePeriodoServicio": {
+          "type": "boolean"
+        },
+        "fechaFacturacionServicioDesde": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-02-28"
+        },
+        "fechaFacturacionServicioHasta": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "CAE": {
+          "type": "string"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64",
+          "position": 5
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "cliente": {
+          "position": 10,
+          "$ref": "#/definitions/ClienteBeanSelector"
+        },
+        "tipo": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "position": 15,
+          "description": "Deber\u00e1s completar con el c\u00f3digo de operaci\u00f3n que quieras realizar  <br>1 = Factura<br>2 = Nota de D\u00e9bito<br>3 = Nota de Cr\u00e9dito<br>4 = Informe Diario de Cierre Z<br>6 = Recibo",
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            6
+          ]
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date",
+          "example": "2030-02-28",
+          "position": 25
+        },
+        "puntoVenta": {
+          "position": 30,
+          "$ref": "#/definitions/PuntoVentaBeanSelector"
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "condicionDePago": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "position": 36,
+          "description": "Completar con el c\u00f3digo seg\u00fan el instrumento de Cobro.<br>1 = Cuenta Corriente<br>2 = Al Contado",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "deposito": {
+          "position": 37,
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "primerTktA": {
+          "type": "string",
+          "position": 38,
+          "description": "Este campo no es necesario completarlo si est\u00e1s trabajando con FACTURAS, NOTAS DE CREDITO, NOTAS DE DEBITO, solo con Informe Z"
+        },
+        "ultimoTktA": {
+          "type": "string",
+          "position": 39,
+          "description": "Este campo no es necesario completarlo si est\u00e1s trabajando con FACTURAS, NOTAS DE CREDITO, NOTAS DE DEBITO, solo con Informe Z"
+        },
+        "primerTktBC": {
+          "type": "string",
+          "position": 40,
+          "description": "Este campo no es necesario completarlo si est\u00e1s trabajando con FACTURAS, NOTAS DE CREDITO, NOTAS DE DEBITO, solo con Informe Z"
+        },
+        "ultimoTktBC": {
+          "type": "string",
+          "position": 41,
+          "description": "Este campo no es necesario completarlo si est\u00e1s trabajando con FACTURAS, NOTAS DE CREDITO, NOTAS DE DEBITO, solo con Informe Z"
+        },
+        "cantComprobantesEmitidos": {
+          "type": "integer",
+          "format": "int64",
+          "position": 46
+        },
+        "cantComprobantesCancelados": {
+          "type": "integer",
+          "format": "int64",
+          "position": 47
+        },
+        "cotizacion": {
+          "type": "number",
+          "position": 49
+        },
+        "importeMonPrincipal": {
+          "type": "number",
+          "position": 51
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "provincia": {
+          "position": 56,
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "cotizacionListaDePrecio": {
+          "type": "number",
+          "position": 59
+        },
+        "listaDePrecio": {
+          "position": 60,
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "vendedor": {
+          "position": 65,
+          "$ref": "#/definitions/VendedorBean"
+        },
+        "porcentajeComision": {
+          "type": "number",
+          "position": 66
+        },
+        "mailEstado": {
+          "type": "string",
+          "position": 67
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        },
+        "cbuinformada": {
+          "type": "boolean",
+          "position": 75
+        },
+        "facturaNoExportacion": {
+          "type": "boolean",
+          "example": true,
+          "position": 80
+        },
+        "transaccionProductoItems": {
+          "type": "array",
+          "position": 85,
+          "description": "Deber\u00e1s indicar el precio del producto de la operaci\u00f3n con IVA incluido",
+          "items": {
+            "$ref": "#/definitions/TransaccionProductoItems"
+          }
+        },
+        "transaccionPercepcionItems": {
+          "type": "array",
+          "position": 90,
+          "items": {
+            "$ref": "#/definitions/TransaccionPercepcionItems"
+          }
+        },
+        "transaccionCobranzaItems": {
+          "type": "array",
+          "position": 95,
+          "description": "Completar con el nombre del banco",
+          "items": {
+            "$ref": "#/definitions/TransaccionCobranzaItems"
+          }
+        }
+      }
+    },
+    "PuntoVentaBeanSelector": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "default"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TransaccionCobranzaItems": {
+      "type": "object",
+      "properties": {
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "itemId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuentaTipo": {
+          "type": "string"
+        },
+        "cuentaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacionMonTransaccion": {
+          "type": "number"
+        },
+        "importeMonPrincipal": {
+          "type": "number"
+        },
+        "importeMonTransaccion": {
+          "type": "number"
+        },
+        "numeroCheque": {
+          "type": "string"
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "banco": {
+          "$ref": "#/definitions/BancoBean"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "VendedorBean": {
+      "type": "object",
+      "properties": {
+        "vendedorId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "apellido": {
+          "type": "string"
+        },
+        "esVendedor": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "activo": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "ImprimirPDFBean": {
+      "type": "object",
+      "properties": {
+        "nombrexml": {
+          "type": "string"
+        },
+        "datasource": {
+          "type": "string"
+        },
+        "urlPdf": {
+          "type": "string"
+        }
+      }
+    },
+    "ListaPrecioBean": {
+      "type": "object",
+      "properties": {
+        "listaPrecioID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "activo": {
+          "type": "boolean"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "esDefault": {
+          "type": "boolean"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "tipo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "iva": {
+          "type": "number"
+        },
+        "listaReferencia": {
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "listaPrecioItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListaPrecioItemBean"
+          }
+        },
+        "ocultarSinPrecio": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ListaPrecioItemBean": {
+      "type": "object",
+      "properties": {
+        "listaPrecioID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "producto": {
+          "$ref": "#/definitions/ProductoBean"
+        },
+        "precio": {
+          "type": "number"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "referencia": {
+          "type": "number"
+        }
+      }
+    },
+    "PagoBean": {
+      "type": "object",
+      "properties": {
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "proveedor": {
+          "$ref": "#/definitions/ProveedorBeanSelector"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date"
+        },
+        "numeroRecibo": {
+          "type": "string"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "utilizaMonedaExtranjera": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "observacion": {
+          "type": "string"
+        },
+        "transaccionInstrumentoDePago": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransaccionInstrumentoDePagoBean"
+          }
+        },
+        "transaccionRetencionItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransaccionRetencionItemsBean"
+          }
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        }
+      }
+    },
+    "TransaccionInstrumentoDePagoBean": {
+      "type": "object",
+      "properties": {
+        "transaccionIPId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoCuenta": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cuenta": {
+          "$ref": "#/definitions/CuentaBean"
+        },
+        "moneda": {
+          "$ref": "#/definitions/MonedaBean"
+        },
+        "cotizacion": {
+          "type": "number"
+        },
+        "importe": {
+          "type": "number"
+        },
+        "chequeTerceros": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "chequePropio": {
+          "type": "string"
+        },
+        "vencimientoCheque": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2030-02-28"
+        },
+        "banco": {
+          "$ref": "#/definitions/BancoBean"
+        },
+        "descripcion": {
+          "type": "string"
+        }
+      }
+    },
+    "OrdenCompraBean": {
+      "type": "object",
+      "required": [
+        "condicionDePago",
+        "cotizacion",
+        "cotizacionListaDePrecio",
+        "deposito",
+        "descripcion",
+        "externalId",
+        "fecha",
+        "fechaComprobante",
+        "fechaVto",
+        "listaDePrecio",
+        "nombre",
+        "numeroDocumento",
+        "probabilidad",
+        "proveedor",
+        "provincia",
+        "transaccionProductoItems"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "comprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64",
+          "position": 5
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date",
+          "example": "2030-02-28",
+          "position": 25
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "condicionDePago": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "position": 36,
+          "description": "Completar con el c\u00f3digo seg\u00fan el instrumento de Cobro.<br>1 = Cuenta Corriente<br>2 = Al Contado",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "deposito": {
+          "position": 37,
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "cotizacion": {
+          "type": "number",
+          "position": 49
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "provincia": {
+          "position": 56,
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "probabilidad": {
+          "type": "integer",
+          "format": "int32",
+          "position": 58
+        },
+        "cotizacionListaDePrecio": {
+          "type": "number",
+          "position": 59
+        },
+        "listaDePrecio": {
+          "position": 60,
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "fechaComprobante": {
+          "type": "string",
+          "format": "date",
+          "position": 67
+        },
+        "proveedor": {
+          "position": 68,
+          "$ref": "#/definitions/ProveedorBeanSelector"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        },
+        "transaccionProductoItems": {
+          "type": "array",
+          "position": 89,
+          "items": {
+            "$ref": "#/definitions/TransaccionProductoItems"
+          }
+        }
+      }
+    },
+    "PercepcionBean": {
+      "type": "object",
+      "properties": {
+        "percepcionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "categoria": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "jurisdiccion": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuentaVentas": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cuentaCompras": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PresupuestoBean": {
+      "type": "object",
+      "required": [
+        "cliente",
+        "condicionDePago",
+        "cotizacion",
+        "cotizacionListaDePrecio",
+        "deposito",
+        "descripcion",
+        "externalId",
+        "facturaNoExportacion",
+        "fecha",
+        "fechaVto",
+        "listaDePrecio",
+        "nombre",
+        "numeroDocumento",
+        "porcentajeComision",
+        "probabilidad",
+        "provincia",
+        "puntoVenta",
+        "transaccionProductoItems",
+        "vendedor"
+      ],
+      "properties": {
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "comprobante": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "comprobanteAsociado": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transaccionid": {
+          "type": "integer",
+          "format": "int64",
+          "position": 5
+        },
+        "externalId": {
+          "type": "string",
+          "position": 6
+        },
+        "cliente": {
+          "position": 10,
+          "$ref": "#/definitions/ClienteBeanSelector"
+        },
+        "nombre": {
+          "type": "string",
+          "position": 16
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-12-31",
+          "position": 20
+        },
+        "fechaVto": {
+          "type": "string",
+          "format": "date",
+          "example": "2030-02-28",
+          "position": 25
+        },
+        "puntoVenta": {
+          "position": 30,
+          "$ref": "#/definitions/PuntoVentaBeanSelector"
+        },
+        "numeroDocumento": {
+          "type": "string",
+          "position": 35
+        },
+        "condicionDePago": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "position": 36,
+          "description": "Completar con el c\u00f3digo seg\u00fan el instrumento de Cobro.<br>1 = Cuenta Corriente<br>2 = Al Contado",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "deposito": {
+          "position": 37,
+          "$ref": "#/definitions/DepositoBean"
+        },
+        "cotizacion": {
+          "type": "number",
+          "position": 49
+        },
+        "importetotal": {
+          "type": "number",
+          "position": 52
+        },
+        "importeImpuestos": {
+          "type": "number",
+          "position": 53
+        },
+        "importeGravado": {
+          "type": "number",
+          "position": 54
+        },
+        "provincia": {
+          "position": 56,
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "probabilidad": {
+          "type": "integer",
+          "format": "int32",
+          "position": 58
+        },
+        "cotizacionListaDePrecio": {
+          "type": "number",
+          "position": 59
+        },
+        "listaDePrecio": {
+          "position": 60,
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "vendedor": {
+          "position": 65,
+          "$ref": "#/definitions/VendedorBean"
+        },
+        "porcentajeComision": {
+          "type": "number",
+          "position": 66
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Descripci\u00f3n de prueba",
+          "position": 70
+        },
+        "facturaNoExportacion": {
+          "type": "boolean",
+          "example": true,
+          "position": 80
+        },
+        "transaccionProductoItems": {
+          "type": "array",
+          "position": 85,
+          "description": "Deber\u00e1s indicar el precio del producto de la operaci\u00f3n con IVA incluido",
+          "items": {
+            "$ref": "#/definitions/TransaccionProductoItems"
+          }
+        }
+      }
+    },
+    "EstadoBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProductoCompraBean": {
+      "type": "object",
+      "properties": {
+        "productoid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "usrcode": {
+          "type": "string"
+        }
+      }
+    },
+    "PaginadoBean": {
+      "type": "object",
+      "properties": {
+        "registrosDevueltos": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "limitePorPagina": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalDeRegistros": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProductoStockBean": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "number"
+        },
+        "activo": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ProductosStockPaginadoBean": {
+      "type": "object",
+      "properties": {
+        "paginado": {
+          "$ref": "#/definitions/PaginadoBean"
+        },
+        "registros": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProductoStockBean"
+          }
+        }
+      }
+    },
+    "ActividadEconomicaBean": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Venta al por menor por internet"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProductoVentaBean": {
+      "type": "object",
+      "properties": {
+        "productoid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "usrcode": {
+          "type": "string"
+        },
+        "codigoBarra": {
+          "type": "string"
+        },
+        "unidadMedida": {
+          "$ref": "#/definitions/UnidadMedidaBean"
+        },
+        "categoria": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stockNegativo": {
+          "type": "boolean"
+        },
+        "tasaIva": {
+          "$ref": "#/definitions/TasaImpositivaBean"
+        },
+        "cuentaContable": {
+          "$ref": "#/definitions/CuentaContableBean"
+        },
+        "catFormIVA2002": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "precioUltCompra": {
+          "type": "number"
+        },
+        "activo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "actividadEconomica": {
+          "$ref": "#/definitions/ActividadEconomicaBean"
+        },
+        "sincronizaStock": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "noObjetoImpuesto": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tipoOperacionIvaSimple": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "esDeduccionLPG": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TasaImpositivaBean": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "tasaDefault": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "porcentaje": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "UnidadMedidaBean": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ProveedorBean": {
+      "type": "object",
+      "properties": {
+        "proveedorid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "primerApellido": {
+          "type": "string"
+        },
+        "segundoApellido": {
+          "type": "string"
+        },
+        "primerNombre": {
+          "type": "string"
+        },
+        "otrosNombres": {
+          "type": "string"
+        },
+        "razonSocial": {
+          "type": "string"
+        },
+        "nombreComercial": {
+          "type": "string"
+        },
+        "cuit": {
+          "type": "string"
+        },
+        "identificacionTributaria": {
+          "$ref": "#/definitions/IdentificacionTributariaBean"
+        },
+        "digitoVerificacion": {
+          "type": "string"
+        },
+        "categoriaFiscal": {
+          "$ref": "#/definitions/CategoriaFiscalBean"
+        },
+        "provincia": {
+          "$ref": "#/definitions/ProvinciaBean"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "telefono": {
+          "type": "string"
+        },
+        "codigoPostal": {
+          "type": "string"
+        },
+        "cuentaVenta_id": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "cuentaCompra_id": {
+          "$ref": "#/definitions/CuentaCodigoBean"
+        },
+        "pais": {
+          "$ref": "#/definitions/PaisBean"
+        },
+        "localidad": {
+          "$ref": "#/definitions/LocalidadBean"
+        },
+        "usrCode": {
+          "type": "string"
+        },
+        "listaPrecioCompra": {
+          "$ref": "#/definitions/ListaDePrecioBean"
+        },
+        "observaciones": {
+          "type": "string"
+        },
+        "esResidente": {
+          "type": "boolean"
+        },
+        "esCliente": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoDeOrganizacion": {
+          "$ref": "#/definitions/TipoDeOrganizacionBean"
+        },
+        "responsabilidadOrganizacionItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResponsabilidadFiscalBean"
+          }
+        }
+      }
+    },
+    "PuntoVentaBean": {
+      "type": "object",
+      "properties": {
+        "puntoVentaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "puntoVenta": {
+          "type": "string"
+        },
+        "modoNumeracion": {
+          "type": "string"
+        },
+        "circuitoContable": {
+          "$ref": "#/definitions/CircuitoContableBeanSelect"
+        },
+        "activo": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "factElectronicaConXB": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RelacionFacturaNotaDeCreditoBean": {
+      "type": "object",
+      "properties": {
+        "idFactura": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fechaFactura": {
+          "type": "string"
+        },
+        "numeroFactura": {
+          "type": "string"
+        },
+        "idNotaDeCredito": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fechaNotaDeCredito": {
+          "type": "string"
+        },
+        "numeroNotaDeCredito": {
+          "type": "string"
+        }
+      }
+    },
+    "RemitoVentaBean": {
+      "type": "object",
+      "properties": {
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "clienteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numeroRemito": {
+          "type": "string"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date"
+        },
+        "vendedorId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "comisionVendedor": {
+          "type": "number"
+        },
+        "sucursalClienteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "depositoId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transporteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "listaPrecioId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "observacion": {
+          "type": "string"
+        },
+        "circuitoContableId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transaccionProductoItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransaccionProductoItems"
+          }
+        }
+      }
+    },
+    "RetencionBean": {
+      "type": "object",
+      "properties": {
+        "retencionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "categoria": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cuentaidventa": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cuentaidcompra": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "codigoRegimen": {
+          "type": "string"
+        },
+        "codigoImpuesto": {
+          "type": "string"
+        },
+        "controlacondicion": {
+          "type": "number"
+        },
+        "codigocondicion": {
+          "type": "string"
+        },
+        "importedesde": {
+          "type": "number"
+        },
+        "importehasta": {
+          "type": "number"
+        },
+        "importefijo": {
+          "type": "number"
+        },
+        "porcentaje": {
+          "type": "number"
+        }
+      }
+    },
+    "SolicitarCAEBean": {
+      "type": "object",
+      "properties": {
+        "externalId": {
+          "type": "string"
+        },
+        "transaccionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "CAE": {
+          "type": "string"
+        },
+        "CAEFechaVto": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "detalle": {
+          "type": "string"
+        },
+        "cae": {
+          "type": "string"
+        },
+        "caefechaVto": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2024-04-28"
+        }
+      }
+    },
+    "SucursalBean": {
+      "type": "object",
+      "properties": {
+        "sucursalId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "clienteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "domicilio": {
+          "type": "string"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "provinciaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "localidadId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TalonarioBean": {
+      "type": "object",
+      "properties": {
+        "tipoComprobante": {
+          "type": "string"
+        },
+        "letraComprobante": {
+          "type": "string"
+        },
+        "ultimoUtilizado": {
+          "type": "string"
+        }
+      }
+    },
+    "TransporteBean": {
+      "type": "object",
+      "properties": {
+        "transporteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "responsable": {
+          "type": "string"
+        },
+        "cuit": {
+          "type": "string"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "observaciones": {
+          "type": "string"
+        },
+        "activo": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}
