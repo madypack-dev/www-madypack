@@ -31,6 +31,8 @@ from src.domain.cotizacion.pdf_generator import IGeneradorDocumentoPresupuesto
 from src.domain.cotizacion.quote_repository import IQuoteRepository
 from src.domain.erp.ports import IErpGateway
 from src.domain.lead.http_client import IHttpClient
+from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
+
 from src.infrastructure.config.settings import (
     BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
@@ -84,8 +86,41 @@ def get_repositorio_catalogo() -> ICatalogRepository:
     return InMemoryCatalogRepository()
 
 
+def get_erp_gateway(
+    http_client: IHttpClient = Depends(get_http_client_adapter),
+) -> IErpGateway:
+    """Inyecta la implementación de IErpGateway según settings.XUBIO_PROVIDER."""
+    from src.adapters.gateways.null_erp_gateway import NullErpGateway
+    from src.adapters.gateways.xubio_client import XubioErpGateway
+    from src.infrastructure.config import settings
+
+    if settings.XUBIO_PROVIDER == "xubio":
+        return XubioErpGateway(
+            client=http_client,
+            client_id=settings.XUBIO_CLIENT_ID,
+            secret_id=settings.XUBIO_SECRET_ID,
+            base_url=settings.XUBIO_API_URL,
+            logger=logger,
+        )
+    return NullErpGateway()
+
+
+def get_proveedor_tarifas(
+    erp_gateway: IErpGateway = Depends(get_erp_gateway),
+) -> IProveedorTarifas:
+    """Inyecta el proveedor de tarifas según settings.XUBIO_PROVIDER."""
+    from src.adapters.gateways.proveedor_tarifas_xubio import ProveedorTarifasXubio
+    from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
+    from src.infrastructure.config import settings
+
+    if settings.XUBIO_PROVIDER == "xubio":
+        return ProveedorTarifasXubio(erp_gateway=erp_gateway, logger=logger)
+    return ProveedorTarifasDefault()
+
+
 def get_cotizador(
     repo_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
+    proveedor_tarifas: IProveedorTarifas = Depends(get_proveedor_tarifas),
 ) -> CotizadorServicio:
     """Inyecta el servicio cotizador con tarifas, tasa de cambio e IPC."""
     ruta_ipc = Path(IPC_DATA_PATH)
@@ -94,13 +129,16 @@ def get_cotizador(
     return CotizadorServicio(
         catalogo=repo_catalogo,
         registrar_error=logger.error,
-        proveedor_tarifas=ProveedorTarifasDefault(),
+        proveedor_tarifas=proveedor_tarifas,
         proveedor_tasa=ProveedorTasaCambioDefault(),
         proveedor_ipc=proveedor_ipc,
         fecha_presente=date.today(),
         bolsa_solap_cm=BOLSA_SOLAP_CM,
         margen_comercial=MARGEN_COMERCIAL,
     )
+
+
+
 
 
 
@@ -186,24 +224,6 @@ def get_caso_uso_personalizacion():
         registrar_error=logger.error,
     )
 
-
-def get_erp_gateway(
-    http_client: IHttpClient = Depends(get_http_client_adapter),
-) -> IErpGateway:
-    """Inyecta la implementación de IErpGateway según settings.XUBIO_PROVIDER."""
-    from src.adapters.gateways.null_erp_gateway import NullErpGateway
-    from src.adapters.gateways.xubio_client import XubioErpGateway
-    from src.infrastructure.config import settings
-
-    if settings.XUBIO_PROVIDER == "xubio":
-        return XubioErpGateway(
-            client=http_client,
-            client_id=settings.XUBIO_CLIENT_ID,
-            secret_id=settings.XUBIO_SECRET_ID,
-            base_url=settings.XUBIO_API_URL,
-            logger=logger,
-        )
-    return NullErpGateway()
 
 
 def get_caso_uso_verificar_conexion_erp(
