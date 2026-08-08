@@ -41,16 +41,18 @@ $VULTURE_BIN src/ --min-confidence 80
 
 # 5. Suite de Tests Unitarios + BDD Gherkin con Cobertura
 log_stage "Paso 5: Pruebas Unitarias, BDD Gherkin y Cobertura..."
-$PYTEST_BIN
+$PYTEST_BIN --cov-fail-under=85
 
 # 6. Pruebas de Mutación (Mutmut)
 if [ "$1" == "--fast" ]; then
     echo -e "${COLOR_WARN}⏩ Omisión de Mutation Testing (--fast activado)${COLOR_RESET}"
 else
     log_stage "Paso 6: Mutation Testing en Capa de Dominio (Mutmut)..."
-    $MUTMUT_BIN run src/domain/pricing/
-
-
+    rm -rf mutants
+    mkdir -p mutants
+    ln -sfn ../templates mutants/templates
+    trap 'rm -f mutants/templates' EXIT
+    $MUTMUT_BIN run
 fi
 
 echo -e "\n${COLOR_SUCCESS}👑 ¡CÓDIGO PERFECTO! El gauntlet del Tío Bob fue superado exitosamente.${COLOR_RESET}\n"

@@ -32,3 +32,7 @@ def setup_css_bundle():
     from src.infrastructure.tailwindcss.css_bundle import compilar_bundle_css
 
     compilar_bundle_css()
+
+
+
+

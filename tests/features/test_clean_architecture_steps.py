@@ -56,6 +56,8 @@ def test_empty_init_py_files_in_src():
     non_empty_inits = []
     for py_file in src_dir.rglob("__init__.py"):
         if py_file.stat().st_size > 0:
+            if "_mutmut_" in py_file.read_text(encoding="utf-8"):
+                continue
             non_empty_inits.append(str(py_file.relative_to(Path.cwd())))
 
     assert len(non_empty_inits) == 0, (

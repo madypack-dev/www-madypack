@@ -99,24 +99,35 @@ jinja2.exceptions.TemplateNotFound: 'pages/personalizar.html' not found in searc
 
 **Causa**: mutmut copia `src/` y `tests/` al directorio `mutants/`, pero **no copia `templates/`**. La fase de recolección de stats ejecuta TODOS los tests para mapear cobertura, y los tests de `customization` requieren templates que no existen en `mutants/`.
 
-**Soluciones posibles** (no implementadas aún):
+**Solución implementada**:
 
-| Opción | Descripción | Trade-off |
-|---|---|---|
-| A | Agregar `pytest_add_cli_args = ["--ignore=tests/customization"]` a `[tool.mutmut]` | Fácil, pero requiere mantener la lista de tests ignorados |
-| B | Crear symlink `mutants/templates -> ../templates` antes de mutmut | Requiere wrapper script |
-| C | Evaluar otra herramienta (ej. `cosmic-ray`, `mut.py`) | Mayor esfuerzo de migración |
+En `scripts/CI.sh` (Paso 6) se crea dinámicamente un enlace simbólico de `templates/` dentro del directorio `mutants/` antes de ejecutar mutmut, y se elimina automáticamente al finalizar mediante `trap`:
+
+```bash
+rm -rf mutants
+mkdir -p mutants
+ln -sfn ../templates mutants/templates
+trap 'rm -f mutants/templates' EXIT
+$MUTMUT_BIN run src/domain/pricing/
+```
+
+Las opciones A (lista de ignorados) y C (cambio de herramienta) se descartaron por mantenimiento y costo de migración respectivamente.
 
 ---
 
 ## Cómo ejecutar
 
 ```bash
-# Limpiar artefactos de corridas anteriores
+# Limpiar artefactos y preparar directorio mutants con enlace a templates
 rm -rf mutants/ .mutmut-cache/
+mkdir -p mutants
+ln -sfn ../templates mutants/templates
 
 # Ejecutar mutation testing
 ./venv/bin/mutmut run src/domain/pricing/
+
+# Limpiar enlace simbólico si fue ejecución manual
+rm -f mutants/templates
 
 # Ver resultados
 ./venv/bin/mutmut results

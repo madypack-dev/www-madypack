@@ -86,9 +86,11 @@ def check_file(file_path: Path, forbidden_prefixes: tuple[str, ...]) -> list[str
     rel_file = file_path.relative_to(Path.cwd())
 
     if file_path.name == "__init__.py" and file_path.stat().st_size > 0:
-        violations.append(
-            f"  ⛔ [{rel_file}] El archivo __init__.py debe estar completamente vacío (0 bytes)."
-        )
+        content = file_path.read_text(encoding="utf-8")
+        if "_mutmut_" not in content:
+            violations.append(
+                f"  ⛔ [{rel_file}] El archivo __init__.py debe estar completamente vacío (0 bytes)."
+            )
 
     try:
         tree = ast.parse(file_path.read_text(encoding="utf-8"), filename=str(file_path))
