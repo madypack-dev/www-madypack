@@ -9,6 +9,7 @@ from src.domain.comercio.product import ComponenteBien, ProductoBien
 from src.domain.pricing.actualizador_ipc import ActualizadorIPC
 from src.domain.pricing.calculator import CalculadorPrecio
 from src.domain.pricing.conversor_moneda import ConversorMoneda
+from src.domain.pricing.margen import MargenComercial
 from src.domain.pricing.proveedor_ipc import IProveedorIPC
 from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
 from src.domain.pricing.proveedor_tasa_cambio import IProveedorTasaCambio
@@ -26,6 +27,7 @@ class CotizadorServicio:
         proveedor_ipc: IProveedorIPC | None = None,
         fecha_presente: date | None = None,
         bolsa_solap_cm: float = 3.5,
+        margen_comercial: MargenComercial | float | None = None,
     ):
         self.catalogo = catalogo
         self.registrar_error = registrar_error
@@ -36,6 +38,13 @@ class CotizadorServicio:
         self._actualizador = ActualizadorIPC(proveedor_ipc) if proveedor_ipc else None
         self._fecha_presente = fecha_presente or date.today()
         self._bolsa_solap_cm = bolsa_solap_cm
+        if isinstance(margen_comercial, MargenComercial):
+            self._margen = margen_comercial
+        elif isinstance(margen_comercial, (int, float)):
+            self._margen = MargenComercial(porcentaje=float(margen_comercial))
+        else:
+            self._margen = MargenComercial(porcentaje=0.0)
+
 
     def calcular_precio_estimado(self, articulo: ArticuloCarrito) -> float:
         conceptos_ars = self._conceptos_en_ars()
@@ -77,7 +86,10 @@ class CotizadorServicio:
             nombre: self._actualizador.actualizar(dinero, self._fecha_presente)
             for nombre, dinero in conceptos_dinero.items()
         }
-        return {nombre: float(dinero.monto) for nombre, dinero in conceptos_actualizados.items()}
+        return {
+            nombre: self._margen.aplicar(float(dinero.monto))
+            for nombre, dinero in conceptos_actualizados.items()
+        }
 
     def _calcular_compuesto(
         self, compuesto: ProductoBien, cantidad: int, conceptos_ars: dict[str, float]

@@ -8,10 +8,11 @@
 2. La duplicación de la lógica de cotización y formateo del carrito entre `ver_carrito` y `read_cotizacion` fue resuelta. Se extrajo el caso de uso `CasoUsoObtenerResumenCarrito` en `src/application/comercio/cart_use_cases.py:203` que recibe el carrito y el cotizador, calcula los subtotales y encapsula el formateo tanto del total de bolsas como del precio estimado. Ambas rutas se refactorizaron para consumirlo.
 3. Se desacopló el context processor `inject_cart_count` en `src/infrastructure/fastapi/routes/base.py` de la implementación concreta del repositorio. Para esto, se introdujo una función de factoría `get_repositorio_carrito` en `src/infrastructure/fastapi/dependencies.py` que inyecta la interfaz `IRepositorioCarrito` a partir de la petición web. El context processor ahora depende únicamente del puerto/interfaz y no del adaptador concreto de cookies.
 4. Se optimizó el rendimiento de `CotizadorServicio` en `src/application/cotizacion/pricing_service.py:17` cacheando a nivel de instancia las tarifas cargadas del YAML. De esta manera, al iterar y cotizar múltiples productos dentro de un mismo request (o ciclo de vida del servicio), el archivo YAML solo se lee y parsea una vez en lugar de hacerlo en cada artículo.
+5. Se refactorizó el health check en `src/infrastructure/fastapi/routes/infrastructure.py` para utilizar un cliente HTTP asíncrono gestionado por el ciclo de vida de la aplicación, eliminando la importación local y las llamadas síncronas bloqueantes.
+6. Se estableció la especificación oficial de la API de Xubio v1.1 (`/listaPrecioBean`, `/presupuestoBean`) como fuente de verdad para presupuestos y costos bajo una política estricta de Zero-Trust ("No asumas nada como verdadero"). Se documentó el diseño de sanitización defensiva `SanitizadorXubio` y la conmutación por falla (fallback) suave a `ProveedorTarifasDefault` en `docs/INTEGRACION_XUBIO.md`.
+
 
 ## Acoplamiento y fugas de capas
-
-5. El health check en `src/infrastructure/fastapi/routes/infrastructure.py` importa `httpx` dentro de la función y realiza una llamada de red síncrona a un servicio externo, lo que lo convierte en más pesado y acoplado de lo que un health check liviano debería ser.
 
 ## Rendimiento y diseño
 

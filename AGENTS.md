@@ -50,8 +50,12 @@ adapters**:
 │   ├── ipc.yml                   # Índices IPC intermensuales (opcional)
 │   └── presupuestos/             # Presupuestos generados en JSON (ignorados por git)
 ├── docs/
+│   ├── ARQUITECTURA_LIMPIA.md    # Guardia AST y reglas de arquitectura limpia
+│   ├── CI_CD.md                  # Scripts y pipeline de integración continua
 │   ├── DUDAS.md                  # Registro de dudas arquitectónicas resueltas/pendientes
-│   └── SEO_SEM_ANALYTICS.md     # Guía técnica de SEO dinámico, GA4, GTM y Clarity
+│   ├── INTEGRACION_XUBIO.md      # Guía técnica de la API v1.1 de Xubio ERP y sanitización Zero-Trust
+│   ├── MUTATION_TESTING.md       # Guía de mutation testing con Mutmut
+│   └── SEO_SEM_ANALYTICS.md      # Guía técnica de SEO dinámico, GA4, GTM y Clarity
 ├── logs/
 │   └── failed_leads.log          # Leads fallidos (JSON Lines, ignorado por git)
 ├── src/

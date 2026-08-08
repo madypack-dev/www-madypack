@@ -37,7 +37,9 @@ from src.infrastructure.config.settings import (
     CHATWOOT_API_TOKEN,
     CHATWOOT_URL,
     IPC_DATA_PATH,
+    MARGEN_COMERCIAL,
 )
+
 from src.infrastructure.httpx.http_client import HttpxClientAdapter
 from src.infrastructure.reportlab.pdf_generator import GeneradorPresupuestoPDFReportLab
 from src.infrastructure.structlog.logger import get_logger
@@ -97,7 +99,9 @@ def get_cotizador(
         proveedor_ipc=proveedor_ipc,
         fecha_presente=date.today(),
         bolsa_solap_cm=BOLSA_SOLAP_CM,
+        margen_comercial=MARGEN_COMERCIAL,
     )
+
 
 
 def get_generador_pdf() -> IGeneradorDocumentoPresupuesto:

@@ -36,6 +36,9 @@ class Settings(BaseModel):
         default_factory=lambda: os.getenv("XUBIO_API_URL", "https://xubio.com/API/1.1")
     )
     XUBIO_PROVIDER: str = Field(default_factory=lambda: os.getenv("XUBIO_PROVIDER", "xubio"))
+    MARGEN_COMERCIAL: float = Field(
+        default_factory=lambda: float(os.getenv("MARGEN_COMERCIAL", "0.0"))
+    )
 
 
 _settings = Settings()
@@ -52,3 +55,5 @@ XUBIO_CLIENT_ID: str = _settings.XUBIO_CLIENT_ID
 XUBIO_SECRET_ID: str = _settings.XUBIO_SECRET_ID
 XUBIO_API_URL: str = _settings.XUBIO_API_URL
 XUBIO_PROVIDER: str = _settings.XUBIO_PROVIDER
+MARGEN_COMERCIAL: float = _settings.MARGEN_COMERCIAL
+
