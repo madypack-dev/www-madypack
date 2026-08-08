@@ -5,6 +5,7 @@ from datetime import date
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
+
 from src.domain.pricing.concepto_tarifa import ConceptoTarifa
 from src.domain.pricing.moneda import Moneda
 

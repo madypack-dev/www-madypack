@@ -1,16 +1,17 @@
-"""Tests para la carga y validación de archivos YAML."""
+"""Tests para la carga y validación de archivos YAML y Pydantic."""
 
 import pytest
 import yaml
 from pydantic import ValidationError
 
-from src.infrastructure.pyyaml import loaders
-from src.infrastructure.pyyaml.loaders import cargar_site
-from src.infrastructure.pyyaml.models import (
+from src.infrastructure.pydantic.models import (
+    NegocioConfig,
     QuoteFormConfig,
     QuoteFormFieldConfig,
     SiteConfig,
 )
+from src.infrastructure.pyyaml import loaders
+from src.infrastructure.pyyaml.loaders import cargar_configuracion_negocio, cargar_site
 
 
 class TestCargarDefault:
@@ -18,6 +19,13 @@ class TestCargarDefault:
         site = cargar_site()
         assert isinstance(site, SiteConfig)
         assert site.site.brand == "Madypack"
+
+    def test_cargar_configuracion_negocio_devuelve_negocio_config(self):
+        negocio = cargar_configuracion_negocio()
+        assert isinstance(negocio, NegocioConfig)
+        assert negocio.margen_comercial == 0.20
+        assert negocio.xubio.lista_precio_id == 1
+        assert negocio.xubio.modo_solo_lectura is True
 
 
 class TestValidacionErrores:
@@ -32,6 +40,18 @@ class TestValidacionErrores:
 
         with pytest.raises(ValidationError):
             cargar_site()
+
+    def test_negocio_yaml_invalido_lanza_validation_error(self, tmp_path, monkeypatch):
+        data_dir = tmp_path / "data"
+        data_dir.mkdir(parents=True)
+        (data_dir / "negocio.yml").write_text(
+            yaml.safe_dump({"margen_comercial": -0.5}), encoding="utf-8"
+        )
+
+        monkeypatch.setattr(loaders, "DATA_DIR", data_dir)
+
+        with pytest.raises(ValidationError):
+            cargar_configuracion_negocio()
 
 
 class TestValidacionCamposQuoteForm:

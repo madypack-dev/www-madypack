@@ -1,0 +1,6 @@
+# Configuración Comercial y Reglas de Negocio de Madypack
+margen_comercial: 0.20 # 20% de margen de reventa sobre insumos y servicios
+
+xubio:
+  lista_precio_id: 1
+  modo_solo_lectura: true # Operaciones de lectura pasiva (GET únicamente)

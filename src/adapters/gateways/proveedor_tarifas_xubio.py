@@ -24,13 +24,27 @@ class ProveedorTarifasXubio(IProveedorTarifas):
         erp_gateway: IErpGateway,
         lista_precio_id: int = 1,
         logger: Any = None,
-        ttl_segundos: int = 300,
     ):
         self._gateway = erp_gateway
         self._lista_id = lista_precio_id
         self._fallback = ProveedorTarifasDefault()
         self._logger = logger
         self._cache_tarifas: dict[str, ConceptoTarifa] | None = None
+
+    def _sanitizar_items(self, items_raw: list[Any]) -> dict[str, ConceptoTarifa]:
+        """Convierte una lista de ítems crudos en un diccionario de conceptos sanitizados."""
+        tarifas: dict[str, ConceptoTarifa] = {}
+        for item in items_raw:
+            concepto = sanitizar_item_tarifa(item)
+            if concepto is not None:
+                tarifas[concepto.nombre] = concepto
+        return tarifas
+
+    async def _cargar_tarifas_desde_stock(self) -> dict[str, ConceptoTarifa]:
+        """Consulta /productoStock como alternativa secundaria si la lista de precios no retornó ítems."""
+        stock_res = await self._gateway.proxy_request("GET", "/productoStock")
+        stock_items = stock_res.get("list", []) if isinstance(stock_res, dict) else []
+        return self._sanitizar_items(stock_items)
 
     async def cargar_tarifas_async(self) -> dict[str, ConceptoTarifa]:
         """Carga y sanitiza asincrónicamente el conjunto de tarifas desde Xubio."""
@@ -39,29 +53,17 @@ class ProveedorTarifasXubio(IProveedorTarifas):
 
         try:
             res = await self._gateway.proxy_request("GET", f"/listaPrecioBean/{self._lista_id}")
-            items_raw = []
-            if isinstance(res, dict) and "listaPrecioItem" in res:
-                items_raw = res.get("listaPrecioItem", [])
-            elif isinstance(res, list):
-                items_raw = res
-
-            tarifas: dict[str, ConceptoTarifa] = {}
-            for item in items_raw:
-                concepto = sanitizar_item_tarifa(item)
-                if concepto is not None:
-                    tarifas[concepto.nombre] = concepto
+            items_raw = (
+                res.get("listaPrecioItem", [])
+                if isinstance(res, dict)
+                else (res if isinstance(res, list) else [])
+            )
+            tarifas = self._sanitizar_items(items_raw)
 
             if not tarifas:
-                # Intenta con productoStock si listaPrecioBean no trajo ítems válidos
-                stock_res = await self._gateway.proxy_request("GET", "/productoStock")
-                stock_items = stock_res.get("list", []) if isinstance(stock_res, dict) else []
-                for item in stock_items:
-                    concepto = sanitizar_item_tarifa(item)
-                    if concepto is not None:
-                        tarifas[concepto.nombre] = concepto
+                tarifas = await self._cargar_tarifas_desde_stock()
 
             if tarifas:
-                # Preserva conceptos por defecto que no venían en Xubio
                 tarifas_completas = {**self._fallback.obtener_tarifas(), **tarifas}
                 self._cache_tarifas = tarifas_completas
                 return tarifas_completas
@@ -73,7 +75,6 @@ class ProveedorTarifasXubio(IProveedorTarifas):
                     mensaje="Error consultando tarifas en Xubio; conmutando a tarifas por defecto.",
                 )
 
-        # Fallback de resguardo
         self._cache_tarifas = self._fallback.obtener_tarifas()
         return self._cache_tarifas
 

@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml  # type: ignore
 from pydantic import ValidationError
 
-from src.infrastructure.pyyaml.models import SiteConfig
+from src.infrastructure.pydantic.models import NegocioConfig, SiteConfig
 from src.infrastructure.structlog.logger import get_logger
 
 logger = get_logger()
@@ -43,4 +43,20 @@ def cargar_site() -> SiteConfig:
         return SiteConfig(**contenido)
     except ValidationError as exc:
         logger.error(f"Error validando site.yml: {exc}")
+        raise
+
+
+def cargar_configuracion_negocio() -> NegocioConfig:
+    """Carga y valida ``negocio.yml``."""
+    path = DATA_DIR / "negocio.yml"
+    if not path.exists():
+        return NegocioConfig()
+
+    contenido = _cargar_yaml(path)
+    if not isinstance(contenido, dict):
+        raise ValueError("negocio.yml debe ser un diccionario.")
+    try:
+        return NegocioConfig(**contenido)
+    except ValidationError as exc:
+        logger.error(f"Error validando negocio.yml: {exc}")
         raise

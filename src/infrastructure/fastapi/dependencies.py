@@ -32,17 +32,15 @@ from src.domain.cotizacion.quote_repository import IQuoteRepository
 from src.domain.erp.ports import IErpGateway
 from src.domain.lead.http_client import IHttpClient
 from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
-
 from src.infrastructure.config.settings import (
     BOLSA_SOLAP_CM,
     CHATWOOT_ACCOUNT_ID,
     CHATWOOT_API_TOKEN,
     CHATWOOT_URL,
     IPC_DATA_PATH,
-    MARGEN_COMERCIAL,
 )
-
 from src.infrastructure.httpx.http_client import HttpxClientAdapter
+from src.infrastructure.pydantic.models import NegocioConfig
 from src.infrastructure.reportlab.pdf_generator import GeneradorPresupuestoPDFReportLab
 from src.infrastructure.structlog.logger import get_logger
 
@@ -110,7 +108,6 @@ def get_proveedor_tarifas(
 ) -> IProveedorTarifas:
     """Inyecta el proveedor de tarifas según settings.XUBIO_PROVIDER."""
     from src.adapters.gateways.proveedor_tarifas_xubio import ProveedorTarifasXubio
-    from src.domain.pricing.proveedor_tarifas import IProveedorTarifas
     from src.infrastructure.config import settings
 
     if settings.XUBIO_PROVIDER == "xubio":
@@ -118,13 +115,25 @@ def get_proveedor_tarifas(
     return ProveedorTarifasDefault()
 
 
+def get_configuracion_negocio() -> NegocioConfig:
+    """Inyecta la configuración comercial cargada y validada desde data/negocio.yml."""
+    from src.infrastructure.pyyaml.loaders import cargar_configuracion_negocio
+
+    return cargar_configuracion_negocio()
+
+
 def get_cotizador(
     repo_catalogo: ICatalogRepository = Depends(get_repositorio_catalogo),
     proveedor_tarifas: IProveedorTarifas = Depends(get_proveedor_tarifas),
+    config_negocio: NegocioConfig = Depends(get_configuracion_negocio),
 ) -> CotizadorServicio:
     """Inyecta el servicio cotizador con tarifas, tasa de cambio e IPC."""
+    from src.domain.pricing.margen import MargenComercial
+
     ruta_ipc = Path(IPC_DATA_PATH)
     proveedor_ipc = ProveedorIPCYaml(str(ruta_ipc)) if ruta_ipc.exists() else ProveedorIPCDefault()
+
+    margen = MargenComercial(porcentaje=config_negocio.margen_comercial)
 
     return CotizadorServicio(
         catalogo=repo_catalogo,
@@ -134,8 +143,9 @@ def get_cotizador(
         proveedor_ipc=proveedor_ipc,
         fecha_presente=date.today(),
         bolsa_solap_cm=BOLSA_SOLAP_CM,
-        margen_comercial=MARGEN_COMERCIAL,
+        margen_comercial=margen,
     )
+
 
 
 

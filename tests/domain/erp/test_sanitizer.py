@@ -1,7 +1,8 @@
 """Tests unitarios para el Sanitizador Zero-Trust de Xubio ERP."""
 
-from datetime import date
 import math
+from datetime import date
+
 from src.domain.erp.sanitizer import (
     sanitizar_fecha,
     sanitizar_item_tarifa,

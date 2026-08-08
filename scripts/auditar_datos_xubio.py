@@ -1,9 +1,7 @@
 """Script de auditoría de limpieza y calidad de datos para la API de Xubio ERP v1.1."""
 
 import asyncio
-import json
 import logging
-from typing import Any
 
 from src.adapters.gateways.null_erp_gateway import NullErpGateway
 from src.domain.erp.sanitizer import (

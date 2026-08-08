@@ -1,6 +1,7 @@
 """Tests unitarios para el Value Object MargenComercial."""
 
 import pytest
+
 from src.domain.pricing.margen import MargenComercial
 
 
