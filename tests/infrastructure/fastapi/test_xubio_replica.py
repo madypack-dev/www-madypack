@@ -20,20 +20,18 @@ def test_replica_xubio_miempresa_endpoint(client_erp):
     assert data is not None
 
 
-def test_replica_xubio_cliente_bean_post(client_erp):
+def test_replica_xubio_cliente_bean_post_rechazado_read_only(client_erp):
     payload = {"nombre": "Cliente Prueba", "numeroIdentificacion": "20123456789"}
     response = client_erp.post("/api/v1/xubio/clienteBean", json=payload)
-    assert response.status_code == 200
-    data = response.json()
-    assert data is not None
+    # Debe ser 405 Method Not Allowed ya que la réplica de Xubio es estrictamente SOLO LECTURA (GET)
+    assert response.status_code == 405
 
 
-def test_replica_xubio_presupuesto_bean_post(client_erp):
+def test_replica_xubio_presupuesto_bean_post_rechazado_read_only(client_erp):
     payload = {"clienteId": 1, "montoTotal": 15000.0}
     response = client_erp.post("/api/v1/xubio/presupuestoBean", json=payload)
-    assert response.status_code == 200
-    data = response.json()
-    assert data is not None
+    # Debe ser 405 Method Not Allowed ya que la réplica de Xubio es estrictamente SOLO LECTURA (GET)
+    assert response.status_code == 405
 
 
 def test_replica_xubio_producto_stock_get(client_erp):

@@ -103,6 +103,32 @@ def presentar_productos_stock(productos: list[dict[str, Any]]) -> None:
     console.print(table)
 
 
+def _append_anomalias_y_falsos_negativos(
+    content: Text,
+    anomalias: list[dict[str, Any]],
+    falsos_negativos: list[dict[str, Any]],
+) -> None:
+    """Agrega las anomalías detectadas (incluyendo precio $0.00) y falsos negativos al panel."""
+    if anomalias:
+        content.append(f"🚨 ANOMALÍAS DETECTADAS EN ERP ({len(anomalias)}):\n", style="bold red")
+        for a in anomalias:
+            content.append(f"  • {a['codigo']}: {a['motivo']}\n", style="bold red")
+        content.append("\n")
+    else:
+        content.append(
+            "✅ Sin anomalías numéricas ni precios nulos detectados en ERP.\n",
+            style="bold green",
+        )
+
+    if falsos_negativos:
+        content.append(
+            f"ℹ️ POSIBLES FALSOS NEGATIVOS / FALTAS DE MAPEO ({len(falsos_negativos)}):\n",
+            style="bold yellow",
+        )
+        for fn in falsos_negativos:
+            content.append(f"  • {fn['codigo']}: {fn['motivo']}\n", style="yellow")
+
+
 def presentar_analisis_anomalias(reporte_anomalias: dict[str, Any]) -> None:
     """Renderiza el reporte estadístico de anomalías (Mediana + MAD + Unidades)."""
     mediana = reporte_anomalias.get("mediana_ars_kg", 0.0)
@@ -113,34 +139,18 @@ def presentar_analisis_anomalias(reporte_anomalias: dict[str, Any]) -> None:
 
     content = Text()
     content.append("📊 Mediana Estadística Base: ", style="bold cyan")
-    content.append(f"${mediana:.2f} ARS / kg\n", style="bold green")
+    content.append(f"${mediana:.2f} ARS / kg\n", style="bold green" if mediana > 0 else "bold red")
     content.append("📐 MAD (Desviación Absoluta Mediana): ", style="bold cyan")
     content.append(f"${mad:.2f} ARS / kg\n", style="bold yellow")
     content.append("🛡️ Cota Máxima Tolerada (k * MAD): ", style="bold cyan")
     content.append(f"${cota:.2f} ARS / kg\n\n", style="bold magenta")
 
-    if anomalias:
-        content.append(f"🚨 ANOMALÍAS DETECTADAS ({len(anomalias)}):\n", style="bold red")
-        for a in anomalias:
-            content.append(
-                f"  • {a['codigo']}: ${a['precio_kg']:.2f}/kg (Desviación de ${a['desviacion_mediana']:.2f})\n",
-                style="red",
-            )
-    else:
-        content.append("✅ Sin anomalías numéricas detectadas en precios.\n", style="bold green")
-
-    if falsos_negativos:
-        content.append(
-            f"\nℹ️ POSIBLES FALSOS NEGATIVOS / FALTAS DE MAPEO ({len(falsos_negativos)}):\n",
-            style="bold yellow",
-        )
-        for fn in falsos_negativos:
-            content.append(f"  • {fn['codigo']}: {fn['motivo']}\n", style="yellow")
+    _append_anomalias_y_falsos_negativos(content, anomalias, falsos_negativos)
 
     panel = Panel(
         content,
-        title="[bold yellow] Análisis Estadístico de Anomalías (Mediana + MAD) [/bold yellow]",
-        border_style="yellow",
+        title="[bold yellow] Detección de Anomalías Tarifarias en Xubio ERP (Mediana + MAD) [/bold yellow]",
+        border_style="red" if anomalias else "yellow",
     )
     console.print(panel)
 

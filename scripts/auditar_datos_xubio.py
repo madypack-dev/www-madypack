@@ -81,6 +81,10 @@ async def _consultar_listas_precio(gateway: Any) -> list[dict[str, Any]]:
                 detail = await gateway.proxy_request("GET", f"/listaPrecioBean/{lid}")
                 if isinstance(detail, dict) and "listaPrecioItem" in detail:
                     item["listaPrecioItem"] = detail["listaPrecioItem"]
+                elif isinstance(detail, dict):
+                    item["listaPrecioItem"] = [detail]
+                elif isinstance(detail, list):
+                    item["listaPrecioItem"] = detail
         return res
     except Exception:
         return []
@@ -146,7 +150,11 @@ async def auditar_datos():
         productos_res = await _consultar_productos(gateway)
         presentar_productos_stock(productos_res)
 
-        reporte_anomalias = analizar_anomalias_items(productos_res, factor_k=factor_k)
+        todos_los_items = list(productos_res)
+        for lista in listas_res:
+            todos_los_items.extend(lista.get("listaPrecioItem", []))
+
+        reporte_anomalias = analizar_anomalias_items(todos_los_items, factor_k=factor_k)
         presentar_analisis_anomalias(reporte_anomalias)
 
     _ejecutar_pruebas_zero_trust()

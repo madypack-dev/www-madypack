@@ -40,31 +40,66 @@ def normalizar_unidad_a_kg(precio: float, unidad_str: str) -> float:
     return precio
 
 
-def _procesar_candidato(raw: dict[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
-    """Clasifica un ítem crudo como candidato válido de bobina o falso negativo."""
-    raw_cod = raw.get("codigo") or raw.get("nombre") or raw.get("usrcode")
+def _procesar_candidato(
+    raw: dict[str, Any],
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None]:
+    """Clasifica un ítem crudo como candidato válido, falso negativo o anomalía crítica de precio $0.00."""
+    prod_raw = raw.get("producto")
+    prod_obj: dict[str, Any] = prod_raw if isinstance(prod_raw, dict) else {}
+    raw_cod = (
+        prod_obj.get("codigo")
+        or prod_obj.get("nombre")
+        or raw.get("codigo")
+        or raw.get("nombre")
+        or raw.get("usrcode")
+    )
     codigo = sanitizar_texto(raw_cod, max_len=100).lower()
     precio_raw = sanitizar_monto(
         raw.get("precio") or raw.get("monto") or raw.get("precioUltCompra")
     )
     unidad = sanitizar_texto(raw.get("unidad") or raw.get("medida") or "kg", max_len=20)
 
-    if not codigo or precio_raw <= 0:
-        return None, None
+    if not codigo:
+        return None, None, None
 
-    precio_kg = normalizar_unidad_a_kg(precio_raw, unidad)
     es_bobina_oficial = "bobina_kg" in codigo or "bobmar100" in codigo
     es_posible_bobina = any(palabra in codigo for palabra in ["bobina", "papel", "kraft"])
 
+    if es_bobina_oficial and precio_raw <= 0:
+        return (
+            None,
+            None,
+            {
+                "codigo": raw_cod or codigo,
+                "precio_kg": 0.0,
+                "desviacion_mediana": 0.0,
+                "cota_maxima": 0.0,
+                "motivo": "🚨 ANOMALÍA CRÍTICA: Precio $0,00 ARS/kg en Xubio ERP (Insumo sin cotización activa).",
+            },
+        )
+
+    if precio_raw <= 0:
+        return None, None, None
+
+    precio_kg = normalizar_unidad_a_kg(precio_raw, unidad)
+
     if es_bobina_oficial:
-        return {"raw": raw, "codigo": codigo, "precio_kg": precio_kg, "unidad": unidad}, None
+        return (
+            {"raw": raw, "codigo": codigo, "precio_kg": precio_kg, "unidad": unidad},
+            None,
+            None,
+        )
     if es_posible_bobina:
-        return None, {
-            "codigo": codigo,
-            "precio_kg": precio_kg,
-            "motivo": "Ítem relevante en ERP no asignado al código estándar 'bobina_kg'.",
-        }
-    return None, None
+        return (
+            None,
+            {
+                "codigo": codigo,
+                "precio_kg": precio_kg,
+                "motivo": "Ítem relevante en ERP no asignado al código estándar 'bobina_kg'.",
+            },
+            None,
+        )
+    return None, None, None
 
 
 def analizar_anomalias_items(
@@ -74,31 +109,23 @@ def analizar_anomalias_items(
     candidatos_validos: list[dict[str, Any]] = []
     precios_normalizados: list[float] = []
     falsos_negativos: list[dict[str, Any]] = []
+    anomalias_criticas_cero: list[dict[str, Any]] = []
 
     for raw in items:
-        cand, fn = _procesar_candidato(raw)
+        cand, fn, anom_cero = _procesar_candidato(raw)
         if cand:
             candidatos_validos.append(cand)
             precios_normalizados.append(cand["precio_kg"])
         elif fn:
             falsos_negativos.append(fn)
-
-    if not precios_normalizados:
-        return {
-            "mediana_ars_kg": 0.0,
-            "mad": 0.0,
-            "cota_tolerancia": 0.0,
-            "total_analizados": 0,
-            "anomalias": [],
-            "falsos_negativos": falsos_negativos,
-            "mensaje": "No se encontraron ítems oficiales 'bobina_kg' para analizar.",
-        }
+        elif anom_cero:
+            anomalias_criticas_cero.append(anom_cero)
 
     mediana = calcular_mediana(precios_normalizados)
     mad = calcular_mad(precios_normalizados, mediana)
     cota = factor_k * mad if mad > 0 else (0.2 * mediana * factor_k)
 
-    anomalias = [
+    anomalias_estadisticas = [
         {
             "codigo": i["codigo"],
             "precio_kg": i["precio_kg"],
@@ -110,11 +137,13 @@ def analizar_anomalias_items(
         if abs(i["precio_kg"] - mediana) > cota
     ]
 
+    todas_anomalias = anomalias_criticas_cero + anomalias_estadisticas
+
     return {
         "mediana_ars_kg": mediana,
         "mad": mad,
         "cota_tolerancia": cota,
-        "total_analizados": len(candidatos_validos),
-        "anomalias": anomalias,
+        "total_analizados": len(candidatos_validos) + len(anomalias_criticas_cero),
+        "anomalias": todas_anomalias,
         "falsos_negativos": falsos_negativos,
     }
